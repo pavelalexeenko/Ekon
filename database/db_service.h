@@ -17,6 +17,13 @@
 
 class DbService
 {
+public:
+    static DbService* getInstance()
+    {
+        static DbService *theSingleInstance;
+        return theSingleInstance;
+    }
+private:
     DbService();
     DbService(const DbService&);
     DbService& operator=(const DbService&);
