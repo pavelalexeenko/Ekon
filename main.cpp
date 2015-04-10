@@ -13,8 +13,5 @@ int main(int argc, char *argv[])
 
     lw->show();
 
-    int b;
-    b = 2;
-    
     return a.exec();
 }
