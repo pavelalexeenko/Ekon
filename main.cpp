@@ -12,6 +12,9 @@ int main(int argc, char *argv[])
     QObject::connect(lw, SIGNAL(accepted()), mw, SLOT(show()));
 
     lw->show();
+
+    int b;
+    b = 2;
     
     return a.exec();
 }
