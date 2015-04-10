@@ -18,9 +18,9 @@
 class DbService
 {
 public:
-    static DbService& getInstance()
+    static DbService* getInstance()
     {
-        static DbService theSingleInstance;
+        static DbService *theSingleInstance;
         return theSingleInstance;
     }
 private:
