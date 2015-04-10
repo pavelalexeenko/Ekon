@@ -22,6 +22,7 @@ public slots:
 
 private slots:
     void updateTitle();
+    void goToLoginWindow();
 
 private:
     void createLayout();

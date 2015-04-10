@@ -8,9 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     createLayout();
 
-    LoginWindow *lw = new LoginWindow(this);
-    connect(lw, SIGNAL(accepted()), this, SLOT(updateTitle()));
-    connect(_loginButton, SIGNAL(clicked()), lw, SLOT(show()));
+    connect(_loginButton, SIGNAL(clicked()), this, SLOT(goToLoginWindow()));
+
+    goToLoginWindow();
 }
 
 void MainWindow::show()
@@ -22,6 +22,13 @@ void MainWindow::show()
 void MainWindow::updateTitle()
 {
     this->setWindowTitle(QString("Logged as: ") + DbService::getInstance()->getCurrentUserType());
+}
+
+void MainWindow::goToLoginWindow()
+{
+    LoginWindow *lw = new LoginWindow(this);
+    connect(lw, SIGNAL(accepted()), this, SLOT(updateTitle()));
+    connect(_loginButton, SIGNAL(clicked()), lw, SLOT(show()));
 }
 
 void MainWindow::createLayout()

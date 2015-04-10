@@ -13,6 +13,7 @@ LoginWindow::LoginWindow(QWidget *parent) :
   , _mainLayout(new QGridLayout(this))
   , _connectToAnotherDatabaseButton(new QPushButton(QString("Connect to another database"), this))
 {
+    connect(this, SIGNAL(accepted()), parent, SLOT(show()));
     connect(_loginButton, SIGNAL(clicked()), this, SLOT(login()));
     connect(_exitButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(_connectToAnotherDatabaseButton, SIGNAL(clicked()), this, SLOT(connectToAnotherDatabase()));

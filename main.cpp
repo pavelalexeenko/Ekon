@@ -8,9 +8,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     MainWindow *mw = new MainWindow();
-    LoginWindow *lw = new LoginWindow();
-    QObject::connect(lw, SIGNAL(accepted()), mw, SLOT(show()));
-
+    LoginWindow *lw = new LoginWindow(mw);
     lw->show();
 
     return a.exec();
