@@ -28,7 +28,7 @@ LoginWindow::LoginWindow(QWidget *parent) :
 
 void LoginWindow::login()
 {
-    if (DbService::getInstance().loginAs(_usernameComboBox->currentText(), _passwordLineEdit->text()))
+    if (DbService::getInstance()->loginAs(_usernameComboBox->currentText(), _passwordLineEdit->text()))
         this->accept();
     else
         QMessageBox::critical(this, tr("Error"), tr("Wrong password."), QMessageBox::Ok);
@@ -39,7 +39,7 @@ void LoginWindow::connectToAnotherDatabase()
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("Select database file"), "", tr("SQLite files (*.sqlite)"));
 
-    DbService::getInstance().connectToAnotherDatabase(fileName);
+    DbService::getInstance()->connectToAnotherDatabase(fileName);
     updateUsers();
 }
 
@@ -60,14 +60,14 @@ void LoginWindow::createLayout()
 
 void LoginWindow::updateUsers()
 {
-    if (!DbService::getInstance().isOpen())
+    if (!DbService::getInstance()->isOpen())
     {
         _databaseStatusLabel->setText(QString("Failed to open the database."));
     }
     else
     {
-        _databaseStatusLabel->setText(QString("Connected to: \"") + DbService::getInstance().getCurrentDataBasePath() + QString("\""));
+        _databaseStatusLabel->setText(QString("Connected to: \"") + DbService::getInstance()->getCurrentDataBasePath() + QString("\""));
         _usernameComboBox->clear();
-        _usernameComboBox->addItems(DbService::getInstance().getAllUsers());
+        _usernameComboBox->addItems(DbService::getInstance()->getAllUsers());
     }
 }

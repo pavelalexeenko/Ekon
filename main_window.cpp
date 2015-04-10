@@ -21,7 +21,7 @@ void MainWindow::show()
 
 void MainWindow::updateTitle()
 {
-    this->setWindowTitle(QString("Logged as: ") + DbService::getInstance().getCurrentUserType());
+    this->setWindowTitle(QString("Logged as: ") + DbService::getInstance()->getCurrentUserType());
 }
 
 void MainWindow::createLayout()

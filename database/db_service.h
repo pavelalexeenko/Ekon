@@ -17,17 +17,21 @@
 
 class DbService
 {
-public:
-    static DbService& getInstance()
-    {
-        static DbService theSingleInstance;
-        return theSingleInstance;
-    }
-private:
     DbService();
-    DbService(const DbService& root);
+    DbService(const DbService&);
     DbService& operator=(const DbService&);
+    ~DbService();
 
+    static DbService* _instance;
+
+public:
+    static DbService* getInstance()
+    {
+        if (!_instance)
+            _instance = new DbService();
+
+        return _instance;
+    }
 
 public:
     bool createDatabase() const;

@@ -1,5 +1,7 @@
 #include "db_service.h"
 
+DbService* DbService::_instance = 0;
+
 DbService::DbService() :
     _currentUser(new User())
 {
