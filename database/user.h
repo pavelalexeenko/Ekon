@@ -14,9 +14,11 @@ public:
         WORKER = 3
     };
     User():_userType(NONE){}
-    QString getUsername(){return _username;}
-    QString getUsertype();
-    void setUserName(QString username){_username = username;}
+    User(QString username, int usertype);
+
+    QString getUsername() const;
+    QString getUsertype() const;
+    void setUserName(QString username);
     void setUserType(int userType);
 
 private:

@@ -1,6 +1,22 @@
 #include "user.h"
 
-QString User::getUsertype()
+User::User(QString username, int usertype)
+{
+    setUserName(username);
+    setUserType(usertype);
+}
+
+QString User::getUsername() const
+{
+    return _username;
+}
+
+void User::setUserName(QString username)
+{
+    _username = username;
+}
+
+QString User::getUsertype() const
 {
     switch(_userType){
     case NONE:
