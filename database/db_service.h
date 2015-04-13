@@ -3,7 +3,6 @@
 
 #include <./database/user.h>
 
-#include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -34,19 +33,27 @@ public:
     }
 
 public:
-    bool createDatabase() const;
+    QSqlDatabase getCurrentDatabase() const;
     QStringList getAllUsers() const;
     QString getCurrentUserType() const;
-    bool isOpen() const;
-    bool connectToAnotherDatabase(QString fileName);
     QString getCurrentDataBasePath() const;
+    QString getLastError() const;
 
+    bool connectToAnotherDatabase(QString filename);
     bool loginAs(QString username, QString password);
+    bool testDatabaseConnection() const;
 
 private:
+    bool isCorrectVersion() const;
+
+    void createDatabase() const;
+    void removeCurrentFile() const;
+
+    void createUsersTypesTable() const;
     void createUsersTable() const;
 
 private:
+    const QString _defaultDatabaseFilename;
     User *_currentUser;
     QSqlDatabase *_db;
 

@@ -7,9 +7,9 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    DbService::getInstance();
     MainWindow *mw = new MainWindow();
-    LoginWindow *lw = new LoginWindow(mw);
-    lw->show();
+    mw->show();
 
     return a.exec();
 }

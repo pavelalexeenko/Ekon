@@ -1,15 +1,19 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
-#include <login_window.h>
 #include <./database/db_service.h>
+#include <tables_wigdet.h>
+#include <login_window.h>
 
-#include <QWidget>
+#include <QMainWindow>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QStackedLayout>
+#include <QAction>
+#include <QMenuBar>
 
-class MainWindow : public QWidget
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
@@ -18,7 +22,6 @@ public:
 signals:
     
 public slots:
-    void show();
 
 private slots:
     void updateTitle();
@@ -26,13 +29,15 @@ private slots:
 
 private:
     void createLayout();
+    void createMenu();
 
 private:
-    QLineEdit *_passwordLineEdit;
-    QPushButton *_loginButton;
+    QMenu *fileMenu;
+    QAction *openAct;
+    QAction *saveAct;
+    QAction *exitAct;
 
-    QGridLayout *_mainLayout;
-    
+    TablesWidget *tablesWidget;
 };
 
 #endif // MAIN_WINDOW_H
