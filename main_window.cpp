@@ -6,17 +6,21 @@ MainWindow::MainWindow(QWidget *parent) :
     tablesWidget = new TablesWidget(this);
     setCentralWidget(tablesWidget);
     createMenu();
+
 }
 
 void MainWindow::updateTitle()
 {
-    this->setWindowTitle(QString("Logged as: ") + DbService::getInstance()->getCurrentUserType());
+    qDebug() << "Updating title.";
+    this->setWindowTitle(QString("Logged as: ") + DbService::getInstance()->getCurrentUser()->getUserName() + " - " + DbService::getInstance()->getCurrentUser()->getUserRoleAsString());
+    tablesWidget->updateLayout();
 }
 
 void MainWindow::goToLoginWindow()
 {
     LoginWindow *lw = new LoginWindow(this);
     connect(lw, SIGNAL(accepted()), this, SLOT(updateTitle()));
+    connect(lw, SIGNAL(accepted()), tablesWidget, SLOT(changeLayout()));
     lw->show();
 }
 
@@ -30,7 +34,13 @@ void MainWindow::createMenu()
 
     fileMenu->addSeparator();
 
-    exitAct = new QAction(tr("E&xit"), this);
+    exitAct = new QAction(tr("&Exit"), this);
     fileMenu->addAction(exitAct);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
+
+    saveMenu = menuBar()->addMenu(tr("&Save"));
+
+    saveAct = new QAction(tr("&Save"), this);
+    saveMenu->addAction(saveAct);
+    connect(saveAct, SIGNAL(triggered()), tablesWidget, SLOT(updateLayout()));
 }

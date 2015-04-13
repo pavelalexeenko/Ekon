@@ -30,10 +30,17 @@ LoginWindow::LoginWindow(QWidget *parent) :
 
 void LoginWindow::login()
 {
+    qDebug() << "Trying to login...";
     if (DbService::getInstance()->loginAs(_usernameComboBox->currentText(), _passwordLineEdit->text()))
+    {
+        qDebug() << "Login succesfully.";
         this->accept();
+    }
     else
+    {
+        qDebug() << "There was an error while loggining.";
         QMessageBox::critical(this, tr("Error"), tr("Wrong password."), QMessageBox::Ok);
+    }
 }
 
 void LoginWindow::connectToAnotherDatabase()

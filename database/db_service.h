@@ -11,6 +11,7 @@
 #include <QDir>
 
 #include <QStringList>
+#include <QSharedPointer>
 
 #include <QDebug>
 
@@ -35,7 +36,7 @@ public:
 public:
     QSqlDatabase getCurrentDatabase() const;
     QStringList getAllUsers() const;
-    QString getCurrentUserType() const;
+    QSharedPointer<User> getCurrentUser() const;
     QString getCurrentDataBasePath() const;
     QString getLastError() const;
 
@@ -52,10 +53,13 @@ private:
     void createUsersTypesTable() const;
     void createUsersTable() const;
 
+    void createDisciplinesTable() const;
+    void createTeachersTable() const;
+
 private:
     const QString _defaultDatabaseFilename;
-    User *_currentUser;
-    QSqlDatabase *_db;
+    QSharedPointer<User> _currentUser;
+    QSharedPointer<QSqlDatabase> _db;
 
 };
 

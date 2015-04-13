@@ -6,24 +6,25 @@
 class User
 {
 public:
-    enum UserType
+    enum UserRole
     {
-        NONE = 0,
-        ADMIN = 1,
-        SECRETARY = 2,
-        WORKER = 3
+        USER_ROLE_UNDEFINED = -1,
+        ADMINISTRATOR = 0,
+        SECRETARY = 1,
+        WORKER = 2
     };
-    User():_userType(NONE){}
-    User(QString username, int usertype);
+    User();
+    User(QString userName, int userRole);
 
-    QString getUsername() const;
-    QString getUsertype() const;
-    void setUserName(QString username);
-    void setUserType(int userType);
+    QString getUserName() const;
+    QString getUserRoleAsString() const;
+    UserRole getUserRole() const;
+    void setUserName(QString userName);
+    void setUserRole(int userRole);
 
 private:
-    QString _username;
-    UserType _userType;
+    QString _userName;
+    UserRole _userRole;
 };
 
 #endif // USER_H

@@ -1,29 +1,34 @@
 #include "user.h"
 
-User::User(QString username, int usertype)
+User::User():
+_userRole(USER_ROLE_UNDEFINED)
 {
-    setUserName(username);
-    setUserType(usertype);
 }
 
-QString User::getUsername() const
+User::User(QString userName, int userRole)
 {
-    return _username;
+    setUserName(userName);
+    setUserRole(userRole);
 }
 
-void User::setUserName(QString username)
+QString User::getUserName() const
 {
-    _username = username;
+    return _userName;
 }
 
-QString User::getUsertype() const
+void User::setUserName(QString userName)
 {
-    switch(_userType){
-    case NONE:
-        return QString("NONE");
+    _userName = userName;
+}
+
+QString User::getUserRoleAsString() const
+{
+    switch(_userRole){
+    case USER_ROLE_UNDEFINED:
+        return QString("USER_ROLE_UNDEFINED");
         break;
-    case ADMIN:
-        return QString("ADMIN");
+    case ADMINISTRATOR:
+        return QString("Администратор");
         break;
     case WORKER:
         return QString("Работник кафедры");
@@ -32,26 +37,32 @@ QString User::getUsertype() const
         return QString("Секретарь");
         break;
     default:
-        return QString("NONE");
+        return QString("USER_ROLE_UNDEFINED");
     }
 }
 
-void User::setUserType(int userType)
+User::UserRole User::getUserRole() const
 {
-    switch(userType){
+    return _userRole;
+}
+
+void User::setUserRole(int userRole)
+{
+    _userRole = static_cast<UserRole>(userRole);
+  /*  switch(userRole){
+    case -1:
+        _userRole = USER_ROLE_UNDEFINED;
+        break;
     case 0:
-        _userType = NONE;
+        _userRole = ADMINISTRATOR;
         break;
     case 1:
-        _userType = ADMIN;
+        _userRole = SECRETARY;
         break;
     case 2:
-        _userType = SECRETARY;
-        break;
-    case 3:
-        _userType = WORKER;
+        _userRole = WORKER;
         break;
     default:
-        _userType = NONE;
-    }
+        _userRole = USER_ROLE_UNDEFINED;
+    }*/
 }

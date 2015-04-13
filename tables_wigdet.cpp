@@ -3,13 +3,33 @@
 TablesWidget::TablesWidget(QWidget *parent) :
     QWidget(parent)
 {
-
-    AdminWidget *adminWidget = new AdminWidget(this);
-    WorkerWidget *workerWidget = new WorkerWidget(this);
+    adminWidget = new AdminWidget(this);
+    secretaryWidget = new SecretaryWidget(this);
+    workerWidget = new WorkerWidget(this);
 
     _stackedLayout = new QStackedLayout(this);
     _stackedLayout->addWidget(adminWidget);
+    _stackedLayout->addWidget(secretaryWidget);
     _stackedLayout->addWidget(workerWidget);
 
     this->setLayout(_stackedLayout);
+
+}
+
+void TablesWidget::updateLayout()
+{
+    qDebug() << "Updating stacked layout...";
+    switch (DbService::getInstance()->getCurrentUser()->getUserRole()) {
+    case User::ADMINISTRATOR:
+        _stackedLayout->setCurrentIndex(0);
+        break;
+    case User::SECRETARY:
+        _stackedLayout->setCurrentIndex(1);
+        break;
+    case User::WORKER:
+        _stackedLayout->setCurrentIndex(2);
+        break;
+    default:
+        break;
+    }
 }

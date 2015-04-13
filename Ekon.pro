@@ -19,8 +19,9 @@ SOURCES += main.cpp\
     database/db_service.cpp \
     database/user.cpp \
     tables/admin_widget.cpp \
-    tables/worker_widget.cpp \
-    tables_wigdet.cpp
+    tables_wigdet.cpp \
+    tables/secretary_widget.cpp \
+    tables/worker_widget.cpp
 
 HEADERS  += \
     login_window.h \
@@ -28,7 +29,8 @@ HEADERS  += \
     database/db_service.h \
     database/user.h \
     tables/admin_widget.h \
-    tables/worker_widget.h \
-    tables_wigdet.h
+    tables_wigdet.h \
+    tables/secretary_widget.h \
+    tables/worker_widget.h
 
 CONFIG += c++11

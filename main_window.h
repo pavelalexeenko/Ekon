@@ -33,6 +33,7 @@ private:
 
 private:
     QMenu *fileMenu;
+    QMenu *saveMenu;
     QAction *openAct;
     QAction *saveAct;
     QAction *exitAct;

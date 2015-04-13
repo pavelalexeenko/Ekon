@@ -16,10 +16,6 @@ class AdminWidget : public QTabWidget
 public:
     explicit AdminWidget(QWidget *parent = 0);
     
-signals:
-    
-public slots:
-
 private:
     void addUsersTab();
 
