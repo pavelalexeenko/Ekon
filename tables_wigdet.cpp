@@ -29,7 +29,11 @@ void TablesWidget::updateLayout()
     case User::WORKER:
         _stackedLayout->setCurrentIndex(2);
         break;
+    case User::USER_ROLE_UNDEFINED:
+        _stackedLayout->setCurrentIndex(3);
+        break;
     default:
+        _stackedLayout->setCurrentIndex(3);
         break;
     }
 }

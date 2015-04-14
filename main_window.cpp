@@ -6,7 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     tablesWidget = new TablesWidget(this);
     setCentralWidget(tablesWidget);
     createMenu();
-
+    this->setFixedSize(1300, 500);
+    updateTitle();
 }
 
 void MainWindow::updateTitle()
@@ -20,7 +21,6 @@ void MainWindow::goToLoginWindow()
 {
     LoginWindow *lw = new LoginWindow(this);
     connect(lw, SIGNAL(accepted()), this, SLOT(updateTitle()));
-    connect(lw, SIGNAL(accepted()), tablesWidget, SLOT(changeLayout()));
     lw->show();
 }
 
