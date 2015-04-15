@@ -6,6 +6,7 @@
 #include <QTabWidget>
 #include <QSqlRelationalTableModel>
 #include <QSqlRelationalDelegate>
+#include <QSortFilterProxyModel>
 #include <QTableView>
 #include <QGridLayout>
 #include <QHeaderView>
@@ -15,16 +16,15 @@ class AdminWidget : public QTabWidget
     Q_OBJECT
 public:
     explicit AdminWidget(QWidget *parent = 0);
-    
+    void search(QString str);
+
 private:
     void addUsersTab();
 
 private:
-    QSqlRelationalTableModel *_usersTableModel;
-    QTableView *_usersTableView;
-
-
-    
+    QSqlRelationalTableModel *usersTableModel;
+    QTableView *usersTableView;
+    QSortFilterProxyModel *usersSortFilterProxyModel;
 
 };
 

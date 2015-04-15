@@ -6,30 +6,40 @@ AdminWidget::AdminWidget(QWidget *parent) :
     addUsersTab();
 }
 
+void AdminWidget::search(QString str)
+{
+    qDebug() << "AdminWidget::search(QString \"" + str + "\")";
+    usersSortFilterProxyModel->setFilterRegExp(QRegExp(str, Qt::CaseInsensitive, QRegExp::FixedString));
+}
+
 void AdminWidget::addUsersTab()
 {
     QWidget *widget = new QWidget();
-    _usersTableModel = new QSqlRelationalTableModel(widget, DbService::getInstance()->getCurrentDatabase());
-    _usersTableModel->setTable("DRT_USERS");
-    _usersTableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
-    _usersTableModel->setRelation(3, QSqlRelation("DRT_USER_TYPES", "UST_ID", "UST_NAME"));
-    _usersTableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
-    _usersTableModel->setHeaderData(1, Qt::Horizontal, tr("Логин"));
-    _usersTableModel->setHeaderData(2, Qt::Horizontal, tr("Пароль"));
-    _usersTableModel->setHeaderData(3, Qt::Horizontal, tr("Тип"));
-    _usersTableModel->select();
+    usersTableModel = new QSqlRelationalTableModel(widget, DbService::getInstance()->getCurrentDatabase());
+    usersTableModel->setTable("DRT_USERS");
+    usersTableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
+    usersTableModel->setRelation(3, QSqlRelation("DRT_USER_TYPES", "UST_ID", "UST_NAME"));
+    usersTableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
+    usersTableModel->setHeaderData(1, Qt::Horizontal, tr("Логин"));
+    usersTableModel->setHeaderData(2, Qt::Horizontal, tr("Пароль"));
+    usersTableModel->setHeaderData(3, Qt::Horizontal, tr("Тип"));
+    usersTableModel->select();
 
-    _usersTableView = new QTableView(widget);
-    _usersTableView->setModel(_usersTableModel);
-    _usersTableView->hideColumn(0);
-    _usersTableView->setItemDelegate(new QSqlRelationalDelegate(_usersTableView));
-    _usersTableView->show();
+    usersSortFilterProxyModel = new QSortFilterProxyModel(this);
+    usersSortFilterProxyModel->setSourceModel(usersTableModel);
 
-    _usersTableView->setStyleSheet("QHeaderView::section { background-color:grey }");
-    _usersTableView->verticalHeader()->hide();
+    usersTableView = new QTableView(widget);
+    usersTableView->setModel(usersSortFilterProxyModel);
+    usersTableView->hideColumn(0);
+    usersTableView->setItemDelegate(new QSqlRelationalDelegate(usersTableView));
+    usersTableView->setSortingEnabled(true);
+    usersTableView->show();
+
+    usersTableView->setStyleSheet("QHeaderView::section { background-color:grey }");
+    usersTableView->verticalHeader()->hide();
 
     QGridLayout *usersLayout = new QGridLayout(widget);
-    usersLayout->addWidget(_usersTableView);
+    usersLayout->addWidget(usersTableView);
 
     this->addTab(widget, QString("Users"));
 }

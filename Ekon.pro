@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     tables/admin_widget.cpp \
     tables_wigdet.cpp \
     tables/secretary_widget.cpp \
-    tables/worker_widget.cpp
+    tables/worker_widget.cpp \
+    management_widget.cpp
 
 HEADERS  += \
     login_window.h \
@@ -31,6 +32,7 @@ HEADERS  += \
     tables/admin_widget.h \
     tables_wigdet.h \
     tables/secretary_widget.h \
-    tables/worker_widget.h
+    tables/worker_widget.h \
+    management_widget.h
 
 CONFIG += c++11

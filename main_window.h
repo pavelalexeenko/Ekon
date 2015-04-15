@@ -2,7 +2,7 @@
 #define MAIN_WINDOW_H
 
 #include <./database/db_service.h>
-#include <tables_wigdet.h>
+#include <management_widget.h>
 #include <login_window.h>
 
 #include <QMainWindow>
@@ -38,7 +38,7 @@ private:
     QAction *saveAct;
     QAction *exitAct;
 
-    TablesWidget *tablesWidget;
+    ManagementWidget *managementWidget;
 };
 
 #endif // MAIN_WINDOW_H

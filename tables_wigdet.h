@@ -12,17 +12,27 @@
 
 class TablesWidget : public QWidget
 {
+    enum Tab
+    {
+        ADMINISTRATOR_TAB = 1,
+        SECRETARY_TAB = 2,
+        WORKER_TAB = 3
+    };
+
     Q_OBJECT
 public:
     explicit TablesWidget(QWidget *parent = 0);
     
+    void search(QString str);
+
 signals:
     
 public slots:
     void updateLayout();
 
+
 private:
-    QStackedLayout *_stackedLayout;
+    QStackedLayout *stackedLayout;
 
     AdminWidget *adminWidget;
     SecretaryWidget *secretaryWidget;
