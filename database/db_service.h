@@ -50,11 +50,13 @@ private:
     void createDatabase() const;
     void removeCurrentFile() const;
 
+
     void createUsersTypesTable() const;
     void createUsersTable() const;
 
     void createDisciplinesTable() const;
     void createTeachersTable() const;
+    void createGroupsTable() const;
 
 private:
     const QString _defaultDatabaseFilename;

@@ -19,9 +19,11 @@ signals:
 
 public slots:
     void updateLayout();
+    void refresh();
 
 private slots:
     void search();
+
 
 private:
     TablesWidget *tablesWidget;

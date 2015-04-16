@@ -46,21 +46,28 @@ QSqlDatabase DbService::getCurrentDatabase() const
 
 bool DbService::connectToAnotherDatabase(QString filename)
 {
-    if (!QFile(filename).exists()) {
-        qDebug() << "Wrong file name.";
-        return false;
-    }
+    if (!QFile(filename).exists())
+        throw QString("Wrong file name.");
 
     if (_db->isOpen())
         _db->close();
 
+    QString oldDatabaseName = _db->databaseName();
     _db->setDatabaseName(filename);
 
     if (!_db->open())
-        return false;   
+    {
+        _db->setDatabaseName(oldDatabaseName);
+        _db->open();
+        throw QString("Can't open database");
+    }
 
     if (!isCorrectVersion())
-        return false;
+    {
+        _db->setDatabaseName(oldDatabaseName);
+        _db->open();
+        throw QString("Unsupported version of database.");
+    }
 
     return true;
 }
@@ -72,6 +79,7 @@ bool DbService::isCorrectVersion() const
     tablesList.append(QString("DRT_USER_TYPES"));
     tablesList.append(QString("DRT_DISCIPLINES"));
     tablesList.append(QString("DRT_TEACHERS"));
+    tablesList.append(QString("DRT_GROUPS"));
 
     QStringList databaseTablesList = _db->tables();
 
@@ -127,6 +135,7 @@ void DbService::createDatabase() const
     createUsersTable();
     createDisciplinesTable();
     createTeachersTable();
+    createGroupsTable();
 }
 
 void DbService::removeCurrentFile() const
@@ -200,4 +209,19 @@ void DbService::createTeachersTable() const
     query.exec("INSERT INTO DRT_TEACHERS (TCH_NAME, TCH_RATE, TCH_INFO) VALUES('Хвещук В.И.', 1, 'Профессор');");
     query.exec("INSERT INTO DRT_TEACHERS (TCH_NAME, TCH_RATE, TCH_INFO) VALUES('Головко В.А.', 1, 'Профессор, зав. кафедры');");
     query.exec("INSERT INTO DRT_TEACHERS (TCH_NAME, TCH_RATE, TCH_INFO) VALUES('Давидюк Ю.И.', '0.5', 'Аспирант');");
+}
+
+void DbService::createGroupsTable() const
+{
+    qDebug() << "Creating groups table.";
+
+    QSqlQuery query;
+    query.exec("CREATE TABLE DRT_GROUPS("
+               "GRP_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
+               "GRP_NAME VARCHAR(100) NOT NULL, "
+               "GRP_NUMBER_OF_STUDENTS INTEGER NOT NULL, "
+               "GRP_COURSE INTEGER NOT NULL);");
+    query.exec("INSERT INTO DRT_GROUPS (GRP_NAME, GRP_NUMBER_OF_STUDENTS, GRP_COURSE) VALUES('АС-33', 19, 5);");
+    query.exec("INSERT INTO DRT_GROUPS (GRP_NAME, GRP_NUMBER_OF_STUDENTS, GRP_COURSE) VALUES('АС-32', 20, 5);");
+    query.exec("INSERT INTO DRT_GROUPS (GRP_NAME, GRP_NUMBER_OF_STUDENTS, GRP_COURSE) VALUES('АС-34', 25, 4);");
 }

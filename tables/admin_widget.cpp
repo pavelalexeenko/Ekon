@@ -1,7 +1,7 @@
 #include "admin_widget.h"
 
 AdminWidget::AdminWidget(QWidget *parent) :
-    QTabWidget(parent)
+    EkonTabWidget(parent)
 {
     addUsersTab();
 }
@@ -9,7 +9,13 @@ AdminWidget::AdminWidget(QWidget *parent) :
 void AdminWidget::search(QString str)
 {
     qDebug() << "AdminWidget::search(QString \"" + str + "\")";
-    usersSortFilterProxyModel->setFilterRegExp(QRegExp(str, Qt::CaseInsensitive, QRegExp::FixedString));
+    // usersSortFilterProxyModel->setFilterRegExp(QRegExp(str, Qt::CaseInsensitive, QRegExp::FixedString));
+}
+
+void AdminWidget::refresh()
+{
+    qDebug() << "AdminWidget::refresh()";
+
 }
 
 void AdminWidget::addUsersTab()

@@ -20,7 +20,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     
 signals:
-    
+    void refreshButtonClicked();
+
 public slots:
 
 private slots:
@@ -36,6 +37,7 @@ private:
     QMenu *saveMenu;
     QAction *openAct;
     QAction *saveAct;
+    QAction *refreshAct;
     QAction *exitAct;
 
     ManagementWidget *managementWidget;

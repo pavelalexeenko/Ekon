@@ -1,62 +1,75 @@
 #include "worker_widget.h"
 
 WorkerWidget::WorkerWidget(QWidget *parent) :
-    QTabWidget(parent)
+    EkonTabWidget(parent)
 {
     addDisciplinesTab();
     addTeachersTab();
 }
 
+void WorkerWidget::search(QString str)
+{
+
+}
+
+void WorkerWidget::refresh()
+{
+    qDebug() << "WorkerWidget::refresh()";
+
+}
+
 void WorkerWidget::addDisciplinesTab()
 {
+    QStringList columnNames;
+    columnNames << "ID"
+                << "Название дисциплины"
+                << "Лекции"
+                << "Практики";
+
     QWidget *widget = new QWidget();
-    _disciplinesTableModel = new QSqlRelationalTableModel(widget, DbService::getInstance()->getCurrentDatabase());
-    _disciplinesTableModel->setTable("DRT_DISCIPLINES");
-    _disciplinesTableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
-
-    _disciplinesTableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
-    _disciplinesTableModel->setHeaderData(1, Qt::Horizontal, tr("Название дисциплины"));
-    _disciplinesTableModel->setHeaderData(2, Qt::Horizontal, tr("Лекции"));
-    _disciplinesTableModel->setHeaderData(3, Qt::Horizontal, tr("Практики"));
-    _disciplinesTableModel->select();
-
-    _disciplinesTableView = new QTableView(widget);
-    _disciplinesTableView->setModel(_disciplinesTableModel);
-    _disciplinesTableView->hideColumn(0);
-    _disciplinesTableView->show();
-
-    _disciplinesTableView->setStyleSheet("QHeaderView::section { background-color:grey }");
-    _disciplinesTableView->verticalHeader()->hide();
+    disciplinesTableModel = new QSqlTableModel(widget, DbService::getInstance()->getCurrentDatabase());
+    disciplinesTableModel = createTableModel("DRT_DISCIPLINES", columnNames);
+    disciplinesTableView = createTableView(widget, disciplinesTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
-    layout->addWidget(_disciplinesTableView);
+    layout->addWidget(disciplinesTableView);
 
     this->addTab(widget, QString("Дисциплины"));
 }
 
 void WorkerWidget::addTeachersTab()
 {
+    QStringList columnNames;
+    columnNames << "ID"
+                << "Название дисциплины"
+                << "Лекции"
+                << "Практики";
+
     QWidget *widget = new QWidget();
-    _teachersTableModel = new QSqlRelationalTableModel(widget, DbService::getInstance()->getCurrentDatabase());
-    _teachersTableModel->setTable("DRT_TEACHERS");
-    _teachersTableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
-
-    _teachersTableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
-    _teachersTableModel->setHeaderData(1, Qt::Horizontal, tr("ФИО"));
-    _teachersTableModel->setHeaderData(2, Qt::Horizontal, tr("Ставка"));
-    _teachersTableModel->setHeaderData(3, Qt::Horizontal, tr("Примечание"));
-    _teachersTableModel->select();
-
-    _teachersTableView = new QTableView(widget);
-    _teachersTableView->setModel(_teachersTableModel);
-    _teachersTableView->hideColumn(0);
-    _teachersTableView->show();
-
-    _teachersTableView->setStyleSheet("QHeaderView::section { background-color:grey }");
-    _teachersTableView->verticalHeader()->hide();
+     teachersTableModel = new QSqlTableModel(widget, DbService::getInstance()->getCurrentDatabase());
+    teachersTableModel = createTableModel("DRT_TEACHERS", columnNames);
+    teachersTableView = createTableView(widget, teachersTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
-    layout->addWidget(_teachersTableView);
+    layout->addWidget(teachersTableView);
 
-    this->addTab(widget, QString("Преподаватели"));
+    this->addTab(widget, QString("Дисциплины"));
+}
+
+void WorkerWidget::addGroupsTab()
+{
+    QStringList columnNames;
+    columnNames << "ID"
+                << "Название"
+                << "Количество студентов"
+                << "Курс";
+
+    QWidget *widget = new QWidget();
+    groupsTableModel = createTableModel(widget, "DRT_GROUPS", columnNames);
+    groupsTableView = createTableView(widget, groupsTableModel);
+
+    QGridLayout *layout = new QGridLayout(widget);
+    layout->addWidget(teachersTableView);
+
+    this->addTab(widget, QString("Группы"));
 }

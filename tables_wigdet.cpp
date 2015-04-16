@@ -23,13 +23,20 @@ void TablesWidget::search(QString str)
     case Tab::ADMINISTRATOR_TAB:
         adminWidget->search(str);
         break;
-//    case Tab::SECRETARY_TAB:
-//        secretaryWidget->search(str);
-//        break;
-//    case Tab::WORKER_TAB:
-//        workerWidget->search(str);
-//        break;
+    case Tab::SECRETARY_TAB:
+        secretaryWidget->search(str);
+        break;
+    case Tab::WORKER_TAB:
+        workerWidget->search(str);
+        break;
     }
+}
+
+void TablesWidget::refresh()
+{
+    adminWidget->refresh();
+    secretaryWidget->refresh();
+    workerWidget->refresh();
 }
 
 void TablesWidget::updateLayout()
@@ -49,4 +56,9 @@ void TablesWidget::updateLayout()
         stackedLayout->setCurrentIndex(0);
         break;
     }
+}
+
+void TablesWidget::addRow()
+{
+
 }

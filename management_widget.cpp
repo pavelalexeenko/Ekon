@@ -21,11 +21,17 @@ ManagementWidget::ManagementWidget(QWidget *parent) : QWidget(parent)
     setLayout(layout);
 
     connect(searchButton, SIGNAL(clicked()), this, SLOT(search()));
+    connect(addRowButton, SIGNAL(clicked()), tablesWidget, SLOT(addRow()));
 }
 
 void ManagementWidget::updateLayout()
 {
     tablesWidget->updateLayout();
+}
+
+void ManagementWidget::refresh()
+{
+    tablesWidget->refresh();
 }
 
 void ManagementWidget::search()

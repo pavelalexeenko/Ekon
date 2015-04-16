@@ -19,6 +19,7 @@ void MainWindow::updateTitle()
 
 void MainWindow::goToLoginWindow()
 {
+    qDebug() << "Going to login window...";
     LoginWindow *lw = new LoginWindow(this);
     connect(lw, SIGNAL(accepted()), this, SLOT(updateTitle()));
     lw->show();
@@ -26,6 +27,7 @@ void MainWindow::goToLoginWindow()
 
 void MainWindow::createMenu()
 {
+    qDebug() << "Creating menu...";
     fileMenu = menuBar()->addMenu(tr("&File"));
 
     openAct = new QAction(tr("&Login"), this);
@@ -43,4 +45,8 @@ void MainWindow::createMenu()
     saveAct = new QAction(tr("&Save"), this);
     saveMenu->addAction(saveAct);
     connect(saveAct, SIGNAL(triggered()), managementWidget, SLOT(updateLayout()));
+
+    refreshAct = new QAction(tr("&Refresh"), this);
+    menuBar()->addAction(refreshAct);
+    connect(refreshAct, SIGNAL(triggered()), managementWidget, SLOT(refresh()));
 }

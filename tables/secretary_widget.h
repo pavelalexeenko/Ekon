@@ -2,19 +2,18 @@
 #define SECRETARY_WIDGET_H
 
 #include <database/db_service.h>
+#include <tables/ekon_tab_widget.h>
 
-#include <QTabWidget>
-#include <QSqlRelationalTableModel>
-#include <QSqlRelationalDelegate>
-#include <QTableView>
 #include <QGridLayout>
 #include <QHeaderView>
 
-class SecretaryWidget : public QTabWidget
+class SecretaryWidget : public EkonTabWidget
 {
     Q_OBJECT
 public:
     explicit SecretaryWidget(QWidget *parent = 0);
+    void search(QString str);
+    void refresh();
 
 private:
     void addUsersTab();
@@ -22,14 +21,14 @@ private:
     void addTeachersTab();
 
 private:
-    QSqlRelationalTableModel *_usersTableModel;
-    QTableView *_usersTableView;
+    QSqlRelationalTableModel *usersTableModel;
+    QTableView *usersTableView;
 
-    QSqlTableModel *_disciplinesTableModel;
-    QTableView *_disciplinesTableView;
+    QSqlTableModel *disciplinesTableModel;
+    QTableView *disciplinesTableView;
 
-    QSqlTableModel *_teachersTableModel;
-    QTableView *_teachersTableView;
+    QSqlTableModel *teachersTableModel;
+    QTableView *teachersTableView;
 
 };
 

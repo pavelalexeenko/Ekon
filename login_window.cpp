@@ -44,16 +44,22 @@ void LoginWindow::login()
 }
 
 void LoginWindow::connectToAnotherDatabase()
-{
-    QString filename = QFileDialog::getOpenFileName(0, tr("Select database file"), "", tr("SQLite files (*.sqlite)"));
-    if (DbService::getInstance()->connectToAnotherDatabase(filename))
+{    
+    try
+    {
+        QString filename = QFileDialog::getOpenFileName(0, tr("Select database file"), "", tr("SQLite files (*.sqlite)"));
+        DbService::getInstance()->connectToAnotherDatabase(filename);
         updateUsers();
-    else
-       QMessageBox::critical(this, tr("Error"), tr("Wrong password."), QMessageBox::Ok);
+    }
+    catch (QString str)
+    {
+        QMessageBox::critical(this, tr("Error"), str, QMessageBox::Ok);
+    }
 }
 
 void LoginWindow::createLayout()
 {
+    qDebug() << "Creating LoginWindow layout...";
     _credentialsLayout->addRow(tr("Login:"), _usernameComboBox);
     _credentialsLayout->addRow(tr("Password:"), _passwordLineEdit);
 
@@ -66,6 +72,7 @@ void LoginWindow::createLayout()
 
 void LoginWindow::updateUsers()
 {
+    qDebug() << "Updating users list...";
     if (!DbService::getInstance()->testDatabaseConnection())
     {
         _databaseStatusLabel->setText(QString("Failed to open the database."));

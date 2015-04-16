@@ -29,7 +29,8 @@ signals:
     
 public slots:
     void updateLayout();
-
+    void addRow();
+    void refresh();
 
 private:
     QStackedLayout *stackedLayout;

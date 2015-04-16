@@ -2,30 +2,33 @@
 #define WORKERWIDGET_H
 
 #include <database/db_service.h>
+#include <tables/ekon_tab_widget.h>
 
-#include <QTabWidget>
-#include <QSqlRelationalTableModel>
-#include <QSqlRelationalDelegate>
-#include <QTableView>
 #include <QGridLayout>
 #include <QHeaderView>
 
-class WorkerWidget : public QTabWidget
+class WorkerWidget : public EkonTabWidget
 {
     Q_OBJECT
 public:
     explicit WorkerWidget(QWidget *parent = 0);
+    void search(QString str);
+    void refresh();
 
 private:
     void addDisciplinesTab();
     void addTeachersTab();
+    void addGroupsTab();
 
 private:
-    QSqlTableModel *_disciplinesTableModel;
-    QTableView *_disciplinesTableView;
+    QSqlTableModel *disciplinesTableModel;
+    QTableView *disciplinesTableView;
 
-    QSqlTableModel *_teachersTableModel;
-    QTableView *_teachersTableView;
+    QSqlTableModel *teachersTableModel;
+    QTableView *teachersTableView;
+
+    QSqlTableModel *groupsTableModel;
+    QTableView *groupsTableView;
 };
 
 #endif // WORKERWIDGET_H
