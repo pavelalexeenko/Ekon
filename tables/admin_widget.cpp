@@ -20,32 +20,21 @@ void AdminWidget::refresh()
 
 void AdminWidget::addUsersTab()
 {
+    QStringList columnNames;
+    columnNames << "ID"
+                << "Логин"
+                << "Пароль"
+                << "Тип";
+
+    QList<QPair<int, QSqlRelation> > relations;
+    relations.append(qMakePair(3, QSqlRelation("DRT_USER_TYPES", "UST_ID", "UST_NAME")));
+
     QWidget *widget = new QWidget();
-    usersTableModel = new QSqlRelationalTableModel(widget, DbService::getInstance()->getCurrentDatabase());
-    usersTableModel->setTable("DRT_USERS");
-    usersTableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
-    usersTableModel->setRelation(3, QSqlRelation("DRT_USER_TYPES", "UST_ID", "UST_NAME"));
-    usersTableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
-    usersTableModel->setHeaderData(1, Qt::Horizontal, tr("Логин"));
-    usersTableModel->setHeaderData(2, Qt::Horizontal, tr("Пароль"));
-    usersTableModel->setHeaderData(3, Qt::Horizontal, tr("Тип"));
-    usersTableModel->select();
+    usersTableModel = createRelationalTableModel(widget, "DRT_USERS", columnNames, relations);
+    usersTableView = createRelationTableView(widget, usersTableModel);
 
-    usersSortFilterProxyModel = new QSortFilterProxyModel(this);
-    usersSortFilterProxyModel->setSourceModel(usersTableModel);
+    QGridLayout *layout = new QGridLayout(widget);
+    layout->addWidget(usersTableView);
 
-    usersTableView = new QTableView(widget);
-    usersTableView->setModel(usersSortFilterProxyModel);
-    usersTableView->hideColumn(0);
-    usersTableView->setItemDelegate(new QSqlRelationalDelegate(usersTableView));
-    usersTableView->setSortingEnabled(true);
-    usersTableView->show();
-
-    usersTableView->setStyleSheet("QHeaderView::section { background-color:grey }");
-    usersTableView->verticalHeader()->hide();
-
-    QGridLayout *usersLayout = new QGridLayout(widget);
-    usersLayout->addWidget(usersTableView);
-
-    this->addTab(widget, QString("Users"));
+    this->addTab(widget, QString("Пользователи"));
 }

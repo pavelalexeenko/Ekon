@@ -22,6 +22,7 @@ ManagementWidget::ManagementWidget(QWidget *parent) : QWidget(parent)
 
     connect(searchButton, SIGNAL(clicked()), this, SLOT(search()));
     connect(addRowButton, SIGNAL(clicked()), tablesWidget, SLOT(addRow()));
+    connect(searchLineEdit, SIGNAL(returnPressed()), this, SLOT(search()));
 }
 
 void ManagementWidget::updateLayout()

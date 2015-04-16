@@ -5,11 +5,12 @@ WorkerWidget::WorkerWidget(QWidget *parent) :
 {
     addDisciplinesTab();
     addTeachersTab();
+    addGroupsTab();
 }
 
 void WorkerWidget::search(QString str)
 {
-
+    qDebug() << "WorkerWidget::search(QString \"" + str + "\")";
 }
 
 void WorkerWidget::refresh()
@@ -27,8 +28,7 @@ void WorkerWidget::addDisciplinesTab()
                 << "Практики";
 
     QWidget *widget = new QWidget();
-    disciplinesTableModel = new QSqlTableModel(widget, DbService::getInstance()->getCurrentDatabase());
-    disciplinesTableModel = createTableModel("DRT_DISCIPLINES", columnNames);
+    disciplinesTableModel = createTableModel(widget, "DRT_DISCIPLINES", columnNames);
     disciplinesTableView = createTableView(widget, disciplinesTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
@@ -46,14 +46,13 @@ void WorkerWidget::addTeachersTab()
                 << "Практики";
 
     QWidget *widget = new QWidget();
-     teachersTableModel = new QSqlTableModel(widget, DbService::getInstance()->getCurrentDatabase());
-    teachersTableModel = createTableModel("DRT_TEACHERS", columnNames);
+    teachersTableModel = createTableModel(widget, "DRT_TEACHERS", columnNames);
     teachersTableView = createTableView(widget, teachersTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
     layout->addWidget(teachersTableView);
 
-    this->addTab(widget, QString("Дисциплины"));
+    this->addTab(widget, QString("Преподаватели"));
 }
 
 void WorkerWidget::addGroupsTab()
@@ -69,7 +68,7 @@ void WorkerWidget::addGroupsTab()
     groupsTableView = createTableView(widget, groupsTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
-    layout->addWidget(teachersTableView);
+    layout->addWidget(groupsTableView);
 
     this->addTab(widget, QString("Группы"));
 }

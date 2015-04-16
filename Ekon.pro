@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     tables/secretary_widget.cpp \
     tables/worker_widget.cpp \
     management_widget.cpp \
-    tables/ekon_tab_widget.cpp
+    implementations/ekon_tab_widget.cpp \
+    implementations/freeze_table_widget.cpp
 
 HEADERS  += \
     login_window.h \
@@ -35,6 +36,7 @@ HEADERS  += \
     tables/secretary_widget.h \
     tables/worker_widget.h \
     management_widget.h \
-    tables/ekon_tab_widget.h
+    implementations/ekon_tab_widget.h \
+    implementations/freeze_table_widget.h
 
 CONFIG += c++11

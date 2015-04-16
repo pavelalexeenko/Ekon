@@ -10,7 +10,7 @@ SecretaryWidget::SecretaryWidget(QWidget *parent) :
 
 void SecretaryWidget::search(QString str)
 {
-
+    qDebug() << "SecretaryWidget::search(QString \"" + str + "\")";
 }
 
 void SecretaryWidget::refresh()
@@ -23,31 +23,23 @@ void SecretaryWidget::refresh()
 
 void SecretaryWidget::addUsersTab()
 {
+    QStringList columnNames;
+    columnNames << "ID"
+                << "Логин"
+                << "Пароль"
+                << "Тип";
+
+    QList<QPair<int, QSqlRelation> > relations;
+    relations.append(qMakePair(3, QSqlRelation("DRT_USER_TYPES", "UST_ID", "UST_NAME")));
+
     QWidget *widget = new QWidget();
-    usersTableModel = new QSqlRelationalTableModel(widget, DbService::getInstance()->getCurrentDatabase());
-    usersTableModel->setTable("DRT_USERS");
-    usersTableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
-    usersTableModel->setRelation(3, QSqlRelation("DRT_USER_TYPES", "UST_ID", "UST_NAME"));
+    usersTableModel = createRelationalTableModel(widget, "DRT_USERS", columnNames, relations);
+    usersTableView = createRelationTableView(widget, usersTableModel);
 
-    usersTableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
-    usersTableModel->setHeaderData(1, Qt::Horizontal, tr("Логин"));
-    usersTableModel->setHeaderData(2, Qt::Horizontal, tr("Пароль"));
-    usersTableModel->setHeaderData(3, Qt::Horizontal, tr("Тип"));
-    usersTableModel->select();
+    QGridLayout *layout = new QGridLayout(widget);
+    layout->addWidget(usersTableView);
 
-    usersTableView = new QTableView(widget);
-    usersTableView->setModel(usersTableModel);
-    usersTableView->hideColumn(0);
-    usersTableView->setItemDelegate(new QSqlRelationalDelegate(usersTableView));
-    usersTableView->show();
-
-    usersTableView->setStyleSheet("QHeaderView::section {background-color:grey}");
-    usersTableView->verticalHeader()->hide();
-
-    QGridLayout *usersLayout = new QGridLayout(widget);
-    usersLayout->addWidget(usersTableView);
-
-    this->addTab(widget, QString("Users"));
+    this->addTab(widget, QString("Пользователи"));
 }
 
 void SecretaryWidget::addDisciplinesTab()
@@ -59,8 +51,7 @@ void SecretaryWidget::addDisciplinesTab()
                 << "Практики";
 
     QWidget *widget = new QWidget();
-    disciplinesTableModel = new QSqlTableModel(widget, DbService::getInstance()->getCurrentDatabase());
-    disciplinesTableModel = createTableModel("DRT_DISCIPLINES", columnNames);
+    disciplinesTableModel = createTableModel(widget, "DRT_DISCIPLINES", columnNames);
     disciplinesTableView = createTableView(widget, disciplinesTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
@@ -78,8 +69,7 @@ void SecretaryWidget::addTeachersTab()
                 << "Примечание";
 
     QWidget *widget = new QWidget();
-    teachersTableModel = new QSqlTableModel(widget, DbService::getInstance()->getCurrentDatabase());
-    teachersTableModel = createTableModel("DRT_TEACHERS", columnNames);
+    teachersTableModel = createTableModel(widget, "DRT_TEACHERS", columnNames);
     teachersTableView = createTableView(widget, teachersTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);

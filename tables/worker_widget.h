@@ -2,7 +2,7 @@
 #define WORKERWIDGET_H
 
 #include <database/db_service.h>
-#include <tables/ekon_tab_widget.h>
+#include <implementations/ekon_tab_widget.h>
 
 #include <QGridLayout>
 #include <QHeaderView>
