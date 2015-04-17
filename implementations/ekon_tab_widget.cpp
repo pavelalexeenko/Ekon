@@ -24,6 +24,8 @@ void EkonTabWidget::configureTableView(FreezeTableWidget *tableView)
 
 QSqlTableModel* EkonTabWidget::createTableModel(QWidget *parentWidget, QString tableName, QStringList columnNames)
 { 
+    qDebug() << tableName << " - " << columnNames.length();
+
     QSqlTableModel *tableModel = new QSqlTableModel(parentWidget, DbService::getInstance()->getCurrentDatabase());
     tableModel->setTable(tableName);
     configureTableModel(tableModel, tableName, columnNames);

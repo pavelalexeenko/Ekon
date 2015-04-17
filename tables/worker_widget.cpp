@@ -39,11 +39,29 @@ void WorkerWidget::addDisciplinesTab()
 
 void WorkerWidget::addTeachersTab()
 {
+    qDebug() << "HERE IT IS";
+
     QStringList columnNames;
     columnNames << "ID"
                 << "Название дисциплины"
                 << "Лекции"
-                << "Практики";
+                << "Лабоработные"
+                << "Практики"
+                << "Консультации"
+                << "Зачет"
+                << "TESTS"
+                << "Текущие консультации"
+                << "INTRODUCTORY PRACTICE"
+                << "Преддипломная практика"
+                << "Курсовая работа"
+                << "GUIDED_INDEPENDENT_WORK"
+                << "Контрольная работа"
+                << "GRADUATION_DESIGN "
+                << "GUIDE_GRADUATE"
+                << "GUIDE_GRADUATE"
+                << "HES"
+                << "GUIDE_CHAIR"
+                << "DSC_UIRS";
 
     QWidget *widget = new QWidget();
     teachersTableModel = createTableModel(widget, "DRT_TEACHERS", columnNames);
