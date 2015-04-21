@@ -101,7 +101,7 @@ QStringList DbService::getAllUsers() const
     QSqlQuery query("SELECT USER_USERNAME FROM DRT_USERS");
     int fieldNumber = query.record().indexOf("USER_USERNAME");
     while (query.next())
-       usersList.append(query.value(fieldNumber).toString());
+        usersList.append(query.value(fieldNumber).toString());
 
     return usersList;
 }
@@ -136,6 +136,9 @@ void DbService::createDatabase() const
     createDisciplinesTable();
     createTeachersTable();
     createGroupsTable();
+    createFlowsTable();
+    createLinksTable();
+    createFlowsView();
 }
 
 void DbService::removeCurrentFile() const
@@ -189,11 +192,33 @@ void DbService::createDisciplinesTable() const
     query.exec("CREATE TABLE DRT_DISCIPLINES("
                "DSC_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
                "DSC_NAME VARCHAR(100) NOT NULL UNIQUE, "
-               "DSC_LECTURES DOUBLE NOT NULL, "
-               "DSC_PRACTICE INTEGER);");
-    query.exec("INSERT INTO DRT_DISCIPLINES (DSC_NAME, DSC_LECTURES, DSC_PRACTICE) VALUES('SPO', 16, 32);");
-    query.exec("INSERT INTO DRT_DISCIPLINES (DSC_NAME, DSC_LECTURES, DSC_PRACTICE) VALUES('OPIYP', 32, 64);");
-    query.exec("INSERT INTO DRT_DISCIPLINES (DSC_NAME, DSC_LECTURES, DSC_PRACTICE) VALUES('GIMS', '64', 16);");
+               "DSC_LECTURES INTEGER NOT NULL DEFAULT 0, "
+               "DSC_LABORATORY INTEGER NOT NULL DEFAULT 0, "
+               "DSC_PRACTICAL INTEGER NOT NULL DEFAULT 0, "
+               "DSC_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
+               "DSC_EXAMINATIONS INTEGER NOT NULL DEFAULT 0, "
+               "DSC_TESTS INTEGER NOT NULL DEFAULT 0, "
+               "DSC_CURRENT_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
+               "DSC_INTRODUCTORY_PRACTICE INTEGER NOT NULL DEFAULT 0, "
+               "DSC_PRE_DIPLOMA_PRACTICE INTEGER NOT NULL DEFAULT 0, "
+               "DSC_COURSEWORK INTEGER NOT NULL DEFAULT 0, "
+               "DSC_GUIDED_INDEPENDENT_WORK INTEGER NOT NULL DEFAULT 0, "
+               "DSC_CONTROL_WORK INTEGER NOT NULL DEFAULT 0, "
+               "DSC_GRADUATION_DESIGN INTEGER NOT NULL DEFAULT 0, "
+               "DSC_GUIDE_GRADUATE INTEGER NOT NULL DEFAULT 0, "
+               "DSC_STATE_EXAM INTEGER NOT NULL DEFAULT 0, "
+               "DSC_HES INTEGER NOT NULL DEFAULT 0, "
+               "DSC_GUIDE_CHAIR INTEGER NOT NULL DEFAULT 0, "
+               "DSC_UIRS INTEGER NOT NULL DEFAULT 0 "
+               ");");
+
+    QString fields("DSC_NAME,DSC_LECTURES,DSC_LABORATORY,DSC_PRACTICAL,DSC_CONSULTATION,DSC_EXAMINATIONS,DSC_TESTS,DSC_CURRENT_CONSULTATION, "
+                   "DSC_INTRODUCTORY_PRACTICE,DSC_PRE_DIPLOMA_PRACTICE,DSC_COURSEWORK,DSC_GUIDED_INDEPENDENT_WORK,DSC_CONTROL_WORK, "
+                   "DSC_GRADUATION_DESIGN,DSC_GUIDE_GRADUATE,DSC_STATE_EXAM,DSC_HES,DSC_GUIDE_CHAIR,DSC_UIRS");
+
+    query.exec("INSERT INTO DRT_DISCIPLINES (" + fields + ") VALUES('SPO', 16, 32, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);");
+    query.exec("INSERT INTO DRT_DISCIPLINES (" + fields + ") VALUES('OPIYP', 32, 64, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);");
+    query.exec("INSERT INTO DRT_DISCIPLINES (" + fields + ") VALUES('GIMS', '64', 16, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);");
 }
 
 void DbService::createTeachersTable() const
@@ -220,8 +245,66 @@ void DbService::createGroupsTable() const
                "GRP_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
                "GRP_NAME VARCHAR(100) NOT NULL, "
                "GRP_NUMBER_OF_STUDENTS INTEGER NOT NULL, "
-               "GRP_COURSE INTEGER NOT NULL);");
-    query.exec("INSERT INTO DRT_GROUPS (GRP_NAME, GRP_NUMBER_OF_STUDENTS, GRP_COURSE) VALUES('АС-33', 19, 5);");
-    query.exec("INSERT INTO DRT_GROUPS (GRP_NAME, GRP_NUMBER_OF_STUDENTS, GRP_COURSE) VALUES('АС-32', 20, 5);");
-    query.exec("INSERT INTO DRT_GROUPS (GRP_NAME, GRP_NUMBER_OF_STUDENTS, GRP_COURSE) VALUES('АС-34', 25, 4);");
+               "GRP_COURSE INTEGER NOT NULL, "
+               "GRP_NUMBER_OF_SUBGROUPS INTEGER NOT NULL DEFAULT 1, "
+               "GRP_SEMESTR INTEGER NOT NULL, "
+               "GRP_FACULTET VARCHAR(100), "
+               "GRP_SPECIALITY VARCHAR(100), "
+               "GRP_NOTE VARCHAR(200));");
+
+    QString fields("GRP_NAME,GRP_NUMBER_OF_STUDENTS,GRP_COURSE,GRP_NUMBER_OF_SUBGROUPS,GRP_SEMESTR,GRP_FACULTET,GRP_SPECIALITY,GRP_NOTE");
+
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-33', 19, 5, 2, 9,'ЭИС','АСОИ','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-32', 20, 5, 2, 9,'ЭИС','АСОИ','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-34', 25, 4, 2, 7,'ЭИС','АСОИ','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-35', 22, 4, 2, 7,'ЭИС','АСОИ','Примечание');");
+}
+
+void DbService::createFlowsTable() const
+{
+    qDebug() << "Creating flows table.";
+
+    QSqlQuery query;
+    query.exec("CREATE TABLE DRT_FLOWS("
+               "FLW_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
+               "FLW_NAME VARCHAR(100) NOT NULL, "
+               "FLW_NOTE VARCHAR(200));");
+
+    QString fields("FLW_NAME,FLW_NOTE");
+
+    query.exec("INSERT INTO DRT_FLOWS (" + fields + ") VALUES('АСОИ 32, 33','Примечание');");
+    query.exec("INSERT INTO DRT_FLOWS (" + fields + ") VALUES('АСОИ 35, 34','Примечание');");
+}
+
+void DbService::createLinksTable() const
+{
+    qDebug() << "Creating links table.";
+
+    QSqlQuery query;
+    query.exec("CREATE TABLE DRT_LINKS("
+               "LNK_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
+               "LNK_FLW_ID INTEGER NOT NULL, "
+               "LNK_GRP_ID INTEGER NOT NULL, "
+               "FOREIGN KEY(LNK_FLW_ID) REFERENCES DRT_FLOWS(FLW_ID), "
+               "FOREIGN KEY(LNK_GRP_ID) REFERENCES DRT_GROUPS(GRP_ID));");
+
+    QString fields("LNK_FLW_ID,LNK_GRP_ID");
+
+    query.exec("INSERT INTO DRT_LINKS (" + fields + ") VALUES(1,1);");
+    query.exec("INSERT INTO DRT_LINKS (" + fields + ") VALUES(1,2);");
+    query.exec("INSERT INTO DRT_LINKS (" + fields + ") VALUES(2,3);");
+    query.exec("INSERT INTO DRT_LINKS (" + fields + ") VALUES(2,4);");
+}
+
+void DbService::createFlowsView() const
+{
+    qDebug() << "Creating flows view.";
+
+    QSqlQuery query;
+    query.exec("CREATE VIEW VIEW_FLOWS AS "
+               "SELECT FLW.FLW_ID, FLW.FLW_NAME, GROUP_CONCAT(GRP.GRP_NAME, ', ') "
+               "FROM DRT_FLOWS FLW, DRT_GROUPS GRP, DRT_LINKS LNK "
+               "WHERE FLW.FLW_ID = LNK.LNK_FLW_ID "
+               "AND LNK.LNK_GRP_ID = GRP.GRP_ID "
+               "GROUP BY LNK.LNK_FLW_ID; ");
 }

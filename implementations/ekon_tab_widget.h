@@ -2,7 +2,6 @@
 #define EKONTABWIDGET_H
 
 #include <database/db_service.h>
-#include <implementations/freeze_table_widget.h>
 
 #include <QWidget>
 #include <QTabWidget>
@@ -26,15 +25,15 @@ signals:
 public slots:  
 
 private:
-    void configureTableModel(QSqlTableModel* tableModel, QString tableName, QStringList columnNames);
-    void configureTableView(FreezeTableWidget* tableView);
+    void configureTableModel(QSqlTableModel* tableModel, QStringList columnNames);
+    void configureTableView(QTableView* tableView);
 
 public:
     QSqlTableModel* createTableModel(QWidget* parentWidget, QString tableName, QStringList columnNames);
     QSqlRelationalTableModel* createRelationalTableModel(QWidget* parentWidget, QString tableName, QStringList columnNames, QList<QPair<int, QSqlRelation> > relations);
 
-    FreezeTableWidget* createTableView(QWidget* parentWidget, QSqlTableModel* model);
-    FreezeTableWidget* createRelationTableView(QWidget* parentWidget, QSqlRelationalTableModel* model);
+    QTableView* createTableView(QWidget* parentWidget, QSqlTableModel* model);
+    QTableView* createRelationTableView(QWidget* parentWidget, QSqlRelationalTableModel* model);
 };
 
 #endif // EKONTABWIDGET_H

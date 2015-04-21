@@ -19,6 +19,7 @@ private:
     void addDisciplinesTab();
     void addTeachersTab();
     void addGroupsTab();
+    void addFlowsTab();
 
 private:
     QSqlTableModel *disciplinesTableModel;
@@ -29,6 +30,9 @@ private:
 
     QSqlTableModel *groupsTableModel;
     QTableView *groupsTableView;
+
+    QSqlTableModel *flowsTableModel;
+    QTableView *flowsTableView;
 };
 
 #endif // WORKERWIDGET_H

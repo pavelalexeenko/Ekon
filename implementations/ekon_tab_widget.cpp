@@ -1,11 +1,12 @@
 #include "ekon_tab_widget.h"
+#include "implementations/mydelegate.h"
 
 EkonTabWidget::EkonTabWidget(QWidget *parent) : QTabWidget(parent)
 {
 
 }
 
-void EkonTabWidget::configureTableModel(QSqlTableModel *tableModel, QString tableName, QStringList columnNames)
+void EkonTabWidget::configureTableModel(QSqlTableModel *tableModel, QStringList columnNames)
 {
     tableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
 
@@ -15,20 +16,20 @@ void EkonTabWidget::configureTableModel(QSqlTableModel *tableModel, QString tabl
     }
 
     tableModel->select();
+
+    qDebug() << tableModel->tableName() << " - " << tableModel->lastError();
 }
 
-void EkonTabWidget::configureTableView(FreezeTableWidget *tableView)
+void EkonTabWidget::configureTableView(QTableView *tableView)
 {
 
 }
 
 QSqlTableModel* EkonTabWidget::createTableModel(QWidget *parentWidget, QString tableName, QStringList columnNames)
 { 
-    qDebug() << tableName << " - " << columnNames.length();
-
     QSqlTableModel *tableModel = new QSqlTableModel(parentWidget, DbService::getInstance()->getCurrentDatabase());
     tableModel->setTable(tableName);
-    configureTableModel(tableModel, tableName, columnNames);
+    configureTableModel(tableModel, columnNames);
     return tableModel;
 }
 
@@ -40,18 +41,20 @@ QSqlRelationalTableModel* EkonTabWidget::createRelationalTableModel(QWidget *par
     for (auto relation : relations)
         tableModel->setRelation(relation.first, relation.second);
 
-    configureTableModel(tableModel, tableName, columnNames);
+    configureTableModel(tableModel, columnNames);
 
     return tableModel;
 }
 
-FreezeTableWidget* EkonTabWidget::createTableView(QWidget* parentWidget, QSqlTableModel* model)
+QTableView* EkonTabWidget::createTableView(QWidget* parentWidget, QSqlTableModel* model)
 {
-    FreezeTableWidget *tableView = new FreezeTableWidget(model, parentWidget);
+    QTableView *tableView = new QTableView(parentWidget);
+    tableView->setModel(model);
     tableView->hideColumn(0);
     tableView->show();
     tableView->setSortingEnabled(true);
-    tableView->setStyleSheet("QHeaderView::section {background-color:grey}");
+    tableView->setDragEnabled(0);
+   // tableView->setStyleSheet("QHeaderView::section {background-color:grey}");
     tableView->verticalHeader()->hide();
     tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
     for (auto i = 2; i < model->columnCount(); i++)
@@ -60,9 +63,9 @@ FreezeTableWidget* EkonTabWidget::createTableView(QWidget* parentWidget, QSqlTab
     return tableView;
 }
 
-FreezeTableWidget* EkonTabWidget::createRelationTableView(QWidget *parentWidget, QSqlRelationalTableModel *model)
+QTableView* EkonTabWidget::createRelationTableView(QWidget *parentWidget, QSqlRelationalTableModel *model)
 {
-    FreezeTableWidget *tableView = createTableView(parentWidget, model);
+    QTableView *tableView = createTableView(parentWidget, model);
     tableView->setItemDelegate(new QSqlRelationalDelegate(tableView));
 
     return tableView;

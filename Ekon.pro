@@ -24,7 +24,9 @@ SOURCES += main.cpp\
     tables/worker_widget.cpp \
     management_widget.cpp \
     implementations/ekon_tab_widget.cpp \
-    implementations/freeze_table_widget.cpp
+    implementations/checkbox_item_delegate.cpp \
+    implementations/centered_checkbox.cpp \
+    implementations/mydelegate.cpp
 
 HEADERS  += \
     login_window.h \
@@ -37,6 +39,8 @@ HEADERS  += \
     tables/worker_widget.h \
     management_widget.h \
     implementations/ekon_tab_widget.h \
-    implementations/freeze_table_widget.h
+    implementations/checkbox_item_delegate.h \
+    implementations/centered_checkbox.h \
+    implementations/mydelegate.h
 
 CONFIG += c++11

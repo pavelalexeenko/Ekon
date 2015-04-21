@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    DbService::getInstance()->loginAs("admin", "123");
+    DbService::getInstance()->loginAs("worker", "123");
     MainWindow *mw = new MainWindow();
     mw->show();
 

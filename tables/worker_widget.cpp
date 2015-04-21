@@ -1,4 +1,5 @@
 #include "worker_widget.h"
+#include "implementations/checkbox_item_delegate.h"
 
 WorkerWidget::WorkerWidget(QWidget *parent) :
     EkonTabWidget(parent)
@@ -6,6 +7,7 @@ WorkerWidget::WorkerWidget(QWidget *parent) :
     addDisciplinesTab();
     addTeachersTab();
     addGroupsTab();
+    addFlowsTab();
 }
 
 void WorkerWidget::search(QString str)
@@ -21,26 +23,6 @@ void WorkerWidget::refresh()
 
 void WorkerWidget::addDisciplinesTab()
 {
-    QStringList columnNames;
-    columnNames << "ID"
-                << "Название дисциплины"
-                << "Лекции"
-                << "Практики";
-
-    QWidget *widget = new QWidget();
-    disciplinesTableModel = createTableModel(widget, "DRT_DISCIPLINES", columnNames);
-    disciplinesTableView = createTableView(widget, disciplinesTableModel);
-
-    QGridLayout *layout = new QGridLayout(widget);
-    layout->addWidget(disciplinesTableView);
-
-    this->addTab(widget, QString("Дисциплины"));
-}
-
-void WorkerWidget::addTeachersTab()
-{
-    qDebug() << "HERE IT IS";
-
     QStringList columnNames;
     columnNames << "ID"
                 << "Название дисциплины"
@@ -64,6 +46,31 @@ void WorkerWidget::addTeachersTab()
                 << "DSC_UIRS";
 
     QWidget *widget = new QWidget();
+    disciplinesTableModel = createTableModel(widget, "DRT_DISCIPLINES", columnNames);
+    disciplinesTableView = createTableView(widget, disciplinesTableModel);
+    disciplinesTableView->setItemDelegateForColumn(5, new CheckBoxItemDelegate());
+    disciplinesTableView->setItemDelegateForColumn(6, new CheckBoxItemDelegate());
+    disciplinesTableView->setItemDelegateForColumn(7, new CheckBoxItemDelegate());
+    disciplinesTableView->setItemDelegateForColumn(8, new CheckBoxItemDelegate());
+    disciplinesTableView->setItemDelegateForColumn(9, new CheckBoxItemDelegate());
+
+    QGridLayout *layout = new QGridLayout(widget);
+    layout->addWidget(disciplinesTableView);
+
+    this->addTab(widget, QString("Дисциплины"));
+}
+
+void WorkerWidget::addTeachersTab()
+{
+    qDebug() << "HERE IT IS";
+
+    QStringList columnNames;
+    columnNames << "ID"
+                << "ФИО"
+                << "Ставка"
+                << "Примечание";
+
+    QWidget *widget = new QWidget();
     teachersTableModel = createTableModel(widget, "DRT_TEACHERS", columnNames);
     teachersTableView = createTableView(widget, teachersTableModel);
 
@@ -79,7 +86,12 @@ void WorkerWidget::addGroupsTab()
     columnNames << "ID"
                 << "Название"
                 << "Количество студентов"
-                << "Курс";
+                << "Курс"
+                << "Количество подгрупп"
+                << "Семестр"
+                << "Факультет"
+                << "Специальность"
+                << "Примечание";
 
     QWidget *widget = new QWidget();
     groupsTableModel = createTableModel(widget, "DRT_GROUPS", columnNames);
@@ -89,4 +101,21 @@ void WorkerWidget::addGroupsTab()
     layout->addWidget(groupsTableView);
 
     this->addTab(widget, QString("Группы"));
+}
+
+void WorkerWidget::addFlowsTab()
+{
+    QStringList columnNames;
+    columnNames << "ID"
+                << "Название потока"
+                << "Список групп";
+
+    QWidget *widget = new QWidget();
+    flowsTableModel = createTableModel(widget, "VIEW_FLOWS", columnNames);
+    flowsTableView = createTableView(widget, flowsTableModel);
+
+    QGridLayout *layout = new QGridLayout(widget);
+    layout->addWidget(flowsTableView);
+
+    this->addTab(widget, QString("Потоки"));
 }
