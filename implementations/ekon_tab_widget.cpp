@@ -22,7 +22,7 @@ void EkonTabWidget::configureTableModel(QSqlTableModel *tableModel, QStringList 
 
 void EkonTabWidget::configureTableView(QTableView *tableView)
 {
-
+    Q_UNUSED(tableView);
 }
 
 QSqlTableModel* EkonTabWidget::createTableModel(QWidget *parentWidget, QString tableName, QStringList columnNames)

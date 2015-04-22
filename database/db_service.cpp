@@ -158,7 +158,7 @@ void DbService::removeCurrentFile() const
     while (QFile(_defaultDatabaseFilename + QString("%1").arg(i)).exists())
         i++;
 
-    oldFile.setFileName(_defaultDatabaseFilename + QString("%1").arg(i));
+    oldFile.rename(_defaultDatabaseFilename + QString("%1").arg(i));
 }
 
 void DbService::createUsersTypesTable() const

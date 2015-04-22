@@ -44,6 +44,8 @@ void TablesWidget::refresh()
     case User::WORKER:
         workerWidget->refresh();
         break;
+    default:
+        break;
     }
 }
 
@@ -68,5 +70,15 @@ void TablesWidget::updateLayout()
 
 void TablesWidget::addRow()
 {
+    qDebug() << "TablesWidget::addRow";
+    switch(stackedLayout->currentIndex())
+    {
+    case Tab::ADMINISTRATOR_TAB:
+        adminWidget->addRow();
+    case Tab::SECRETARY_TAB:
+        secretaryWidget->addRow();
+    case Tab::WORKER_TAB:
+        workerWidget->addRow();
+    }
 
 }

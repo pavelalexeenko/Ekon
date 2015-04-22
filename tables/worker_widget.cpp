@@ -24,6 +24,12 @@ void WorkerWidget::refresh()
     flowsTableModel->select();
 }
 
+void WorkerWidget::addRow()
+{
+    qDebug() << "WorkerWidget::addRow()";
+
+}
+
 void WorkerWidget::addDisciplinesTab()
 {
     QStringList columnNames;

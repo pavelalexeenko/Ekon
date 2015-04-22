@@ -14,15 +14,13 @@ public:
     explicit SecretaryWidget(QWidget *parent = 0);
     void search(QString str);
     void refresh();
+    void addRow();
 
 private:
-    void addUsersTab();
     void addLoadCalculationTab();
     void addLoadDistributionTab();
 
 private:
-    QSqlRelationalTableModel *usersTableModel;
-    QTableView *usersTableView;
 
     QSqlRelationalTableModel *loadCalculationTableModel;
     QTableView *loadCalculationTableView;

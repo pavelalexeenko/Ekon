@@ -14,6 +14,7 @@ public:
     explicit WorkerWidget(QWidget *parent = 0);
     void search(QString str);
     void refresh();
+    void addRow();
 
 private:
     void addDisciplinesTab();

@@ -18,6 +18,11 @@ void AdminWidget::refresh()
     usersTableModel->select();
 }
 
+void AdminWidget::addRow()
+{
+    qDebug() << "AdminWidget::addRow()";
+}
+
 void AdminWidget::addUsersTab()
 {
     QStringList columnNames;

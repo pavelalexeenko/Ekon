@@ -3,7 +3,6 @@
 SecretaryWidget::SecretaryWidget(QWidget *parent) :
     EkonTabWidget(parent)
 {
-    addUsersTab();
     addLoadCalculationTab();
     addLoadDistributionTab();
 }
@@ -16,30 +15,13 @@ void SecretaryWidget::search(QString str)
 void SecretaryWidget::refresh()
 {
     qDebug() << "SecretaryWidget::refresh()";
-    usersTableModel->select();
     loadCalculationTableModel->select();
     loadDistributionTableModel->select();
 }
 
-void SecretaryWidget::addUsersTab()
+void SecretaryWidget::addRow()
 {
-    QStringList columnNames;
-    columnNames << "ID"
-                << "Логин"
-                << "Пароль"
-                << "Тип";
-
-    QList<QPair<int, QSqlRelation> > relations;
-    relations.append(qMakePair(3, QSqlRelation("DRT_USER_TYPES", "UST_ID", "UST_NAME")));
-
-    QWidget *widget = new QWidget();
-    usersTableModel = createRelationalTableModel(widget, "DRT_USERS", columnNames, relations);
-    usersTableView = createRelationTableView(widget, usersTableModel);
-
-    QGridLayout *layout = new QGridLayout(widget);
-    layout->addWidget(usersTableView);
-
-    this->addTab(widget, QString("Пользователи"));
+    qDebug() << "SecretaryWidget::addRow()";
 }
 
 void SecretaryWidget::addLoadCalculationTab()
