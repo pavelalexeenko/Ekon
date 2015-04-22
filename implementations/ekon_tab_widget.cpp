@@ -35,7 +35,7 @@ QSqlTableModel* EkonTabWidget::createTableModel(QWidget *parentWidget, QString t
 
 QSqlRelationalTableModel* EkonTabWidget::createRelationalTableModel(QWidget *parentWidget, QString tableName, QStringList columnNames, QList<QPair<int, QSqlRelation> > relations)
 {
-    QSqlRelationalTableModel *tableModel = new QSqlRelationalTableModel(parentWidget, DbService::getInstance()->getCurrentDatabase());    
+    QSqlRelationalTableModel *tableModel = new QSqlRelationalTableModel(parentWidget, DbService::getInstance()->getCurrentDatabase());
     tableModel->setTable(tableName);
 
     for (auto relation : relations)
@@ -53,7 +53,7 @@ QTableView* EkonTabWidget::createTableView(QWidget* parentWidget, QSqlTableModel
     tableView->hideColumn(0);
     tableView->show();
     tableView->setSortingEnabled(true);
-    tableView->setDragEnabled(0);
+    tableView->setDragEnabled(true);
    // tableView->setStyleSheet("QHeaderView::section {background-color:grey}");
     tableView->verticalHeader()->hide();
     tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);

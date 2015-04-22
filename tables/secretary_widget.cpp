@@ -4,8 +4,8 @@ SecretaryWidget::SecretaryWidget(QWidget *parent) :
     EkonTabWidget(parent)
 {
     addUsersTab();
-    addDisciplinesTab();
-    addTeachersTab();
+    addLoadCalculationTab();
+    addLoadDistributionTab();
 }
 
 void SecretaryWidget::search(QString str)
@@ -17,8 +17,8 @@ void SecretaryWidget::refresh()
 {
     qDebug() << "SecretaryWidget::refresh()";
     usersTableModel->select();
-    disciplinesTableModel->select();
-    teachersTableModel->select();
+    loadCalculationTableModel->select();
+    loadDistributionTableModel->select();
 }
 
 void SecretaryWidget::addUsersTab()
@@ -42,39 +42,45 @@ void SecretaryWidget::addUsersTab()
     this->addTab(widget, QString("Пользователи"));
 }
 
-void SecretaryWidget::addDisciplinesTab()
+void SecretaryWidget::addLoadCalculationTab()
 {
     QStringList columnNames;
     columnNames << "ID"
                 << "Название дисциплины"
-                << "Лекции"
-                << "Практики";
+                << "Название потока";
+
+    QList<QPair<int, QSqlRelation> > relations;
+    relations.append(qMakePair(1, QSqlRelation("DRT_DISCIPLINES", "DSC_ID", "DSC_NAME")));
+    relations.append(qMakePair(2, QSqlRelation("DRT_FLOWS", "FLW_ID", "FLW_NAME")));
 
     QWidget *widget = new QWidget();
-    disciplinesTableModel = createTableModel(widget, "DRT_DISCIPLINES", columnNames);
-    disciplinesTableView = createTableView(widget, disciplinesTableModel);
+    loadCalculationTableModel = createRelationalTableModel(widget, "DRT_LOAD_CALCULATION", columnNames, relations);
+    loadCalculationTableView = createRelationTableView(widget, loadCalculationTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
-    layout->addWidget(disciplinesTableView);
+    layout->addWidget(loadCalculationTableView);
 
-    this->addTab(widget, QString("Дисциплины"));
+    this->addTab(widget, QString("Распределение дисциплин"));
 }
 
-void SecretaryWidget::addTeachersTab()
+void SecretaryWidget::addLoadDistributionTab()
 {
     QStringList columnNames;
     columnNames << "ID"
-                << "ФИО"
-                << "Ставка"
-                << "Примечание";
+                << "ФИО преподавателя"
+                << "Название дисциплины";
+
+    QList<QPair<int, QSqlRelation> > relations;
+    relations.append(qMakePair(1, QSqlRelation("DRT_TEACHERS", "TCH_ID", "TCH_NAME")));
+    relations.append(qMakePair(2, QSqlRelation("DRT_LOAD_CALCULATION", "LCL_ID", "LCL_DSC_ID")));
 
     QWidget *widget = new QWidget();
-    teachersTableModel = createTableModel(widget, "DRT_TEACHERS", columnNames);
-    teachersTableView = createTableView(widget, teachersTableModel);
+    loadDistributionTableModel = createRelationalTableModel(widget, "DRT_LOAD_DISTRIBUTION", columnNames, relations);
+    loadDistributionTableView = createRelationTableView(widget, loadDistributionTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
-    layout->addWidget(teachersTableView);
+    layout->addWidget(loadDistributionTableView);
 
-    this->addTab(widget, QString("Преподаватели"));
+    this->addTab(widget, QString("Распределение нагрузки"));
 }
 

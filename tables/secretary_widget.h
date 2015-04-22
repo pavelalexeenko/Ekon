@@ -17,18 +17,18 @@ public:
 
 private:
     void addUsersTab();
-    void addDisciplinesTab();
-    void addTeachersTab();
+    void addLoadCalculationTab();
+    void addLoadDistributionTab();
 
 private:
     QSqlRelationalTableModel *usersTableModel;
     QTableView *usersTableView;
 
-    QSqlTableModel *disciplinesTableModel;
-    QTableView *disciplinesTableView;
+    QSqlRelationalTableModel *loadCalculationTableModel;
+    QTableView *loadCalculationTableView;
 
-    QSqlTableModel *teachersTableModel;
-    QTableView *teachersTableView;
+    QSqlRelationalTableModel *loadDistributionTableModel;
+    QTableView *loadDistributionTableView;
 
 };
 

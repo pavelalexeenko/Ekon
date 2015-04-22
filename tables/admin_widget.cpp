@@ -15,7 +15,7 @@ void AdminWidget::search(QString str)
 void AdminWidget::refresh()
 {
     qDebug() << "AdminWidget::refresh()";
-
+    usersTableModel->select();
 }
 
 void AdminWidget::addUsersTab()

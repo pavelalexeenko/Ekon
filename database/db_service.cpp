@@ -80,6 +80,10 @@ bool DbService::isCorrectVersion() const
     tablesList.append(QString("DRT_DISCIPLINES"));
     tablesList.append(QString("DRT_TEACHERS"));
     tablesList.append(QString("DRT_GROUPS"));
+    tablesList.append(QString("DRT_FLOWS"));
+    tablesList.append(QString("DRT_LINKS"));
+    tablesList.append(QString("DRT_LOAD_CALCULATION"));
+    tablesList.append(QString("DRT_LOAD_DISTRIBUTION"));
 
     QStringList databaseTablesList = _db->tables();
 
@@ -139,6 +143,8 @@ void DbService::createDatabase() const
     createFlowsTable();
     createLinksTable();
     createFlowsView();
+    createLoadCalculation();
+    createLoadDistribution();
 }
 
 void DbService::removeCurrentFile() const
@@ -302,9 +308,49 @@ void DbService::createFlowsView() const
 
     QSqlQuery query;
     query.exec("CREATE VIEW VIEW_FLOWS AS "
-               "SELECT FLW.FLW_ID, FLW.FLW_NAME, GROUP_CONCAT(GRP.GRP_NAME, ', ') "
+               "SELECT FLW.FLW_ID, FLW.FLW_NAME, GROUP_CONCAT(GRP.GRP_NAME, ', ') as FLW_GROUPS "
                "FROM DRT_FLOWS FLW, DRT_GROUPS GRP, DRT_LINKS LNK "
                "WHERE FLW.FLW_ID = LNK.LNK_FLW_ID "
                "AND LNK.LNK_GRP_ID = GRP.GRP_ID "
                "GROUP BY LNK.LNK_FLW_ID; ");
+}
+
+void DbService::createLoadCalculation() const
+{
+    qDebug() << "Creating load calculation table.";
+
+    QSqlQuery query;
+    query.exec("CREATE TABLE DRT_LOAD_CALCULATION("
+               "LCL_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
+               "LCL_DSC_ID INTEGER NOT NULL, "
+               "LCL_FLW_ID INTEGER NOT NULL, "
+               "FOREIGN KEY(LCL_DSC_ID) REFERENCES DRT_DISCIPLINES(DSC_ID), "
+               "FOREIGN KEY(LCL_FLW_ID) REFERENCES DRT_FLOWS(FLW_ID));");
+
+    QString fields("LCL_DSC_ID,LCL_FLW_ID");
+
+    query.exec("INSERT INTO DRT_LOAD_CALCULATION (" + fields + ") VALUES(1,1);");
+    query.exec("INSERT INTO DRT_LOAD_CALCULATION (" + fields + ") VALUES(1,2);");
+    query.exec("INSERT INTO DRT_LOAD_CALCULATION (" + fields + ") VALUES(2,3);");
+    query.exec("INSERT INTO DRT_LOAD_CALCULATION (" + fields + ") VALUES(2,4);");
+}
+
+void DbService::createLoadDistribution() const
+{
+    qDebug() << "Creating load distribution table.";
+
+    QSqlQuery query;
+    query.exec("CREATE TABLE DRT_LOAD_DISTRIBUTION("
+               "LDB_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
+               "LDB_TCH_ID INTEGER NOT NULL, "
+               "LDB_LCL_ID INTEGER NOT NULL, "
+               "FOREIGN KEY(LDB_TCH_ID) REFERENCES DRT_TEACHERS(TCH_ID), "
+               "FOREIGN KEY(LDB_LCL_ID) REFERENCES DRT_LOAD_CALCULATION(LCL_ID));");
+
+    QString fields("LDB_TCH_ID,LDB_LCL_ID");
+
+    query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(1,1);");
+    query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(2,2);");
+    query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(3,3);");
+    query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(3,4);");
 }

@@ -34,9 +34,17 @@ void TablesWidget::search(QString str)
 
 void TablesWidget::refresh()
 {
-    adminWidget->refresh();
-    secretaryWidget->refresh();
-    workerWidget->refresh();
+    switch (DbService::getInstance()->getCurrentUser()->getUserRole()) {
+    case User::ADMINISTRATOR:
+        adminWidget->refresh();
+        break;
+    case User::SECRETARY:
+        secretaryWidget->refresh();
+        break;
+    case User::WORKER:
+        workerWidget->refresh();
+        break;
+    }
 }
 
 void TablesWidget::updateLayout()

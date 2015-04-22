@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     managementWidget = new ManagementWidget(this);
     setCentralWidget(managementWidget);
     createMenu();
-    //this->setFixedSize(1300, 500);
+    this->resize(1300,500);
     updateTitle();
 }
 

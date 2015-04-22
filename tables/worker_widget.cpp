@@ -18,7 +18,10 @@ void WorkerWidget::search(QString str)
 void WorkerWidget::refresh()
 {
     qDebug() << "WorkerWidget::refresh()";
-
+    disciplinesTableModel->select();
+    teachersTableModel->select();
+    groupsTableModel->select();
+    flowsTableModel->select();
 }
 
 void WorkerWidget::addDisciplinesTab()
@@ -62,8 +65,6 @@ void WorkerWidget::addDisciplinesTab()
 
 void WorkerWidget::addTeachersTab()
 {
-    qDebug() << "HERE IT IS";
-
     QStringList columnNames;
     columnNames << "ID"
                 << "ФИО"
@@ -113,6 +114,7 @@ void WorkerWidget::addFlowsTab()
     QWidget *widget = new QWidget();
     flowsTableModel = createTableModel(widget, "VIEW_FLOWS", columnNames);
     flowsTableView = createTableView(widget, flowsTableModel);
+    flowsTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     QGridLayout *layout = new QGridLayout(widget);
     layout->addWidget(flowsTableView);

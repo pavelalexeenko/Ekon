@@ -58,6 +58,8 @@ private:
     void createFlowsTable() const;
     void createLinksTable() const;
     void createFlowsView() const;
+    void createLoadCalculation() const;
+    void createLoadDistribution() const;
 
 private:
     const QString _defaultDatabaseFilename;
