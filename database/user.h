@@ -22,6 +22,9 @@ public:
     void setUserName(QString userName);
     void setUserRole(int userRole);
 
+    static UserRole userRoleStringToUserRoleType(const QString& userrole);
+    static QString userRoleTypeToUserRoleString(UserRole userrole);
+
 private:
     QString _userName;
     UserRole _userRole;

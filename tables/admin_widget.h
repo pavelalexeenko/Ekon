@@ -13,6 +13,8 @@ class AdminWidget : public EkonTabWidget
 public:
     explicit AdminWidget(QWidget *parent = 0);
     void search(QString str);
+
+public slots:
     void refresh();
     void addRow();
 

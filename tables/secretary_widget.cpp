@@ -54,7 +54,7 @@ void SecretaryWidget::addLoadDistributionTab()
 
     QList<QPair<int, QSqlRelation> > relations;
     relations.append(qMakePair(1, QSqlRelation("DRT_TEACHERS", "TCH_ID", "TCH_NAME")));
-    relations.append(qMakePair(2, QSqlRelation("DRT_LOAD_CALCULATION", "LCL_ID", "LCL_DSC_ID")));
+    relations.append(qMakePair(2, QSqlRelation("VIEW_LOAD_CALCULATION", "LCLV_ID", "LCLV_NAME")));
 
     QWidget *widget = new QWidget();
     loadDistributionTableModel = createRelationalTableModel(widget, "DRT_LOAD_DISTRIBUTION", columnNames, relations);

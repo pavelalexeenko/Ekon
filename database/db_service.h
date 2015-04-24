@@ -36,6 +36,7 @@ public:
 public:
     QSqlDatabase getCurrentDatabase() const;
     QStringList getAllUsers() const;
+    QStringList getAllUserRoles() const;
     QSharedPointer<User> getCurrentUser() const;
     QString getCurrentDataBasePath() const;
     QString getLastError() const;
@@ -43,6 +44,8 @@ public:
     bool connectToAnotherDatabase(QString filename);
     bool loginAs(QString username, QString password);
     bool testDatabaseConnection() const;
+
+    bool addUser(QString username, QString password, QString userrole);
 
 private:
     bool isCorrectVersion() const;
@@ -57,9 +60,11 @@ private:
     void createGroupsTable() const;
     void createFlowsTable() const;
     void createLinksTable() const;
-    void createFlowsView() const;
     void createLoadCalculation() const;
     void createLoadDistribution() const;
+
+    void createFlowsView() const;
+    void createLoadCalculationView() const;
 
 private:
     const QString _defaultDatabaseFilename;

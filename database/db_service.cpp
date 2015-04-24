@@ -39,6 +39,20 @@ bool DbService::testDatabaseConnection() const
     return _db->isOpen();
 }
 
+bool DbService::addUser(QString username, QString password, QString userrole)
+{
+    QSqlQuery query;
+    query.prepare("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) "
+                  "VALUES (:username, :password, :type)");
+    query.bindValue(0, username);
+    query.bindValue(1, password);
+    query.bindValue(2, User::userRoleStringToUserRoleType(userrole));
+    if (!query.exec())
+        return false;
+
+    return true;
+}
+
 QSqlDatabase DbService::getCurrentDatabase() const
 {
     return _db->database();
@@ -85,13 +99,16 @@ bool DbService::isCorrectVersion() const
     tablesList.append(QString("DRT_LOAD_CALCULATION"));
     tablesList.append(QString("DRT_LOAD_DISTRIBUTION"));
 
-    QStringList databaseTablesList = _db->tables();
+    tablesList.append(QString("VIEW_FLOWS"));
+    tablesList.append(QString("VIEW_LOAD_CALCULATION"));
+
+    QStringList databaseTablesList = _db->tables(QSql::AllTables);
 
     qDebug() << "Checking database version...";
     for (auto table : tablesList)
         if (!databaseTablesList.contains(table))
         {
-            qDebug() << "Incompatible version of the database.";
+            qDebug() << "Incompatible version of the database. Missing table - " << table;
             return false;
         }
 
@@ -104,6 +121,17 @@ QStringList DbService::getAllUsers() const
     QStringList usersList;
     QSqlQuery query("SELECT USER_USERNAME FROM DRT_USERS");
     int fieldNumber = query.record().indexOf("USER_USERNAME");
+    while (query.next())
+        usersList.append(query.value(fieldNumber).toString());
+
+    return usersList;
+}
+
+QStringList DbService::getAllUserRoles() const
+{
+    QStringList usersList;
+    QSqlQuery query("SELECT UST_NAME FROM DRT_USER_TYPES");
+    int fieldNumber = query.record().indexOf("UST_NAME");
     while (query.next())
         usersList.append(query.value(fieldNumber).toString());
 
@@ -145,6 +173,7 @@ void DbService::createDatabase() const
     createFlowsView();
     createLoadCalculation();
     createLoadDistribution();
+    createLoadCalculationView();
 }
 
 void DbService::removeCurrentFile() const
@@ -260,10 +289,15 @@ void DbService::createGroupsTable() const
 
     QString fields("GRP_NAME,GRP_NUMBER_OF_STUDENTS,GRP_COURSE,GRP_NUMBER_OF_SUBGROUPS,GRP_SEMESTR,GRP_FACULTET,GRP_SPECIALITY,GRP_NOTE");
 
-    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-33', 19, 5, 2, 9,'ЭИС','АСОИ','Примечание');");
-    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-32', 20, 5, 2, 9,'ЭИС','АСОИ','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-32', 19, 5, 2, 9,'ЭИС','АСОИ','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-33', 20, 5, 2, 9,'ЭИС','АСОИ','Примечание');");
     query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-34', 25, 4, 2, 7,'ЭИС','АСОИ','Примечание');");
     query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-35', 22, 4, 2, 7,'ЭИС','АСОИ','Примечание');");
+
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-44', 15, 5, 2, 9,'ЭИС','ЭВМСиС','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-45', 16, 5, 2, 9,'ЭИС','ЭВМСиС','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-46', 22, 4, 2, 7,'ЭИС','ЭВМСиС','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-47', 25, 4, 2, 7,'ЭИС','ЭВМСиС','Примечание');");
 }
 
 void DbService::createFlowsTable() const
@@ -280,6 +314,9 @@ void DbService::createFlowsTable() const
 
     query.exec("INSERT INTO DRT_FLOWS (" + fields + ") VALUES('АСОИ 32, 33','Примечание');");
     query.exec("INSERT INTO DRT_FLOWS (" + fields + ") VALUES('АСОИ 35, 34','Примечание');");
+
+    query.exec("INSERT INTO DRT_FLOWS (" + fields + ") VALUES('ЭВМСиС 44, 45','Примечание');");
+    query.exec("INSERT INTO DRT_FLOWS (" + fields + ") VALUES('ЭВМСиС 46, 47','Примечание');");
 }
 
 void DbService::createLinksTable() const
@@ -300,6 +337,11 @@ void DbService::createLinksTable() const
     query.exec("INSERT INTO DRT_LINKS (" + fields + ") VALUES(1,2);");
     query.exec("INSERT INTO DRT_LINKS (" + fields + ") VALUES(2,3);");
     query.exec("INSERT INTO DRT_LINKS (" + fields + ") VALUES(2,4);");
+
+    query.exec("INSERT INTO DRT_LINKS (" + fields + ") VALUES(3,5);");
+    query.exec("INSERT INTO DRT_LINKS (" + fields + ") VALUES(3,6);");
+    query.exec("INSERT INTO DRT_LINKS (" + fields + ") VALUES(4,7);");
+    query.exec("INSERT INTO DRT_LINKS (" + fields + ") VALUES(4,8);");
 }
 
 void DbService::createFlowsView() const
@@ -313,6 +355,19 @@ void DbService::createFlowsView() const
                "WHERE FLW.FLW_ID = LNK.LNK_FLW_ID "
                "AND LNK.LNK_GRP_ID = GRP.GRP_ID "
                "GROUP BY LNK.LNK_FLW_ID; ");
+}
+
+void DbService::createLoadCalculationView() const
+{
+    qDebug() << "Creating load calculation view.";
+
+    QSqlQuery query;
+    query.exec("CREATE VIEW VIEW_LOAD_CALCULATION AS "
+               "SELECT LCL.LCL_ID AS LCLV_ID, printf('%s (%s)', DSC.DSC_NAME , VFLW.FLW_NAME) as LCLV_NAME "
+               "FROM DRT_FLOWS FLW, DRT_LOAD_CALCULATION LCL, DRT_DISCIPLINES DSC, VIEW_FLOWS VFLW "
+               "WHERE LCL.LCL_FLW_ID = VFLW.FLW_ID "
+               "AND LCL.LCL_DSC_ID = DSC.DSC_ID "
+               "GROUP BY LCL.LCL_ID");
 }
 
 void DbService::createLoadCalculation() const
@@ -330,9 +385,9 @@ void DbService::createLoadCalculation() const
     QString fields("LCL_DSC_ID,LCL_FLW_ID");
 
     query.exec("INSERT INTO DRT_LOAD_CALCULATION (" + fields + ") VALUES(1,1);");
-    query.exec("INSERT INTO DRT_LOAD_CALCULATION (" + fields + ") VALUES(1,2);");
+    query.exec("INSERT INTO DRT_LOAD_CALCULATION (" + fields + ") VALUES(2,2);");
     query.exec("INSERT INTO DRT_LOAD_CALCULATION (" + fields + ") VALUES(2,3);");
-    query.exec("INSERT INTO DRT_LOAD_CALCULATION (" + fields + ") VALUES(2,4);");
+    query.exec("INSERT INTO DRT_LOAD_CALCULATION (" + fields + ") VALUES(3,4);");
 }
 
 void DbService::createLoadDistribution() const

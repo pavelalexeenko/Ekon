@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     implementations/ekon_tab_widget.cpp \
     implementations/checkbox_item_delegate.cpp \
     implementations/centered_checkbox.cpp \
-    implementations/mydelegate.cpp
+    implementations/mydelegate.cpp \
+    dialogs/add_user_dialog.cpp
 
 HEADERS  += \
     login_window.h \
@@ -41,6 +42,7 @@ HEADERS  += \
     implementations/ekon_tab_widget.h \
     implementations/checkbox_item_delegate.h \
     implementations/centered_checkbox.h \
-    implementations/mydelegate.h
+    implementations/mydelegate.h \
+    dialogs/add_user_dialog.h
 
 CONFIG += c++11

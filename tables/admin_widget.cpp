@@ -1,4 +1,5 @@
 #include "admin_widget.h"
+#include <dialogs/add_user_dialog.h>
 
 AdminWidget::AdminWidget(QWidget *parent) :
     EkonTabWidget(parent)
@@ -21,6 +22,9 @@ void AdminWidget::refresh()
 void AdminWidget::addRow()
 {
     qDebug() << "AdminWidget::addRow()";
+    AddUserDialog *aud = new AddUserDialog(this);
+    connect(aud, SIGNAL(accepted()), this, SLOT(refresh()));
+    aud->show();
 }
 
 void AdminWidget::addUsersTab()
