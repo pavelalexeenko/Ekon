@@ -1,5 +1,7 @@
 #include "worker_widget.h"
 #include "implementations/checkbox_item_delegate.h"
+#include <dialogs/add_teacher_dialog.h>
+#include <dialogs/add_discipline_dialog.h>
 
 WorkerWidget::WorkerWidget(QWidget *parent) :
     EkonTabWidget(parent)
@@ -28,6 +30,22 @@ void WorkerWidget::addRow()
 {
     qDebug() << "WorkerWidget::addRow()";
 
+    AddTeacherDialog *atd = new AddTeacherDialog(this);
+    connect(atd, SIGNAL(accepted()), this, SLOT(refresh()));
+
+    AddDisciplineDialog *add = new AddDisciplineDialog(this);
+    connect(add, SIGNAL(accepted()), this, SLOT(refresh()));
+
+    switch (this->currentIndex()){
+    case 0:
+        add->show();
+        break;
+    case 1:
+        atd->show();
+        break;
+    default:
+        break;
+    }
 }
 
 void WorkerWidget::addDisciplinesTab()
@@ -49,10 +67,10 @@ void WorkerWidget::addDisciplinesTab()
                 << "Контрольная работа"
                 << "GRADUATION_DESIGN "
                 << "GUIDE_GRADUATE"
-                << "GUIDE_GRADUATE"
-                << "HES"
+                << "Экзамен"
+                << "ГЭК"
                 << "GUIDE_CHAIR"
-                << "DSC_UIRS";
+                << "УИРС";
 
     QWidget *widget = new QWidget();
     disciplinesTableModel = createTableModel(widget, "DRT_DISCIPLINES", columnNames);

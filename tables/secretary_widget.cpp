@@ -22,6 +22,16 @@ void SecretaryWidget::refresh()
 void SecretaryWidget::addRow()
 {
     qDebug() << "SecretaryWidget::addRow()";
+    switch (this->currentIndex()){
+    case 1:
+
+        break;
+    case 2:
+
+        break;
+    default:
+        break;
+    }
 }
 
 void SecretaryWidget::addLoadCalculationTab()

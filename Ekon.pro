@@ -27,7 +27,9 @@ SOURCES += main.cpp\
     implementations/checkbox_item_delegate.cpp \
     implementations/centered_checkbox.cpp \
     implementations/mydelegate.cpp \
-    dialogs/add_user_dialog.cpp
+    dialogs/add_user_dialog.cpp \
+    dialogs/add_teacher_dialog.cpp \
+    dialogs/add_discipline_dialog.cpp
 
 HEADERS  += \
     login_window.h \
@@ -43,6 +45,8 @@ HEADERS  += \
     implementations/checkbox_item_delegate.h \
     implementations/centered_checkbox.h \
     implementations/mydelegate.h \
-    dialogs/add_user_dialog.h
+    dialogs/add_user_dialog.h \
+    dialogs/add_teacher_dialog.h \
+    dialogs/add_discipline_dialog.h
 
 CONFIG += c++11

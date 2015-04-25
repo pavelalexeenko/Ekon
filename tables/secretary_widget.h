@@ -13,6 +13,8 @@ class SecretaryWidget : public EkonTabWidget
 public:
     explicit SecretaryWidget(QWidget *parent = 0);
     void search(QString str);
+
+public slots:
     void refresh();
     void addRow();
 

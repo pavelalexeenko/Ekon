@@ -13,6 +13,8 @@ class WorkerWidget : public EkonTabWidget
 public:
     explicit WorkerWidget(QWidget *parent = 0);
     void search(QString str);
+
+public slots:
     void refresh();
     void addRow();
 

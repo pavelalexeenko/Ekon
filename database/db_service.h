@@ -46,6 +46,7 @@ public:
     bool testDatabaseConnection() const;
 
     bool addUser(QString username, QString password, QString userrole);
+    bool addTeacher(QString name, double rate, QString note);
 
 private:
     bool isCorrectVersion() const;

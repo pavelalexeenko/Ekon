@@ -53,6 +53,20 @@ bool DbService::addUser(QString username, QString password, QString userrole)
     return true;
 }
 
+bool DbService::addTeacher(QString name, double rate, QString note)
+{
+    QSqlQuery query;
+    query.prepare("INSERT INTO DRT_TEACHERS (TCH_NAME, TCH_RATE, TCH_INFO) "
+                  "VALUES (:name, :rate, :info)");
+    query.bindValue(0, name);
+    query.bindValue(1, rate);
+    query.bindValue(2, note);
+    if (!query.exec())
+        return false;
+
+    return true;
+}
+
 QSqlDatabase DbService::getCurrentDatabase() const
 {
     return _db->database();
