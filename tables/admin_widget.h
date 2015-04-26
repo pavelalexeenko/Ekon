@@ -2,12 +2,15 @@
 #define ADMIN_WIDGET_H
 
 #include <database/db_service.h>
-#include <implementations/ekon_tab_widget.h>
+#include <implementations/ekon_tables.h>
+#include <implementations/control_widget.h>
+#include <tabs/users_tab_widget.h>
 
+#include <QTabWidget>
 #include <QGridLayout>
 #include <QHeaderView>
 
-class AdminWidget : public EkonTabWidget
+class AdminWidget : public QTabWidget
 {
     Q_OBJECT
 public:
@@ -25,6 +28,8 @@ private:
     QSqlRelationalTableModel *usersTableModel;
     QTableView *usersTableView;
     QSortFilterProxyModel *usersSortFilterProxyModel;
+
+    ControlWidget *controlWidget;
 
 };
 

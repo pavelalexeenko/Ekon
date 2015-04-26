@@ -4,7 +4,7 @@
 #include <dialogs/add_discipline_dialog.h>
 
 WorkerWidget::WorkerWidget(QWidget *parent) :
-    EkonTabWidget(parent)
+    QTabWidget(parent)
 {
     addDisciplinesTab();
     addTeachersTab();
@@ -73,8 +73,8 @@ void WorkerWidget::addDisciplinesTab()
                 << "УИРС";
 
     QWidget *widget = new QWidget();
-    disciplinesTableModel = createTableModel(widget, "DRT_DISCIPLINES", columnNames);
-    disciplinesTableView = createTableView(widget, disciplinesTableModel);
+    disciplinesTableModel = EkonTables::createTableModel(widget, "DRT_DISCIPLINES", columnNames);
+    disciplinesTableView = EkonTables::createTableView(widget, disciplinesTableModel);
     disciplinesTableView->setItemDelegateForColumn(5, new CheckBoxItemDelegate());
     disciplinesTableView->setItemDelegateForColumn(6, new CheckBoxItemDelegate());
     disciplinesTableView->setItemDelegateForColumn(7, new CheckBoxItemDelegate());
@@ -96,8 +96,8 @@ void WorkerWidget::addTeachersTab()
                 << "Примечание";
 
     QWidget *widget = new QWidget();
-    teachersTableModel = createTableModel(widget, "DRT_TEACHERS", columnNames);
-    teachersTableView = createTableView(widget, teachersTableModel);
+    teachersTableModel = EkonTables::createTableModel(widget, "DRT_TEACHERS", columnNames);
+    teachersTableView = EkonTables::createTableView(widget, teachersTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
     layout->addWidget(teachersTableView);
@@ -119,8 +119,8 @@ void WorkerWidget::addGroupsTab()
                 << "Примечание";
 
     QWidget *widget = new QWidget();
-    groupsTableModel = createTableModel(widget, "DRT_GROUPS", columnNames);
-    groupsTableView = createTableView(widget, groupsTableModel);
+    groupsTableModel = EkonTables::createTableModel(widget, "DRT_GROUPS", columnNames);
+    groupsTableView = EkonTables::createTableView(widget, groupsTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
     layout->addWidget(groupsTableView);
@@ -136,8 +136,8 @@ void WorkerWidget::addFlowsTab()
                 << "Список групп";
 
     QWidget *widget = new QWidget();
-    flowsTableModel = createTableModel(widget, "VIEW_FLOWS", columnNames);
-    flowsTableView = createTableView(widget, flowsTableModel);
+    flowsTableModel = EkonTables::createTableModel(widget, "VIEW_FLOWS", columnNames);
+    flowsTableView = EkonTables::createTableView(widget, flowsTableModel);
     flowsTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     QGridLayout *layout = new QGridLayout(widget);

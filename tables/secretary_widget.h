@@ -2,12 +2,13 @@
 #define SECRETARY_WIDGET_H
 
 #include <database/db_service.h>
-#include <implementations/ekon_tab_widget.h>
+#include <implementations/ekon_tables.h>
 
+#include <QTabWidget>
 #include <QGridLayout>
 #include <QHeaderView>
 
-class SecretaryWidget : public EkonTabWidget
+class SecretaryWidget : public QTabWidget
 {
     Q_OBJECT
 public:

@@ -1,12 +1,11 @@
-#include "ekon_tab_widget.h"
+#include "ekon_tables.h"
 #include "implementations/mydelegate.h"
 
-EkonTabWidget::EkonTabWidget(QWidget *parent) : QTabWidget(parent)
+EkonTables::EkonTables()
 {
-
 }
 
-void EkonTabWidget::configureTableModel(QSqlTableModel *tableModel, QStringList columnNames)
+void EkonTables::configureTableModel(QSqlTableModel *tableModel, QStringList columnNames)
 {
     tableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
 
@@ -20,12 +19,12 @@ void EkonTabWidget::configureTableModel(QSqlTableModel *tableModel, QStringList 
     qDebug() << tableModel->tableName() << " - " << tableModel->lastError();
 }
 
-void EkonTabWidget::configureTableView(QTableView *tableView)
+void EkonTables::configureTableView(QTableView *tableView)
 {
     Q_UNUSED(tableView);
 }
 
-QSqlTableModel* EkonTabWidget::createTableModel(QWidget *parentWidget, QString tableName, QStringList columnNames)
+QSqlTableModel* EkonTables::createTableModel(QWidget *parentWidget, QString tableName, QStringList columnNames)
 { 
     QSqlTableModel *tableModel = new QSqlTableModel(parentWidget, DbService::getInstance()->getCurrentDatabase());
     tableModel->setTable(tableName);
@@ -33,7 +32,7 @@ QSqlTableModel* EkonTabWidget::createTableModel(QWidget *parentWidget, QString t
     return tableModel;
 }
 
-QSqlRelationalTableModel* EkonTabWidget::createRelationalTableModel(QWidget *parentWidget, QString tableName, QStringList columnNames, QList<QPair<int, QSqlRelation> > relations)
+QSqlRelationalTableModel* EkonTables::createRelationalTableModel(QWidget *parentWidget, QString tableName, QStringList columnNames, QList<QPair<int, QSqlRelation> > relations)
 {
     QSqlRelationalTableModel *tableModel = new QSqlRelationalTableModel(parentWidget, DbService::getInstance()->getCurrentDatabase());
     tableModel->setTable(tableName);
@@ -46,7 +45,7 @@ QSqlRelationalTableModel* EkonTabWidget::createRelationalTableModel(QWidget *par
     return tableModel;
 }
 
-QTableView* EkonTabWidget::createTableView(QWidget* parentWidget, QSqlTableModel* model)
+QTableView* EkonTables::createTableView(QWidget* parentWidget, QSqlTableModel* model)
 {
     QTableView *tableView = new QTableView(parentWidget);
     tableView->setModel(model);
@@ -63,7 +62,7 @@ QTableView* EkonTabWidget::createTableView(QWidget* parentWidget, QSqlTableModel
     return tableView;
 }
 
-QTableView* EkonTabWidget::createRelationTableView(QWidget *parentWidget, QSqlRelationalTableModel *model)
+QTableView* EkonTables::createRelationTableView(QWidget *parentWidget, QSqlRelationalTableModel *model)
 {
     QTableView *tableView = createTableView(parentWidget, model);
     tableView->setItemDelegate(new QSqlRelationalDelegate(tableView));

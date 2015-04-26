@@ -2,8 +2,8 @@
 #define MAIN_WINDOW_H
 
 #include <./database/db_service.h>
-#include <management_widget.h>
-#include <login_window.h>
+#include <tables_wigdet.h>
+#include <dialogs/login_window.h>
 
 #include <QMainWindow>
 #include <QLineEdit>
@@ -40,7 +40,7 @@ private:
     QAction *refreshAct;
     QAction *exitAct;
 
-    ManagementWidget *managementWidget;
+    TablesWidget *tablesWidget;
 };
 
 #endif // MAIN_WINDOW_H

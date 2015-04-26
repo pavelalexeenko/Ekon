@@ -2,9 +2,11 @@
 #include <dialogs/add_user_dialog.h>
 
 AdminWidget::AdminWidget(QWidget *parent) :
-    EkonTabWidget(parent)
+    QTabWidget(parent)
 {
-    addUsersTab();
+    UsersTabWidget *usersWidget = new UsersTabWidget();
+
+    this->addTab(usersWidget, QString("Пользователи"));
 }
 
 void AdminWidget::search(QString str)
@@ -39,8 +41,8 @@ void AdminWidget::addUsersTab()
     relations.append(qMakePair(3, QSqlRelation("DRT_USER_TYPES", "UST_ID", "UST_NAME")));
 
     QWidget *widget = new QWidget();
-    usersTableModel = createRelationalTableModel(widget, "DRT_USERS", columnNames, relations);
-    usersTableView = createRelationTableView(widget, usersTableModel);
+    usersTableModel = EkonTables::createRelationalTableModel(widget, "DRT_USERS", columnNames, relations);
+    usersTableView = EkonTables::createRelationTableView(widget, usersTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
     layout->addWidget(usersTableView);

@@ -3,8 +3,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    managementWidget = new ManagementWidget(this);
-    setCentralWidget(managementWidget);
+    tablesWidget = new TablesWidget(this);
+    setCentralWidget(tablesWidget);
     createMenu();
     this->resize(1300,500);
     updateTitle();
@@ -14,7 +14,7 @@ void MainWindow::updateTitle()
 {
     qDebug() << "Updating title.";
     this->setWindowTitle(QString("Logged as: ") + DbService::getInstance()->getCurrentUser()->getUserName() + " - " + DbService::getInstance()->getCurrentUser()->getUserRoleAsString());
-    managementWidget->updateLayout();
+    tablesWidget->updateLayout();
 }
 
 void MainWindow::goToLoginWindow()
@@ -44,9 +44,9 @@ void MainWindow::createMenu()
 
     saveAct = new QAction(tr("&Save"), this);
     saveMenu->addAction(saveAct);
-    connect(saveAct, SIGNAL(triggered()), managementWidget, SLOT(updateLayout()));
+    connect(saveAct, SIGNAL(triggered()), tablesWidget, SLOT(updateLayout()));
 
     refreshAct = new QAction(tr("&Refresh"), this);
     menuBar()->addAction(refreshAct);
-    connect(refreshAct, SIGNAL(triggered()), managementWidget, SLOT(refresh()));
+    connect(refreshAct, SIGNAL(triggered()), tablesWidget, SLOT(refresh()));
 }

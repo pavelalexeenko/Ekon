@@ -1,5 +1,4 @@
 #include "main_window.h"
-#include "login_window.h"
 #include "./database/db_service.h"
 #include <QApplication>
 

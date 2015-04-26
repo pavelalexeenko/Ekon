@@ -1,7 +1,7 @@
 #include "secretary_widget.h"
 
 SecretaryWidget::SecretaryWidget(QWidget *parent) :
-    EkonTabWidget(parent)
+    QTabWidget(parent)
 {
     addLoadCalculationTab();
     addLoadDistributionTab();
@@ -46,8 +46,8 @@ void SecretaryWidget::addLoadCalculationTab()
     relations.append(qMakePair(2, QSqlRelation("DRT_FLOWS", "FLW_ID", "FLW_NAME")));
 
     QWidget *widget = new QWidget();
-    loadCalculationTableModel = createRelationalTableModel(widget, "DRT_LOAD_CALCULATION", columnNames, relations);
-    loadCalculationTableView = createRelationTableView(widget, loadCalculationTableModel);
+    loadCalculationTableModel = EkonTables::createRelationalTableModel(widget, "DRT_LOAD_CALCULATION", columnNames, relations);
+    loadCalculationTableView = EkonTables::createRelationTableView(widget, loadCalculationTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
     layout->addWidget(loadCalculationTableView);
@@ -67,8 +67,8 @@ void SecretaryWidget::addLoadDistributionTab()
     relations.append(qMakePair(2, QSqlRelation("VIEW_LOAD_CALCULATION", "LCLV_ID", "LCLV_NAME")));
 
     QWidget *widget = new QWidget();
-    loadDistributionTableModel = createRelationalTableModel(widget, "DRT_LOAD_DISTRIBUTION", columnNames, relations);
-    loadDistributionTableView = createRelationTableView(widget, loadDistributionTableModel);
+    loadDistributionTableModel = EkonTables::createRelationalTableModel(widget, "DRT_LOAD_DISTRIBUTION", columnNames, relations);
+    loadDistributionTableView = EkonTables::createRelationTableView(widget, loadDistributionTableModel);
 
     QGridLayout *layout = new QGridLayout(widget);
     layout->addWidget(loadDistributionTableView);
