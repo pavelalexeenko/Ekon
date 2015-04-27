@@ -1,51 +1,18 @@
 #include "admin_widget.h"
-#include <dialogs/add_user_dialog.h>
 
 AdminWidget::AdminWidget(QWidget *parent) :
     QTabWidget(parent)
 {
-    UsersTabWidget *usersWidget = new UsersTabWidget();
+    qDebug() << __FUNCTION__;
 
-    this->addTab(usersWidget, QString("Пользователи"));
-}
-
-void AdminWidget::search(QString str)
-{
-    qDebug() << "AdminWidget::search(QString \"" + str + "\")";
-    // usersSortFilterProxyModel->setFilterRegExp(QRegExp(str, Qt::CaseInsensitive, QRegExp::FixedString));
+    usersWidget = new UsersWidget(this);
+    this->addTab(usersWidget, QString("&Пользователи"));
+    this->setStyleSheet("QTabWidget::pane { border: 0; }");
 }
 
 void AdminWidget::refresh()
 {
-    qDebug() << "AdminWidget::refresh()";
-    usersTableModel->select();
-}
+    qDebug() << __FUNCTION__;
 
-void AdminWidget::addRow()
-{
-    qDebug() << "AdminWidget::addRow()";
-    AddUserDialog *aud = new AddUserDialog(this);
-    connect(aud, SIGNAL(accepted()), this, SLOT(refresh()));
-    aud->show();
-}
-
-void AdminWidget::addUsersTab()
-{
-    QStringList columnNames;
-    columnNames << "ID"
-                << "Логин"
-                << "Пароль"
-                << "Тип";
-
-    QList<QPair<int, QSqlRelation> > relations;
-    relations.append(qMakePair(3, QSqlRelation("DRT_USER_TYPES", "UST_ID", "UST_NAME")));
-
-    QWidget *widget = new QWidget();
-    usersTableModel = EkonTables::createRelationalTableModel(widget, "DRT_USERS", columnNames, relations);
-    usersTableView = EkonTables::createRelationTableView(widget, usersTableModel);
-
-    QGridLayout *layout = new QGridLayout(widget);
-    layout->addWidget(usersTableView);
-
-    this->addTab(widget, QString("Пользователи"));
+    usersWidget->refresh();
 }

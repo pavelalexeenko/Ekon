@@ -17,4 +17,5 @@ ControlWidget::ControlWidget(QWidget *parent) : QWidget(parent)
     setLayout(layout);
 
     connect(searchLineEdit, SIGNAL(returnPressed()), searchButton, SLOT(click()));
+    connect(addRowButton, SIGNAL(clicked()), this, SIGNAL(addRow()));
 }

@@ -14,39 +14,55 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-    dialogs/login_window.cpp \
     main_window.cpp \
     database/db_service.cpp \
-    database/user.cpp \
+    objects/user.cpp \
     tables/admin_widget.cpp \
     tables_wigdet.cpp \
     tables/secretary_widget.cpp \
     tables/worker_widget.cpp \
     implementations/checkbox_item_delegate.cpp \
     implementations/centered_checkbox.cpp \
+    implementations/control_widget.cpp \
+    implementations/ekon_tables.cpp \
+    dialogs/login_window.cpp \
     dialogs/add_user_dialog.cpp \
     dialogs/add_teacher_dialog.cpp \
     dialogs/add_discipline_dialog.cpp \
-    implementations/control_widget.cpp \
-    tabs/users_tab_widget.cpp \
-    implementations/ekon_tables.cpp
+    tabs/load_calculation_widget.cpp \
+    tabs/disciplines_widget.cpp \
+    tabs/flows_widget.cpp \
+    tabs/groups_widget.cpp \
+    tabs/teachers_widget.cpp \
+    tabs/users_widget.cpp \
+    tabs/load_distribution_widget.cpp \
+    objects/teacher.cpp \
+    objects/discipline.cpp
 
 HEADERS  += \
-    dialogs/login_window.h \
     main_window.h \
     database/db_service.h \
-    database/user.h \
+    objects/user.h \
     tables/admin_widget.h \
     tables_wigdet.h \
     tables/secretary_widget.h \
     tables/worker_widget.h \
     implementations/checkbox_item_delegate.h \
     implementations/centered_checkbox.h \
+    implementations/control_widget.h \
+    implementations/ekon_tables.h \
+    dialogs/login_window.h \
     dialogs/add_user_dialog.h \
     dialogs/add_teacher_dialog.h \
     dialogs/add_discipline_dialog.h \
-    implementations/control_widget.h \
-    tabs/users_tab_widget.h \
-    implementations/ekon_tables.h
+    tabs/load_calculation_widget.h \
+    tabs/disciplines_widget.h \
+    tabs/flows_widget.h \
+    tabs/groups_widget.h \
+    tabs/teachers_widget.h \
+    tabs/users_widget.h \
+    tabs/load_distribution_widget.h \
+    objects/teacher.h \
+    objects/discipline.h
 
 CONFIG += c++11

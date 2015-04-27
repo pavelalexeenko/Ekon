@@ -8,14 +8,12 @@
 
 #include <QDebug>
 
-class UsersTabWidget : public QWidget
+class UsersWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UsersTabWidget(QWidget *parent = 0);
-    
-signals:
-    
+    explicit UsersWidget(QWidget *parent = 0);
+
 public slots:
     void addRow();
     void refresh();

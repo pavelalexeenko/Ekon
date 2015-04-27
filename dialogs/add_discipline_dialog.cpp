@@ -59,13 +59,34 @@ void AddDisciplineDialog::addRow()
 {
     qDebug() << __FUNCTION__;
 
-    if (0)
+    if (namePlainTextEdit->toPlainText().isEmpty())
     {
         QMessageBox::critical(this, tr("Error"), tr("Some fields are empty."), QMessageBox::Ok);
         return;
     }
 
-    if (0)
+    Discipline discipline;
+    discipline.setName(namePlainTextEdit->toPlainText());
+    discipline.setLectures(lecturesSpinBox->value());
+    discipline.setLaboratory(laboratorySpinBox->value());
+    discipline.setPractical(practicalSpinBox->value());
+    discipline.setConsultation(consultationCheckBox->isChecked());
+    discipline.setExaminations(examinationCheckBox->isChecked());
+    discipline.setTests(testsCheckBox->isChecked());
+    discipline.setCurrentConsultation(currentConsultationCheckBox->isChecked());
+    discipline.setIntroductoryPractice(introductoryPracticeCheckBox->isChecked());
+    discipline.setPreDiplomaPractice(preDiplomaPracticeCheckBox->isChecked());
+    discipline.setCourseWork(courseWorkCheckBox->isChecked());
+    discipline.setGuideIndependentWork(guidedIndependentWorkCheckBox->isChecked());
+    discipline.setControlWork(controlWorkCheckBox->isChecked());
+    discipline.setGraduationDesign(graduationDesignCheckBox->isChecked());
+    discipline.setGuideGraduate(guideGraduateCheckBox->isChecked());
+    discipline.setStateExam(stateExamCheckBox->isChecked());
+    discipline.setHes(hesCheckBox->isChecked());
+    discipline.setGuideChair(guideChairCheckBox->isChecked());
+    discipline.setUirs(uirsCheckBox->isChecked());
+
+    if (DbService::getInstance()->addDiscipline(discipline))
         this->accept();
     else
         QMessageBox::critical(this, tr("Error"), tr("Database error while adding a discipline."), QMessageBox::Ok);

@@ -6,6 +6,8 @@ DbService::DbService() :
     _defaultDatabaseFilename("db.sqlite"),
     _currentUser(new User())
 {
+    qDebug() << __FUNCTION__;
+
     _db.reset(new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE")));
     _db->setDatabaseName(_defaultDatabaseFilename);
 
@@ -39,28 +41,65 @@ bool DbService::testDatabaseConnection() const
     return _db->isOpen();
 }
 
-bool DbService::addUser(QString username, QString password, QString userrole)
+bool DbService::addUser(const User& user)
 {
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) "
                   "VALUES (:username, :password, :type)");
-    query.bindValue(0, username);
-    query.bindValue(1, password);
-    query.bindValue(2, User::userRoleStringToUserRoleType(userrole));
+    query.bindValue(0, user.getUsername());
+    query.bindValue(1, user.getPassword());
+    query.bindValue(2, user.getUserrole());
     if (!query.exec())
         return false;
 
     return true;
 }
 
-bool DbService::addTeacher(QString name, double rate, QString note)
+bool DbService::addTeacher(const Teacher &teacher)
 {
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_TEACHERS (TCH_NAME, TCH_RATE, TCH_INFO) "
                   "VALUES (:name, :rate, :info)");
-    query.bindValue(0, name);
-    query.bindValue(1, rate);
-    query.bindValue(2, note);
+    query.bindValue(":name", teacher.getName());
+    query.bindValue(":rate", teacher.getRate());
+    query.bindValue(":info", teacher.getInfo());
+    if (!query.exec())
+        return false;
+
+    return true;
+}
+
+bool DbService::addDiscipline(const Discipline &discipline)
+{
+    QString fields("DSC_NAME,DSC_LECTURES,DSC_LABORATORY,DSC_PRACTICAL,DSC_CONSULTATION,DSC_EXAMINATIONS,DSC_TESTS,DSC_CURRENT_CONSULTATION, "
+                   "DSC_INTRODUCTORY_PRACTICE,DSC_PRE_DIPLOMA_PRACTICE,DSC_COURSEWORK,DSC_GUIDED_INDEPENDENT_WORK,DSC_CONTROL_WORK, "
+                   "DSC_GRADUATION_DESIGN,DSC_GUIDE_GRADUATE,DSC_STATE_EXAM,DSC_HES,DSC_GUIDE_CHAIR,DSC_UIRS");
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO DRT_DISCIPLINES (" + fields + ") "
+                  "VALUES (:name, :lec, :lab, :prac, :consult, :exam, :tests, :curCons, :intrPrac, :preDiplPrac, :course, :guIndWork, :contrl, "
+                  " :gradDesign, :guGrad, :stateExam, :hes, :guideChair, :uirs)");
+
+    query.bindValue(":name", discipline.getName());
+    query.bindValue(":lec", discipline.getLectures());
+    query.bindValue(":lab", discipline.getLaboratory());
+    query.bindValue(":prac", discipline.getPractical());
+    query.bindValue(":consult", discipline.hasConsultation());
+    query.bindValue(":exam", discipline.hasExamination());
+    query.bindValue(":tests", discipline.hasTests());
+    query.bindValue(":curCons", discipline.hasCurrentConsultation());
+    query.bindValue(":intrPrac", discipline.hasIntroductoryPractice());
+    query.bindValue(":preDiplPrac", discipline.hasPreDiplomaPractice());
+    query.bindValue(":course", discipline.hasCourseWork());
+    query.bindValue(":guIndWork", discipline.hasGuideIndependentWork());
+    query.bindValue(":contrl", discipline.hasControlWork());
+    query.bindValue(":gradDesign", discipline.hasGraduationDesign());
+    query.bindValue(":guGrad", discipline.hasGuideGraduate());
+    query.bindValue(":stateExam", discipline.hasStateExam());
+    query.bindValue(":hes", discipline.hasHes());
+    query.bindValue(":guideChair", discipline.hasGuideChair());
+    query.bindValue(":uirs", discipline.hasUirs());
+
     if (!query.exec())
         return false;
 
@@ -141,7 +180,7 @@ QStringList DbService::getAllUsers() const
     return usersList;
 }
 
-QStringList DbService::getAllUserRoles() const
+QStringList DbService::getAllUserroles() const
 {
     QStringList usersList;
     QSqlQuery query("SELECT UST_NAME FROM DRT_USER_TYPES");
@@ -164,7 +203,9 @@ bool DbService::loginAs(QString username, QString password)
 
     if (query.value("USER_PASSWORD").toString() == password)
     {
-        User *user = new User(query.value("USER_USERNAME").toString(), query.value("USER_TYPE_ID").toInt());
+        User *user = new User(query.value("USER_USERNAME").toString(),
+                              query.value("USER_PASSWORD").toString(),
+                              query.value("USER_TYPE_ID").toInt());
         _currentUser.reset(user);
         return true;
     }
@@ -174,9 +215,9 @@ bool DbService::loginAs(QString username, QString password)
 
 void DbService::createDatabase() const
 {
-    qDebug() << "Creating database.";
+    qDebug() << __FUNCTION__;
+
     removeCurrentFile();
-    _db->open();
     createUsersTypesTable();
     createUsersTable();
     createDisciplinesTable();
@@ -192,7 +233,7 @@ void DbService::createDatabase() const
 
 void DbService::removeCurrentFile() const
 {
-    qDebug() << "Removing current file.";
+    qDebug() << __FUNCTION__;
 
     _db->close();
     QFile oldFile(_defaultDatabaseFilename);
@@ -202,11 +243,13 @@ void DbService::removeCurrentFile() const
         i++;
 
     oldFile.rename(_defaultDatabaseFilename + QString("%1").arg(i));
+
+    _db->open();
 }
 
 void DbService::createUsersTypesTable() const
 {
-    qDebug() << "Creating users types table.";
+    qDebug() << __FUNCTION__;
 
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_USER_TYPES("
@@ -219,7 +262,7 @@ void DbService::createUsersTypesTable() const
 
 void DbService::createUsersTable() const
 {
-    qDebug() << "Creating users table.";
+    qDebug() << __FUNCTION__;
 
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_USERS("
@@ -235,7 +278,7 @@ void DbService::createUsersTable() const
 
 void DbService::createDisciplinesTable() const
 {
-    qDebug() << "Creating disciplines table.";
+    qDebug() << __FUNCTION__;
 
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_DISCIPLINES("
@@ -272,7 +315,7 @@ void DbService::createDisciplinesTable() const
 
 void DbService::createTeachersTable() const
 {
-    qDebug() << "Creating teachers table.";
+    qDebug() << __FUNCTION__;
 
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_TEACHERS("
@@ -287,7 +330,7 @@ void DbService::createTeachersTable() const
 
 void DbService::createGroupsTable() const
 {
-    qDebug() << "Creating groups table.";
+    qDebug() << __FUNCTION__;
 
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_GROUPS("
@@ -316,7 +359,7 @@ void DbService::createGroupsTable() const
 
 void DbService::createFlowsTable() const
 {
-    qDebug() << "Creating flows table.";
+    qDebug() << __FUNCTION__;
 
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_FLOWS("
@@ -335,7 +378,7 @@ void DbService::createFlowsTable() const
 
 void DbService::createLinksTable() const
 {
-    qDebug() << "Creating links table.";
+    qDebug() << __FUNCTION__;
 
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_LINKS("
@@ -360,7 +403,7 @@ void DbService::createLinksTable() const
 
 void DbService::createFlowsView() const
 {
-    qDebug() << "Creating flows view.";
+    qDebug() << __FUNCTION__;
 
     QSqlQuery query;
     query.exec("CREATE VIEW VIEW_FLOWS AS "
@@ -373,7 +416,7 @@ void DbService::createFlowsView() const
 
 void DbService::createLoadCalculationView() const
 {
-    qDebug() << "Creating load calculation view.";
+    qDebug() << __FUNCTION__;
 
     QSqlQuery query;
     query.exec("CREATE VIEW VIEW_LOAD_CALCULATION AS "
@@ -386,7 +429,7 @@ void DbService::createLoadCalculationView() const
 
 void DbService::createLoadCalculation() const
 {
-    qDebug() << "Creating load calculation table.";
+    qDebug() << __FUNCTION__;
 
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_LOAD_CALCULATION("
@@ -406,7 +449,7 @@ void DbService::createLoadCalculation() const
 
 void DbService::createLoadDistribution() const
 {
-    qDebug() << "Creating load distribution table.";
+    qDebug() << __FUNCTION__;
 
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_LOAD_DISTRIBUTION("

@@ -33,7 +33,12 @@ void AddTeacherDialog::addRow()
         return;
     }
 
-    if (DbService::getInstance()->addTeacher(nameLineEdit->text(), rateSpinBox->value(), notePlainTextEdit->toPlainText()))
+    Teacher teacher;
+    teacher.setName(nameLineEdit->text());
+    teacher.setRate(rateSpinBox->value());
+    teacher.setInfo(notePlainTextEdit->toPlainText());
+
+    if (DbService::getInstance()->addTeacher(teacher))
         this->accept();
     else
         QMessageBox::critical(this, tr("Error"), tr("Database error while adding a teacher."), QMessageBox::Ok);

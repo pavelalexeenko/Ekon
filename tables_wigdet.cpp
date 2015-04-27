@@ -3,6 +3,7 @@
 TablesWidget::TablesWidget(QWidget *parent) :
     QWidget(parent)
 {
+    qDebug() << __FUNCTION__;
     adminWidget = new AdminWidget(this);
     secretaryWidget = new SecretaryWidget(this);
     workerWidget = new WorkerWidget(this);
@@ -16,25 +17,10 @@ TablesWidget::TablesWidget(QWidget *parent) :
     this->setLayout(stackedLayout);
 }
 
-void TablesWidget::search(QString str)
-{
-    qDebug() << "TablesWidget::search(QString \"" + str + "\")";
-    switch (stackedLayout->currentIndex()) {
-    case Tab::ADMINISTRATOR_TAB:
-        adminWidget->search(str);
-        break;
-    case Tab::SECRETARY_TAB:
-        secretaryWidget->search(str);
-        break;
-    case Tab::WORKER_TAB:
-        workerWidget->search(str);
-        break;
-    }
-}
-
 void TablesWidget::refresh()
 {
-    switch (DbService::getInstance()->getCurrentUser()->getUserRole()) {
+    qDebug() << __FUNCTION__;
+    switch (DbService::getInstance()->getCurrentUser()->getUserrole()) {
     case User::ADMINISTRATOR:
         adminWidget->refresh();
         break;
@@ -51,8 +37,8 @@ void TablesWidget::refresh()
 
 void TablesWidget::updateLayout()
 {
-    qDebug() << "Updating stacked layout...";
-    switch (DbService::getInstance()->getCurrentUser()->getUserRole()) {
+    qDebug() << __FUNCTION__;
+    switch (DbService::getInstance()->getCurrentUser()->getUserrole()) {
     case User::ADMINISTRATOR:
         stackedLayout->setCurrentIndex(Tab::ADMINISTRATOR_TAB);
         break;
@@ -66,19 +52,4 @@ void TablesWidget::updateLayout()
         stackedLayout->setCurrentIndex(0);
         break;
     }
-}
-
-void TablesWidget::addRow()
-{
-    qDebug() << "TablesWidget::addRow";
-    switch(stackedLayout->currentIndex())
-    {
-    case Tab::ADMINISTRATOR_TAB:
-        adminWidget->addRow();
-    case Tab::SECRETARY_TAB:
-        secretaryWidget->addRow();
-    case Tab::WORKER_TAB:
-        workerWidget->addRow();
-    }
-
 }

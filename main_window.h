@@ -18,18 +18,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = 0);
-    
-signals:
-    void refreshButtonClicked();
-
-public slots:
 
 private slots:
     void updateTitle();
     void goToLoginWindow();
 
 private:
-    void createLayout();
     void createMenu();
 
 private:

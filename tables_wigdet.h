@@ -22,14 +22,11 @@ class TablesWidget : public QWidget
     Q_OBJECT
 public:
     explicit TablesWidget(QWidget *parent = 0);
-    
-    void search(QString str);
 
 signals:
     
 public slots:
     void updateLayout();
-    void addRow();
     void refresh();
 
 private:

@@ -5,17 +5,17 @@ AddUserDialog::AddUserDialog(QWidget *parent) :
 {
     usernameLineEdit = new QLineEdit(this);
     passwordLineEdit = new QLineEdit(this);
-    userRolesComboBox = new QComboBox(this);
+    userrolesComboBox = new QComboBox(this);
     addButton = new QPushButton(QString("Добавить"), this);
 
-    userRolesComboBox->addItems(DbService::getInstance()->getAllUserRoles());
+    userrolesComboBox->addItems(DbService::getInstance()->getAllUserroles());
 
     connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));
 
     QFormLayout *formLayout = new QFormLayout(this);
     formLayout->addRow(tr("&Name:"), usernameLineEdit);
     formLayout->addRow(tr("&Password:"), passwordLineEdit);
-    formLayout->addRow(tr("&User type:"), userRolesComboBox);
+    formLayout->addRow(tr("&User type:"), userrolesComboBox);
     formLayout->addRow(tr(""), addButton);
     setLayout(formLayout);
 }
@@ -26,15 +26,20 @@ void AddUserDialog::addRow()
 
     if (usernameLineEdit->text().isEmpty() ||
             passwordLineEdit->text().isEmpty() ||
-            userRolesComboBox->currentText().isEmpty())
+            userrolesComboBox->currentText().isEmpty())
     {
         QMessageBox::critical(this, tr("Error"), tr("Some fields are empty."), QMessageBox::Ok);
         return;
     }
 
-    if (DbService::getInstance()->addUser(usernameLineEdit->text(), passwordLineEdit->text(), userRolesComboBox->currentText()))
+    User user;
+    user.setUsername(usernameLineEdit->text());
+    user.setPassword(passwordLineEdit->text());
+    user.setUserrole(userrolesComboBox->currentText());
+
+    if (DbService::getInstance()->addUser(user))
     {
-        qDebug() << "Login succesfully.";
+        qDebug() << "User added succesfully (" << user.getUsername() << " - " << user.getPassword() << " - " << user.getUserroleAsString() << ")";
         this->accept();
     }
     else

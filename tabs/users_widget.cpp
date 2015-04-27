@@ -1,9 +1,11 @@
-#include "users_tab_widget.h"
-#include <dialogs/add_user_dialog.h>
+#include "users_widget.h"
+#include "dialogs/add_user_dialog.h"
 
-UsersTabWidget::UsersTabWidget(QWidget *parent) :
+UsersWidget::UsersWidget(QWidget *parent) :
     QWidget(parent)
 {
+    qDebug() << __FUNCTION__;
+
     QStringList columnNames;
     columnNames << "ID"
                 << "Логин"
@@ -13,18 +15,21 @@ UsersTabWidget::UsersTabWidget(QWidget *parent) :
     QList<QPair<int, QSqlRelation> > relations;
     relations.append(qMakePair(3, QSqlRelation("DRT_USER_TYPES", "UST_ID", "UST_NAME")));
 
-    QWidget *widget = new QWidget();
-    usersTableModel = EkonTables::createRelationalTableModel(widget, "DRT_USERS", columnNames, relations);
-    usersTableView = EkonTables::createRelationTableView(widget, usersTableModel);
+    usersTableModel = EkonTables::createRelationalTableModel(this, "DRT_USERS", columnNames, relations);
+    usersTableView = EkonTables::createRelationTableView(this, usersTableModel);
 
-    QGridLayout *layout = new QGridLayout(widget);
+    controlWidget = new ControlWidget(this);
+
+    QGridLayout *layout = new QGridLayout(this);
     layout->addWidget(usersTableView);
     layout->addWidget(controlWidget);
 
     this->setLayout(layout);
+
+    connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
 }
 
-void UsersTabWidget::addRow()
+void UsersWidget::addRow()
 {
     qDebug() << __FUNCTION__;
     AddUserDialog *aud = new AddUserDialog(this);
@@ -32,7 +37,7 @@ void UsersTabWidget::addRow()
     aud->show();
 }
 
-void UsersTabWidget::refresh()
+void UsersWidget::refresh()
 {
     qDebug() << __FUNCTION__;
     usersTableModel->select();

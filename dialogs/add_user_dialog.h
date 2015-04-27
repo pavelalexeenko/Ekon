@@ -24,7 +24,7 @@ private slots:
 private:
     QLineEdit *usernameLineEdit;
     QLineEdit *passwordLineEdit;
-    QComboBox *userRolesComboBox;
+    QComboBox *userrolesComboBox;
     QPushButton *addButton;
 };
 

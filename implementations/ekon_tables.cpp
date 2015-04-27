@@ -1,5 +1,4 @@
 #include "ekon_tables.h"
-#include "implementations/mydelegate.h"
 
 EkonTables::EkonTables()
 {
@@ -15,8 +14,6 @@ void EkonTables::configureTableModel(QSqlTableModel *tableModel, QStringList col
     }
 
     tableModel->select();
-
-    qDebug() << tableModel->tableName() << " - " << tableModel->lastError();
 }
 
 void EkonTables::configureTableView(QTableView *tableView)

@@ -1,7 +1,9 @@
 #ifndef DBSERVICE_H
 #define DBSERVICE_H
 
-#include <./database/user.h>
+#include "objects/user.h"
+#include "objects/teacher.h"
+#include "objects/discipline.h"
 
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -36,7 +38,7 @@ public:
 public:
     QSqlDatabase getCurrentDatabase() const;
     QStringList getAllUsers() const;
-    QStringList getAllUserRoles() const;
+    QStringList getAllUserroles() const;
     QSharedPointer<User> getCurrentUser() const;
     QString getCurrentDataBasePath() const;
     QString getLastError() const;
@@ -45,8 +47,9 @@ public:
     bool loginAs(QString username, QString password);
     bool testDatabaseConnection() const;
 
-    bool addUser(QString username, QString password, QString userrole);
-    bool addTeacher(QString name, double rate, QString note);
+    bool addUser(const User& user);
+    bool addTeacher(const Teacher& teacher);
+    bool addDiscipline(const Discipline& discipline);
 
 private:
     bool isCorrectVersion() const;

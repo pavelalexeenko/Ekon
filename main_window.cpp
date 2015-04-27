@@ -3,6 +3,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    qDebug() << __FUNCTION__;
     tablesWidget = new TablesWidget(this);
     setCentralWidget(tablesWidget);
     createMenu();
@@ -12,14 +13,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::updateTitle()
 {
-    qDebug() << "Updating title.";
-    this->setWindowTitle(QString("Logged as: ") + DbService::getInstance()->getCurrentUser()->getUserName() + " - " + DbService::getInstance()->getCurrentUser()->getUserRoleAsString());
+    qDebug() << __FUNCTION__;
+    QSharedPointer<User> user = DbService::getInstance()->getCurrentUser();
+    this->setWindowTitle(QString("Logged as: ") + user->getUsername() + " - " + user->getUserroleAsString());
     tablesWidget->updateLayout();
 }
 
 void MainWindow::goToLoginWindow()
 {
-    qDebug() << "Going to login window...";
+    qDebug() << __FUNCTION__;
     LoginWindow *lw = new LoginWindow(this);
     connect(lw, SIGNAL(accepted()), this, SLOT(updateTitle()));
     lw->show();
@@ -27,7 +29,7 @@ void MainWindow::goToLoginWindow()
 
 void MainWindow::createMenu()
 {
-    qDebug() << "Creating menu...";
+    qDebug() << __FUNCTION__;
     fileMenu = menuBar()->addMenu(tr("&File"));
 
     openAct = new QAction(tr("&Login"), this);
