@@ -37,7 +37,9 @@ SOURCES += main.cpp\
     tabs/users_widget.cpp \
     tabs/load_distribution_widget.cpp \
     objects/teacher.cpp \
-    objects/discipline.cpp
+    objects/discipline.cpp \
+    objects/group.cpp \
+    dialogs/add_group_dialog.cpp
 
 HEADERS  += \
     main_window.h \
@@ -63,6 +65,8 @@ HEADERS  += \
     tabs/users_widget.h \
     tabs/load_distribution_widget.h \
     objects/teacher.h \
-    objects/discipline.h
+    objects/discipline.h \
+    objects/group.h \
+    dialogs/add_group_dialog.h
 
 CONFIG += c++11

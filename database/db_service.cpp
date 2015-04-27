@@ -106,6 +106,29 @@ bool DbService::addDiscipline(const Discipline &discipline)
     return true;
 }
 
+bool DbService::addGroup(const Group& group)
+{
+    QString fields("GRP_NAME,GRP_NUMBER_OF_STUDENTS,GRP_COURSE,GRP_NUMBER_OF_SUBGROUPS,GRP_SEMESTR,GRP_FACULTET,GRP_SPECIALITY,GRP_NOTE");
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO DRT_GROUPS (" + fields + ") "
+                   "VALUES(:name, :students, :course, :subgroups, :semestr, :faculty, :spec, :note);");
+
+    query.bindValue(":name", group.getName());
+    query.bindValue(":students", group.getNumberOfStudents());
+    query.bindValue(":course", group.getCourse());
+    query.bindValue(":subgroups", group.getNumberOfSubgroups());
+    query.bindValue(":semestr", group.getSemestr());
+    query.bindValue(":faculty", group.getFaculty());
+    query.bindValue(":spec", group.getSpeciality());
+    query.bindValue(":note", group.getNote());
+
+    if (!query.exec())
+        return false;
+
+    return true;
+}
+
 QSqlDatabase DbService::getCurrentDatabase() const
 {
     return _db->database();

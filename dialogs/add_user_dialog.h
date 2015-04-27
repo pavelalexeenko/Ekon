@@ -25,6 +25,7 @@ private:
     QLineEdit *usernameLineEdit;
     QLineEdit *passwordLineEdit;
     QComboBox *userrolesComboBox;
+
     QPushButton *addButton;
 };
 

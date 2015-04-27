@@ -1,4 +1,5 @@
 #include "groups_widget.h"
+#include "dialogs/add_group_dialog.h"
 
 GroupsWidget::GroupsWidget(QWidget *parent) : QWidget(parent)
 {
@@ -32,6 +33,9 @@ GroupsWidget::GroupsWidget(QWidget *parent) : QWidget(parent)
 void GroupsWidget::addRow()
 {
     qDebug() << __FUNCTION__;
+    AddGroupDialog *agd = new AddGroupDialog(this);
+    connect(agd, SIGNAL(accepted()), this, SLOT(refresh()));
+    agd->show();
 }
 
 void GroupsWidget::refresh()

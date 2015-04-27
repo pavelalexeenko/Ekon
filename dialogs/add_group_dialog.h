@@ -1,5 +1,5 @@
-#ifndef ADDTEACHERDIALOG_H
-#define ADDTEACHERDIALOG_H
+#ifndef ADD_GROUP_DIALOG_H
+#define ADD_GROUP_DIALOG_H
 
 #include <database/db_service.h>
 
@@ -13,21 +13,26 @@
 #include <QMessageBox>
 #include <QDebug>
 
-class AddTeacherDialog : public QDialog
+class AddGroupDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit AddTeacherDialog(QWidget *parent = 0);
-
+    explicit AddGroupDialog(QWidget *parent = 0);
+    
 private slots:
     void addRow();
 
 private:
     QLineEdit *nameLineEdit;
-    QDoubleSpinBox *rateSpinBox;
+    QSpinBox *numberOfStudentsSpinBox;
+    QSpinBox *courseSpinBox;
+    QSpinBox *numberOfSubgroupsSpinBox;
+    QSpinBox *semestrSpinBox;
+    QLineEdit *facultyLineEdit;
+    QLineEdit *specialityLineEdit;
     QPlainTextEdit *notePlainTextEdit;
 
     QPushButton *addButton;
 };
 
-#endif // ADDTEACHERDIALOG_H
+#endif // ADD_GROUP_DIALOG_H
