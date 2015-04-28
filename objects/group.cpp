@@ -1,7 +1,17 @@
 #include "group.h"
 
-Group::Group()
+Group::Group() :
+    _id(0)
+  , _numberOfStudents(0)
+  , _course(0)
+  , _numberOfSubgroups(0)
+  , _semestr(0)
 {
+}
+
+int Group::getId() const
+{
+    return _id;
 }
 
 QString Group::getName() const
@@ -42,6 +52,11 @@ QString Group::getSpeciality() const
 QString Group::getNote() const
 {
     return _note;
+}
+
+void Group::setId(const int &id)
+{
+    _id = id;
 }
 
 void Group::setName(const QString &name)

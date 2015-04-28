@@ -43,12 +43,14 @@ bool DbService::testDatabaseConnection() const
 
 bool DbService::addUser(const User& user)
 {
+    qDebug() << __FUNCTION__;
+
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) "
                   "VALUES (:username, :password, :type)");
-    query.bindValue(0, user.getUsername());
-    query.bindValue(1, user.getPassword());
-    query.bindValue(2, user.getUserrole());
+    query.bindValue(":username", user.getUsername());
+    query.bindValue(":password", user.getPassword());
+    query.bindValue(":type", user.getUserrole());
     if (!query.exec())
         return false;
 
@@ -57,6 +59,8 @@ bool DbService::addUser(const User& user)
 
 bool DbService::addTeacher(const Teacher &teacher)
 {
+    qDebug() << __FUNCTION__;
+
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_TEACHERS (TCH_NAME, TCH_RATE, TCH_INFO) "
                   "VALUES (:name, :rate, :info)");
@@ -71,6 +75,8 @@ bool DbService::addTeacher(const Teacher &teacher)
 
 bool DbService::addDiscipline(const Discipline &discipline)
 {
+    qDebug() << __FUNCTION__;
+
     QString fields("DSC_NAME,DSC_LECTURES,DSC_LABORATORY,DSC_PRACTICAL,DSC_CONSULTATION,DSC_EXAMINATIONS,DSC_TESTS,DSC_CURRENT_CONSULTATION, "
                    "DSC_INTRODUCTORY_PRACTICE,DSC_PRE_DIPLOMA_PRACTICE,DSC_COURSEWORK,DSC_GUIDED_INDEPENDENT_WORK,DSC_CONTROL_WORK, "
                    "DSC_GRADUATION_DESIGN,DSC_GUIDE_GRADUATE,DSC_STATE_EXAM,DSC_HES,DSC_GUIDE_CHAIR,DSC_UIRS");
@@ -108,6 +114,8 @@ bool DbService::addDiscipline(const Discipline &discipline)
 
 bool DbService::addGroup(const Group& group)
 {
+    qDebug() << __FUNCTION__;
+
     QString fields("GRP_NAME,GRP_NUMBER_OF_STUDENTS,GRP_COURSE,GRP_NUMBER_OF_SUBGROUPS,GRP_SEMESTR,GRP_FACULTET,GRP_SPECIALITY,GRP_NOTE");
 
     QSqlQuery query;
@@ -125,6 +133,34 @@ bool DbService::addGroup(const Group& group)
 
     if (!query.exec())
         return false;
+
+    return true;
+}
+
+bool DbService::addFlow(const Flow &flow)
+{
+    qDebug() << __FUNCTION__;
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO DRT_FLOWS (FLW_NAME,FLW_NOTE) VALUES(:name, :note);");
+
+    query.bindValue(":name", flow.getName());
+    query.bindValue(":note", flow.getNote());
+
+    if (!query.exec())
+        return false;
+
+    int id = query.lastInsertId().toInt();
+
+    for (auto groupId : flow.getGroupIds())
+    {
+        query.prepare("INSERT INTO DRT_LINKS (LNK_FLW_ID,LNK_GRP_ID) VALUES(:flowId, :groupId);");
+        query.bindValue(":flowId", id);
+        query.bindValue(":groupId", groupId);
+
+        if (!query.exec())
+            return false;
+    }
 
     return true;
 }

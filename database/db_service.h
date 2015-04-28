@@ -5,6 +5,7 @@
 #include "objects/teacher.h"
 #include "objects/discipline.h"
 #include "objects/group.h"
+#include "objects/flow.h"
 
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -52,6 +53,7 @@ public:
     bool addTeacher(const Teacher& teacher);
     bool addDiscipline(const Discipline& discipline);
     bool addGroup(const Group& group);
+    bool addFlow(const Flow& flow);
 
 private:
     bool isCorrectVersion() const;

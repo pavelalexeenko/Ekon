@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     objects/teacher.cpp \
     objects/discipline.cpp \
     objects/group.cpp \
-    dialogs/add_group_dialog.cpp
+    dialogs/add_group_dialog.cpp \
+    objects/flow.cpp
 
 HEADERS  += \
     main_window.h \
@@ -67,6 +68,7 @@ HEADERS  += \
     objects/teacher.h \
     objects/discipline.h \
     objects/group.h \
-    dialogs/add_group_dialog.h
+    dialogs/add_group_dialog.h \
+    objects/flow.h
 
 CONFIG += c++11

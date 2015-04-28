@@ -1,8 +1,32 @@
 #include "discipline.h"
 
-Discipline::Discipline()
+Discipline::Discipline() :
+    _id(0)
+  , _lectures(0)
+  , _laboratory(0)
+  , _practical(0)
+  , _consultation(false)
+  , _examinations(false)
+  , _tests(false)
+  , _currentConsultation(false)
+  , _introductoryPractice(false)
+  , _preDiplomaPractice(false)
+  , _courseWork(false)
+  , _guideIndependentWork(false)
+  , _controlWork(false)
+  , _graduationDesign(false)
+  , _guideGraduate(false)
+  , _stateExam(false)
+  , _hes(false)
+  , _guideChair(false)
+  , _uirs(false)
 {
 
+}
+
+int Discipline::getId() const
+{
+    return _id;
 }
 
 QString Discipline::getName() const
@@ -98,6 +122,11 @@ bool Discipline::hasGuideChair() const
 bool Discipline::hasUirs() const
 {
     return _uirs;
+}
+
+void Discipline::setId(const int &id)
+{
+    _id = id;
 }
 
 void Discipline::setName(const QString &name)

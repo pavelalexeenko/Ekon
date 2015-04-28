@@ -8,6 +8,7 @@ class Discipline
 public:
     Discipline();
 
+    int getId() const;
     QString getName() const;
     double getLectures() const;
     double getLaboratory() const;
@@ -28,6 +29,7 @@ public:
     bool hasGuideChair() const;
     bool hasUirs() const;
 
+    void setId(const int& id);
     void setName(const QString& name);
     void setLectures(const double& lectures);
     void setLaboratory(const double& laboratory);
@@ -49,6 +51,7 @@ public:
     void setUirs(const bool& uirs);
 
 private:
+    int _id;
     QString _name;
     double _lectures;
     double _laboratory;

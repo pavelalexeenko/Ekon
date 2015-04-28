@@ -8,6 +8,7 @@ class Group
 public:
     Group();
 
+    int getId() const;
     QString getName() const;
     int getNumberOfStudents() const;
     int getCourse() const;
@@ -17,6 +18,7 @@ public:
     QString getSpeciality() const;
     QString getNote() const;
 
+    void setId(const int& id);
     void setName(const QString& name);
     void setNumberOfStudents(const int& numberOfStudents);
     void setCourse(const int& course);
@@ -27,6 +29,7 @@ public:
     void setNote(const QString& note);
 
 private:
+    int _id;
     QString _name;
     int _numberOfStudents;
     int _course;
