@@ -40,7 +40,9 @@ SOURCES += main.cpp\
     objects/discipline.cpp \
     objects/group.cpp \
     dialogs/add_group_dialog.cpp \
-    objects/flow.cpp
+    objects/flow.cpp \
+    dialogs/add_flow_dialog.cpp \
+    dialogs/add_group_to_flow_dialog.cpp
 
 HEADERS  += \
     main_window.h \
@@ -69,6 +71,8 @@ HEADERS  += \
     objects/discipline.h \
     objects/group.h \
     dialogs/add_group_dialog.h \
-    objects/flow.h
+    objects/flow.h \
+    dialogs/add_flow_dialog.h \
+    dialogs/add_group_to_flow_dialog.h
 
 CONFIG += c++11

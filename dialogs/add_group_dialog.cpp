@@ -2,17 +2,16 @@
 
 AddGroupDialog::AddGroupDialog(QWidget *parent) :
     QDialog(parent)
+    , nameLineEdit(new QLineEdit(this))
+    , numberOfStudentsSpinBox(new QSpinBox(this))
+    , courseSpinBox(new QSpinBox(this))
+    , numberOfSubgroupsSpinBox(new QSpinBox(this))
+    , semestrSpinBox(new QSpinBox(this))
+    , facultyLineEdit(new QLineEdit(this))
+    , specialityLineEdit(new QLineEdit(this))
+    , notePlainTextEdit(new QPlainTextEdit(this))
+    , addButton(new QPushButton(QString("Добавить"), this))
 {
-    nameLineEdit = new QLineEdit(this);
-    numberOfStudentsSpinBox = new QSpinBox(this);
-    courseSpinBox = new QSpinBox(this);
-    numberOfSubgroupsSpinBox = new QSpinBox(this);
-    semestrSpinBox = new QSpinBox(this);
-    facultyLineEdit = new QLineEdit(this);
-    specialityLineEdit = new QLineEdit(this);
-    notePlainTextEdit = new QPlainTextEdit(this);
-    addButton = new QPushButton(QString("Добавить"), this);
-
     courseSpinBox->setRange(1, 7);
 
     connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));

@@ -34,7 +34,7 @@ void UsersWidget::addRow()
     qDebug() << __FUNCTION__;
     AddUserDialog *aud = new AddUserDialog(this);
     connect(aud, SIGNAL(accepted()), this, SLOT(refresh()));
-    aud->show();
+    aud->exec();
 }
 
 void UsersWidget::refresh()

@@ -35,7 +35,7 @@ void GroupsWidget::addRow()
     qDebug() << __FUNCTION__;
     AddGroupDialog *agd = new AddGroupDialog(this);
     connect(agd, SIGNAL(accepted()), this, SLOT(refresh()));
-    agd->show();
+    agd->exec();
 }
 
 void GroupsWidget::refresh()

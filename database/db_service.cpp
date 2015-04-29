@@ -165,6 +165,87 @@ bool DbService::addFlow(const Flow &flow)
     return true;
 }
 
+QList<Group> DbService::getAllGroups() const
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM DRT_GROUPS");
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    if (query.size() < 1)
+        return QList<Group>();
+
+    QList<Group> groups;
+
+    while(query.next())
+        groups.append(toGroupObject(query.record()));
+
+    return groups;
+}
+
+QList<Flow> DbService::getAllFlows() const
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM DRT_FLOWS");
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    if (query.size() < 1)
+        return QList<Flow>();
+
+    QList<Flow> flows;
+
+    while(query.next())
+        flows.append(toFlowObject(query.record()));
+
+    return flows;
+}
+
+Group DbService::toGroupObject(const QSqlRecord& record) const
+{
+    Group group;
+    group.setId(record.value("GRP_ID").toInt());
+    group.setName(record.value("GRP_NAME").toString());
+    group.setNumberOfStudents(record.value("GRP_NUMBER_OF_STUDENTS").toInt());
+    group.setCourse(record.value("GRP_COURSE").toInt());
+    group.setNumberOfSubgroups(record.value("GRP_NUMBER_OF_SUBGROUPS").toInt());
+    group.setSemestr(record.value("GRP_SEMESTR").toInt());
+    group.setFaculty(record.value("GRP_FACULTET").toString());
+    group.setSpeciality(record.value("GRP_SPECIALITY").toString());
+    group.setNote(record.value("GRP_NOTE").toString());
+
+    return group;
+}
+
+Flow DbService::toFlowObject(const QSqlRecord& record) const
+{
+    Flow flow;
+    flow.setId(record.value("FLW_ID").toInt());
+    flow.setName(record.value("FLW_NAME").toString());
+    flow.setNote(record.value("FLW_NOTE").toString());
+    flow.setGroupIds(getGroupsIdsByFlowId(flow.getId()));
+
+    return flow;
+}
+
+QSet<int> DbService::getGroupsIdsByFlowId(const int &flowId) const
+{
+    QSqlQuery query;
+    query.prepare("SELECT LNK_GRP_ID FROM DRT_LINKS WHERE LNK_FLW_ID = :flowId");
+    query.bindValue(":flowId", flowId);
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    QSet<int> ids;
+    while (query.next())
+        ids.insert(query.value("LNK_GRP_ID").toInt());
+
+    return ids;
+}
+
 QSqlDatabase DbService::getCurrentDatabase() const
 {
     return _db->database();
@@ -254,7 +335,7 @@ bool DbService::loginAs(QString username, QString password)
 {
     QSqlQuery query;
     query.prepare("SELECT USER_USERNAME, USER_PASSWORD, USER_TYPE_ID FROM DRT_USERS WHERE USER_USERNAME = :username");
-    query.bindValue(0, username);
+    query.bindValue(":username", username);
     query.exec();
 
     if (!query.first())
@@ -277,6 +358,8 @@ void DbService::createDatabase() const
     qDebug() << __FUNCTION__;
 
     removeCurrentFile();
+
+    QSqlDatabase::database().transaction();
     createUsersTypesTable();
     createUsersTable();
     createDisciplinesTable();
@@ -288,6 +371,7 @@ void DbService::createDatabase() const
     createLoadCalculation();
     createLoadDistribution();
     createLoadCalculationView();
+    QSqlDatabase::database().commit();
 }
 
 void DbService::removeCurrentFile() const

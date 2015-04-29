@@ -2,12 +2,11 @@
 
 AddUserDialog::AddUserDialog(QWidget *parent) :
     QDialog(parent)
+    , usernameLineEdit(new QLineEdit(this))
+    , passwordLineEdit(new QLineEdit(this))
+    , userrolesComboBox(new QComboBox(this))
+    , addButton(new QPushButton(QString("Добавить"), this))
 {
-    usernameLineEdit = new QLineEdit(this);
-    passwordLineEdit = new QLineEdit(this);
-    userrolesComboBox = new QComboBox(this);
-    addButton = new QPushButton(QString("Добавить"), this);
-
     userrolesComboBox->addItems(DbService::getInstance()->getAllUserroles());
 
     connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));

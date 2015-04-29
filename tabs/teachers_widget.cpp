@@ -30,7 +30,7 @@ void TeachersWidget::addRow()
     qDebug() << __FUNCTION__;
     AddTeacherDialog *atd = new AddTeacherDialog(this);
     connect(atd, SIGNAL(accepted()), this, SLOT(refresh()));
-    atd->show();
+    atd->exec();
 }
 
 void TeachersWidget::refresh()

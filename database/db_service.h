@@ -55,6 +55,9 @@ public:
     bool addGroup(const Group& group);
     bool addFlow(const Flow& flow);
 
+    QList<Group> getAllGroups() const;
+    QList<Flow> getAllFlows() const;
+
 private:
     bool isCorrectVersion() const;
 
@@ -73,6 +76,12 @@ private:
 
     void createFlowsView() const;
     void createLoadCalculationView() const;
+
+private:
+    Group toGroupObject(const QSqlRecord& record) const;
+    Flow toFlowObject(const QSqlRecord& record) const;
+
+    QSet<int> getGroupsIdsByFlowId(const int& flowId) const;
 
 private:
     const QString _defaultDatabaseFilename;

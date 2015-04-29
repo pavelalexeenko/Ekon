@@ -46,7 +46,7 @@ void DisciplinesWidget::addRow()
     qDebug() << __FUNCTION__;
     AddDisciplineDialog *add = new AddDisciplineDialog(this);
     connect(add, SIGNAL(accepted()), this, SLOT(refresh()));
-    add->show();
+    add->exec();
 }
 
 void DisciplinesWidget::refresh()

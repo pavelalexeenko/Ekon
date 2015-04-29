@@ -1,4 +1,5 @@
 #include "flows_widget.h"
+#include "dialogs/add_flow_dialog.h"
 
 FlowsWidget::FlowsWidget(QWidget *parent) : QWidget(parent)
 {
@@ -27,6 +28,9 @@ FlowsWidget::FlowsWidget(QWidget *parent) : QWidget(parent)
 void FlowsWidget::addRow()
 {
     qDebug() << __FUNCTION__;
+    AddFlowDialog *afd = new AddFlowDialog(this);
+    connect(afd, SIGNAL(accepted()), this, SLOT(refresh()));
+    afd->exec();
 }
 
 void FlowsWidget::refresh()

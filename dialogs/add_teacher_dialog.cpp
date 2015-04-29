@@ -2,12 +2,11 @@
 
 AddTeacherDialog::AddTeacherDialog(QWidget *parent):
     QDialog(parent)
+    , nameLineEdit(new QLineEdit(this))
+    , rateSpinBox(new QDoubleSpinBox(this))
+    , notePlainTextEdit(new QPlainTextEdit(this))
+    , addButton(new QPushButton(QString("Добавить"), this))
 {
-    nameLineEdit = new QLineEdit(this);
-    rateSpinBox = new QDoubleSpinBox(this);
-    notePlainTextEdit = new QPlainTextEdit(this);
-    addButton = new QPushButton(QString("Добавить"), this);
-
     rateSpinBox->setRange(0, 2);
     rateSpinBox->setSingleStep(0.25);
 
