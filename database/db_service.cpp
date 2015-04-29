@@ -141,6 +141,7 @@ bool DbService::addFlow(const Flow &flow)
 {
     qDebug() << __FUNCTION__;
 
+    _db->transaction();
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_FLOWS (FLW_NAME,FLW_NOTE) VALUES(:name, :note);");
 
@@ -148,7 +149,7 @@ bool DbService::addFlow(const Flow &flow)
     query.bindValue(":note", flow.getNote());
 
     if (!query.exec())
-        return false;
+        return !_db->rollback();;
 
     int id = query.lastInsertId().toInt();
 
@@ -159,10 +160,43 @@ bool DbService::addFlow(const Flow &flow)
         query.bindValue(":groupId", groupId);
 
         if (!query.exec())
-            return false;
+            return !_db->rollback();
     }
 
-    return true;
+    return _db->commit();;
+}
+
+bool DbService::updateFlow(const Flow &flow)
+{
+    qDebug() << __FUNCTION__;
+
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("UPDATE DRT_FLOWS SET FLW_NAME = :name, FLW_NOTE = :note WHERE FLW_ID = :flowId");
+
+    query.bindValue(":name", flow.getName());
+    query.bindValue(":note", flow.getNote());
+    query.bindValue(":flowId", flow.getId());
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    query.prepare("DELETE FROM DRT_LINKS WHERE LNK_FLW_ID = :flowId;");
+    query.bindValue(":flowId", flow.getId());
+    if (!query.exec())
+        return !_db->rollback();
+
+    for (auto groupId : flow.getGroupIds())
+    {
+        query.prepare("INSERT INTO DRT_LINKS (LNK_FLW_ID,LNK_GRP_ID) VALUES(:flowId, :groupId);");
+        query.bindValue(":flowId", flow.getId());
+        query.bindValue(":groupId", groupId);
+
+        if (!query.exec())
+            return !_db->rollback();
+    }
+
+    return _db->commit();;
 }
 
 QString DbService::getFlowNameById(const int &id)

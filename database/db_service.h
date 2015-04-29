@@ -56,6 +56,7 @@ public:
     bool addDiscipline(const Discipline& discipline);
     bool addGroup(const Group& group);
     bool addFlow(const Flow& flow);
+    bool updateFlow(const Flow& flow);
 
     QList<Group> getAllGroups() const;
     QList<Flow> getAllFlows() const;
