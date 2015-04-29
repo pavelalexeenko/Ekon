@@ -21,6 +21,7 @@ public:
 private slots:
     void addRow();
     void addGroups();
+    void removeGroups();
 
 private:
     QLineEdit *nameLineEdit;

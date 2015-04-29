@@ -7,6 +7,8 @@ AddTeacherDialog::AddTeacherDialog(QWidget *parent):
     , notePlainTextEdit(new QPlainTextEdit(this))
     , addButton(new QPushButton(QString("Добавить"), this))
 {
+    setWindowTitle("Добавление преподавателя");
+
     rateSpinBox->setRange(0, 2);
     rateSpinBox->setSingleStep(0.25);
 

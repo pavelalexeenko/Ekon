@@ -12,6 +12,8 @@ AddGroupDialog::AddGroupDialog(QWidget *parent) :
     , notePlainTextEdit(new QPlainTextEdit(this))
     , addButton(new QPushButton(QString("Добавить"), this))
 {
+    setWindowTitle("Добавление группы");
+
     courseSpinBox->setRange(1, 7);
 
     connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));

@@ -17,12 +17,18 @@ class AddGroupToFlowDialog : public QDialog
 public:
     explicit AddGroupToFlowDialog(QWidget *parent = 0);
 
+    QList<int> getSelectedGroupsId() const;
+
+private slots:
+    void setSelectedIds();
 
 private:
     QListWidget *groupsListWidget;
 
     QPushButton *addButton;
     QPushButton *exitButton;
+
+    QList<int> selectedIds;
 };
 
 #endif // ADDGROUPTOFLOWDIALOG_H

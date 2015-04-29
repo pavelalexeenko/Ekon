@@ -10,12 +10,15 @@ AddFlowDialog::AddFlowDialog(QWidget *parent):
   , removeGroupButton(new QPushButton(QString("&Удалить группу"), this))
   , addButton(new QPushButton(QString("&Добавить"), this))
 {
+    setWindowTitle("Добавление потока");
+
     connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));
     connect(addGroupButton, SIGNAL(clicked()), this, SLOT(addGroups()));
+    connect(removeGroupButton, SIGNAL(clicked()), this, SLOT(removeGroups()));
 
     QFormLayout *formLayout = new QFormLayout(this);
 
-    QFormLayout *buttonsLayout = new QFormLayout(this);
+    QFormLayout *buttonsLayout = new QFormLayout();
     buttonsLayout->addRow(addGroupButton, removeGroupButton);
 
     formLayout->addRow(tr("&Название потока:"), nameLineEdit);
@@ -45,7 +48,7 @@ void AddFlowDialog::addRow()
     for(int i = 0; i < groupsListWidget->count(); ++i)
     {
         QListWidgetItem* item = groupsListWidget->item(i);
-        ids.insert(item->data(Qt::UserRole).getId());
+        ids.insert(item->data(Qt::UserRole).toInt());
     }
 
     flow.setGroupIds(ids);
@@ -60,6 +63,46 @@ void AddFlowDialog::addGroups()
 {
     qDebug() << __FUNCTION__;
     AddGroupToFlowDialog *agtfd = new AddGroupToFlowDialog(this);
-    connect(agtfd, SIGNAL(accepted()), this, SLOT(refresh()));
     agtfd->exec();
+
+    QList<int> ids = agtfd->getSelectedGroupsId();
+
+    QSet<int> currentIds;
+    for(int i = 0; i < groupsListWidget->count(); ++i)
+    {
+        QListWidgetItem* item = groupsListWidget->item(i);
+        currentIds.insert(item->data(Qt::UserRole).toInt());
+    }
+
+    for (auto id : ids)
+    {
+        if (!currentIds.contains(id))
+        {
+            QListWidgetItem* item = new QListWidgetItem(groupsListWidget);
+            item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+            item->setCheckState(Qt::Unchecked);
+            item->setData(Qt::UserRole, id);
+            item->setText(DbService::getInstance()->getFlowNameById(id));
+            groupsListWidget->addItem(item);
+        }
+    }
 }
+
+void AddFlowDialog::removeGroups()
+{
+    qDebug() << __FUNCTION__;
+    QList<QListWidgetItem*> list;
+    for(int i = 0; i < groupsListWidget->count(); ++i)
+    {
+        QListWidgetItem* item = groupsListWidget->item(i);
+        if (item->checkState() == Qt::Checked)
+            list.append(item);
+            //delete groupsListWidget->takeItem(i);
+    }
+
+    for (auto &item : list)
+    {
+        delete item;
+    }
+}
+

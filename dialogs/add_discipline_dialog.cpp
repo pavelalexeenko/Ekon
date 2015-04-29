@@ -26,6 +26,8 @@ AddDisciplineDialog::AddDisciplineDialog(QWidget *parent):
 
     addButton = new QPushButton(QString("Добавить"), this);
 
+    setWindowTitle("Добавление дисциплины");
+
     namePlainTextEdit->setMinimumHeight(30);
     namePlainTextEdit->setMinimumWidth(200);
 

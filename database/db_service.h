@@ -45,6 +45,8 @@ public:
     QString getCurrentDataBasePath() const;
     QString getLastError() const;
 
+    QString getFlowNameById(const int& id);
+
     bool connectToAnotherDatabase(QString filename);
     bool loginAs(QString username, QString password);
     bool testDatabaseConnection() const;

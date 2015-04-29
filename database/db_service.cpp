@@ -165,16 +165,26 @@ bool DbService::addFlow(const Flow &flow)
     return true;
 }
 
+QString DbService::getFlowNameById(const int &id)
+{
+    QSqlQuery query;
+    query.prepare("SELECT GRP_NAME FROM DRT_GROUPS WHERE GRP_ID = :id");
+    query.bindValue(":id", id);
+    query.exec();
+
+    if (!query.first())
+        throw QString("No group with such id.");
+
+    return query.record().value("GRP_NAME").toString();
+}
+
 QList<Group> DbService::getAllGroups() const
 {
     QSqlQuery query;
-    query.prepare("SELECT * FROM DRT_GROUPS");
+    query.prepare("SELECT * FROM DRT_GROUPS ORDER BY GRP_NAME");
 
     if (!query.exec())
         throw QString(query.lastError().text());
-
-    if (query.size() < 1)
-        return QList<Group>();
 
     QList<Group> groups;
 
@@ -187,7 +197,7 @@ QList<Group> DbService::getAllGroups() const
 QList<Flow> DbService::getAllFlows() const
 {
     QSqlQuery query;
-    query.prepare("SELECT * FROM DRT_FLOWS");
+    query.prepare("SELECT * FROM DRT_FLOWS ORDER BY FLW_NAME");
 
     if (!query.exec())
         throw QString(query.lastError().text());
