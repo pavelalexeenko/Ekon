@@ -17,11 +17,13 @@ class AddFlowDialog : public QDialog
     Q_OBJECT
 public:
     explicit AddFlowDialog(QWidget *parent = 0);
+    explicit AddFlowDialog(const int& id, QWidget *parent = 0);
 
 private slots:
     void addRow();
     void addGroups();
     void removeGroups();
+    void changeFlow();
 
 private:
     QLineEdit *nameLineEdit;
@@ -32,6 +34,8 @@ private:
     QPushButton *removeGroupButton;
 
     QPushButton *addButton;
+
+    int _id;
 };
 
 #endif // ADDFLOWDIALOG_H

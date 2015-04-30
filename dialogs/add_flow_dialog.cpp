@@ -10,6 +10,8 @@ AddFlowDialog::AddFlowDialog(QWidget *parent):
   , removeGroupButton(new QPushButton(QString("&Удалить группу"), this))
   , addButton(new QPushButton(QString("&Добавить"), this))
 {
+    qDebug() << __FUNCTION__;
+
     setWindowTitle("Добавление потока");
 
     connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));
@@ -27,6 +29,50 @@ AddFlowDialog::AddFlowDialog(QWidget *parent):
     formLayout->addRow(tr("&Примечание:"), notePlainTextEdit);
     formLayout->addRow(tr(""), addButton);
     setLayout(formLayout);
+}
+
+AddFlowDialog::AddFlowDialog(const int& id, QWidget *parent):
+    QDialog(parent)
+  , nameLineEdit(new QLineEdit(this))
+  , groupsListWidget(new QListWidget(this))
+  , notePlainTextEdit(new QPlainTextEdit(this))
+  , addGroupButton(new QPushButton(QString("&Добавить группу"), this))
+  , removeGroupButton(new QPushButton(QString("&Удалить группу"), this))
+  , addButton(new QPushButton(QString("&Сохранить"), this))
+  , _id(id)
+{
+    qDebug() << __FUNCTION__;
+
+    setWindowTitle("Изменение потока");
+
+    connect(addButton, SIGNAL(clicked()), this, SLOT(changeFlow()));
+    connect(addGroupButton, SIGNAL(clicked()), this, SLOT(addGroups()));
+    connect(removeGroupButton, SIGNAL(clicked()), this, SLOT(removeGroups()));
+
+    QFormLayout *formLayout = new QFormLayout(this);
+
+    QFormLayout *buttonsLayout = new QFormLayout();
+    buttonsLayout->addRow(addGroupButton, removeGroupButton);
+
+    formLayout->addRow(tr("&Название потока:"), nameLineEdit);
+    formLayout->addRow(tr("Список групп"), groupsListWidget);
+    formLayout->addRow(tr(""), buttonsLayout);
+    formLayout->addRow(tr("&Примечание:"), notePlainTextEdit);
+    formLayout->addRow(tr(""), addButton);
+    setLayout(formLayout);
+
+    Flow flow = DbService::getInstance()->getFlowById(_id);
+    nameLineEdit->setText(flow.getName());
+    for (auto id : flow.getGroupIds())
+    {
+        QListWidgetItem* item = new QListWidgetItem(groupsListWidget);
+        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+        item->setCheckState(Qt::Unchecked);
+        item->setData(Qt::UserRole, id);
+        item->setText(DbService::getInstance()->getGroupNameById(id));
+        groupsListWidget->addItem(item);
+    }
+    notePlainTextEdit->setPlainText(flow.getNote());
 }
 
 void AddFlowDialog::addRow()
@@ -82,7 +128,7 @@ void AddFlowDialog::addGroups()
             item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
             item->setCheckState(Qt::Unchecked);
             item->setData(Qt::UserRole, id);
-            item->setText(DbService::getInstance()->getFlowNameById(id));
+            item->setText(DbService::getInstance()->getGroupNameById(id));
             groupsListWidget->addItem(item);
         }
     }
@@ -97,12 +143,42 @@ void AddFlowDialog::removeGroups()
         QListWidgetItem* item = groupsListWidget->item(i);
         if (item->checkState() == Qt::Checked)
             list.append(item);
-            //delete groupsListWidget->takeItem(i);
     }
 
     for (auto &item : list)
     {
         delete item;
     }
+}
+
+void AddFlowDialog::changeFlow()
+{
+    qDebug() << __FUNCTION__;
+
+    if (nameLineEdit->text().isEmpty() ||
+            groupsListWidget->count() == 0)
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Some fields are empty."), QMessageBox::Ok);
+        return;
+    }
+
+    Flow flow;
+    flow.setId(_id);
+    flow.setName(nameLineEdit->text());
+    flow.setNote(notePlainTextEdit->toPlainText());
+
+    QSet<int> ids;
+    for(int i = 0; i < groupsListWidget->count(); ++i)
+    {
+        QListWidgetItem* item = groupsListWidget->item(i);
+        ids.insert(item->data(Qt::UserRole).toInt());
+    }
+
+    flow.setGroupIds(ids);
+
+    if (DbService::getInstance()->updateFlow(flow))
+        this->accept();
+    else
+        QMessageBox::critical(this, tr("Error"), tr("Database error while adding a flow."), QMessageBox::Ok);
 }
 

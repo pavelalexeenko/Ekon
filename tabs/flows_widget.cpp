@@ -23,6 +23,7 @@ FlowsWidget::FlowsWidget(QWidget *parent) : QWidget(parent)
     this->setLayout(layout);
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
+    connect(flowsTableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editRow(QModelIndex)));
 }
 
 void FlowsWidget::addRow()
@@ -37,4 +38,12 @@ void FlowsWidget::refresh()
 {
     qDebug() << __FUNCTION__;
     flowsTableModel->select();
+}
+
+void FlowsWidget::editRow(const QModelIndex &index)
+{
+    qDebug() << __FUNCTION__;
+    AddFlowDialog *afd = new AddFlowDialog(flowsTableModel->data(flowsTableModel->index(index.row(), 0)).toInt(), this);
+    connect(afd, SIGNAL(accepted()), this, SLOT(refresh()));
+    afd->exec();
 }
