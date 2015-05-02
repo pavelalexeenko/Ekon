@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     dialogs/add_group_dialog.cpp \
     objects/flow.cpp \
     dialogs/add_flow_dialog.cpp \
-    dialogs/add_group_to_flow_dialog.cpp
+    dialogs/add_group_to_flow_dialog.cpp \
+    dialogs/add_loadcalculation_dialog.cpp
 
 HEADERS  += \
     main_window.h \
@@ -73,6 +74,7 @@ HEADERS  += \
     dialogs/add_group_dialog.h \
     objects/flow.h \
     dialogs/add_flow_dialog.h \
-    dialogs/add_group_to_flow_dialog.h
+    dialogs/add_group_to_flow_dialog.h \
+    dialogs/add_loadcalculation_dialog.h
 
 CONFIG += c++11

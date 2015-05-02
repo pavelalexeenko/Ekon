@@ -1,4 +1,5 @@
 #include "load_calculation_widget.h"
+#include "dialogs/add_loadcalculation_dialog.h"
 
 LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
 {
@@ -30,6 +31,10 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
 void LoadCalculationWidget::addRow()
 {
     qDebug() << __FUNCTION__;
+
+    AddLoadcalculationDialog *ald = new AddLoadcalculationDialog(this);
+    connect(ald, SIGNAL(accepted()), this, SLOT(refresh()));
+    ald->exec();
 }
 
 void LoadCalculationWidget::refresh()
