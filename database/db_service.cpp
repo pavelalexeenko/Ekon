@@ -607,7 +607,7 @@ void DbService::createFlowsView() const
 
     QSqlQuery query;
     query.exec("CREATE VIEW VIEW_FLOWS AS "
-               "SELECT FLW.FLW_ID, FLW.FLW_NAME, GROUP_CONCAT(GRP.GRP_NAME, ', ') as FLW_GROUPS "
+               "SELECT FLW.FLW_ID, FLW.FLW_NAME, GROUP_CONCAT(GRP.GRP_NAME, ', ') as FLW_GROUPS, FLW.FLW_NOTE "
                "FROM DRT_FLOWS FLW, DRT_GROUPS GRP, DRT_LINKS LNK "
                "WHERE FLW.FLW_ID = LNK.LNK_FLW_ID "
                "AND LNK.LNK_GRP_ID = GRP.GRP_ID "

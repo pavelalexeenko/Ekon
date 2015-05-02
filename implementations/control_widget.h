@@ -18,6 +18,9 @@ signals:
     void addRow();
     void removeRow();
 
+private slots:
+    void search();
+
 private:
     QPushButton *addRowButton;
     QPushButton *deleteRowButton;

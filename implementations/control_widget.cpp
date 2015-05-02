@@ -18,4 +18,11 @@ ControlWidget::ControlWidget(QWidget *parent) : QWidget(parent)
 
     connect(searchLineEdit, SIGNAL(returnPressed()), searchButton, SLOT(click()));
     connect(addRowButton, SIGNAL(clicked()), this, SIGNAL(addRow()));
+    connect(searchButton, SIGNAL(clicked()), this, SLOT(search()));
+}
+
+
+void ControlWidget::search()
+{
+    emit search(searchLineEdit->text().trimmed());
 }

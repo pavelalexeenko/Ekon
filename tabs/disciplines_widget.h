@@ -16,6 +16,7 @@ public:
 
 public slots:
     void addRow();
+    void search(QString str);
     void refresh();
 
 private:

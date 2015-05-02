@@ -8,7 +8,8 @@ FlowsWidget::FlowsWidget(QWidget *parent) : QWidget(parent)
     QStringList columnNames;
     columnNames << "ID"
                 << "Название потока"
-                << "Список групп";
+                << "Список групп"
+                << "Примечание";
 
     flowsTableModel = EkonTables::createTableModel(this, "VIEW_FLOWS", columnNames);
     flowsTableView = EkonTables::createTableView(this, flowsTableModel);
@@ -32,6 +33,11 @@ void FlowsWidget::addRow()
     AddFlowDialog *afd = new AddFlowDialog(this);
     connect(afd, SIGNAL(accepted()), this, SLOT(refresh()));
     afd->exec();
+}
+
+void FlowsWidget::deleteRow(const QModelIndex &index)
+{
+   // flowsTableView->selectedIndexes();
 }
 
 void FlowsWidget::refresh()

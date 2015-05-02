@@ -51,7 +51,7 @@ QTableView* EkonTables::createTableView(QWidget* parentWidget, QSqlTableModel* m
     tableView->setSortingEnabled(true);
     tableView->setDragEnabled(true);
    // tableView->setStyleSheet("QHeaderView::section {background-color:grey}");
-    tableView->verticalHeader()->hide();
+   // tableView->verticalHeader()->hide();
     tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
     for (auto i = 2; i < model->columnCount(); i++)
         tableView->horizontalHeader()->setSectionResizeMode(i, QHeaderView::Stretch);
