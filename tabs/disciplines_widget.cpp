@@ -1,5 +1,6 @@
 #include "disciplines_widget.h"
 #include "dialogs/add_discipline_dialog.h"
+#include "implementations/check_box_delegate.h"
 
 DisciplinesWidget::DisciplinesWidget(QWidget *parent) : QWidget(parent)
 {
@@ -30,6 +31,22 @@ DisciplinesWidget::DisciplinesWidget(QWidget *parent) : QWidget(parent)
     disciplinesTableModel = EkonTables::createTableModel(this, "DRT_DISCIPLINES", columnNames);
     disciplinesTableView = EkonTables::createTableView(this, disciplinesTableModel);
 
+    disciplinesTableView->setItemDelegateForColumn(5, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(6, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(7, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(8, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(9, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(10, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(11, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(12, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(13, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(14, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(15, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(16, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(17, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(18, new CheckBoxDelegate());
+    disciplinesTableView->setItemDelegateForColumn(19, new CheckBoxDelegate());
+
     controlWidget = new ControlWidget(this);
 
     QGridLayout *layout = new QGridLayout(this);
@@ -59,6 +76,7 @@ void DisciplinesWidget::search(QString str)
         {
          //   if (disciplinesTableModel->index(i,j).data().toString().contains(str.trimmed()))
             //    disciplinesTableView->back
+            ;
         }
 }
 

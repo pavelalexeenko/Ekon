@@ -13,6 +13,7 @@
 #include <QSqlRecord>
 #include <QFile>
 #include <QDir>
+#include <QSettings>
 
 #include <QStringList>
 #include <QSharedPointer>
@@ -81,6 +82,7 @@ private:
     void createFlowsView() const;
     void createLoadCalculationView() const;
 
+    void createCoefficientTable() const;
 private:
     Group toGroupObject(const QSqlRecord& record) const;
     Flow toFlowObject(const QSqlRecord& record) const;

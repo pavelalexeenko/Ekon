@@ -6,7 +6,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
-#include <QListWidget>
+#include <QComboBox>
 #include <QFormLayout>
 #include <QMessageBox>
 #include <QDebug>
@@ -18,17 +18,11 @@ public:
     explicit AddLoadcalculationDialog(QWidget *parent = 0);
     
 private slots:
-//    void addRow();
-//    void addGroups();
-//    void removeGroups();
-//    void changeFlow();
+    void addRow();
 
 private:
-    QLineEdit *nameLineEdit;
-    QListWidget *groupsListWidget;
-
-    QPushButton *addGroupButton;
-    QPushButton *removeGroupButton;
+    QComboBox *flowComboBox;
+    QComboBox *disciplineComboBox;
 
     QPushButton *addButton;
 

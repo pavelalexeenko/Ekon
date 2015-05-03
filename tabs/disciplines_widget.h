@@ -7,6 +7,7 @@
 #include <implementations/ekon_tables.h>
 
 #include <QDebug>
+#include <QSqlQuery>
 
 class DisciplinesWidget : public QWidget
 {

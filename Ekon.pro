@@ -21,8 +21,6 @@ SOURCES += main.cpp\
     tables_wigdet.cpp \
     tables/secretary_widget.cpp \
     tables/worker_widget.cpp \
-    implementations/checkbox_item_delegate.cpp \
-    implementations/centered_checkbox.cpp \
     implementations/control_widget.cpp \
     implementations/ekon_tables.cpp \
     dialogs/login_window.cpp \
@@ -43,7 +41,8 @@ SOURCES += main.cpp\
     objects/flow.cpp \
     dialogs/add_flow_dialog.cpp \
     dialogs/add_group_to_flow_dialog.cpp \
-    dialogs/add_loadcalculation_dialog.cpp
+    dialogs/add_loadcalculation_dialog.cpp \
+    implementations/check_box_delegate.cpp
 
 HEADERS  += \
     main_window.h \
@@ -53,8 +52,6 @@ HEADERS  += \
     tables_wigdet.h \
     tables/secretary_widget.h \
     tables/worker_widget.h \
-    implementations/checkbox_item_delegate.h \
-    implementations/centered_checkbox.h \
     implementations/control_widget.h \
     implementations/ekon_tables.h \
     dialogs/login_window.h \
@@ -75,6 +72,7 @@ HEADERS  += \
     objects/flow.h \
     dialogs/add_flow_dialog.h \
     dialogs/add_group_to_flow_dialog.h \
-    dialogs/add_loadcalculation_dialog.h
+    dialogs/add_loadcalculation_dialog.h \
+    implementations/check_box_delegate.h
 
 CONFIG += c++11

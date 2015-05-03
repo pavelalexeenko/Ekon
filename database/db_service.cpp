@@ -120,7 +120,7 @@ bool DbService::addGroup(const Group& group)
 
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_GROUPS (" + fields + ") "
-                   "VALUES(:name, :students, :course, :subgroups, :semestr, :faculty, :spec, :note);");
+                  "VALUES(:name, :students, :course, :subgroups, :semestr, :faculty, :spec, :note);");
 
     query.bindValue(":name", group.getName());
     query.bindValue(":students", group.getNumberOfStudents());
@@ -348,6 +348,7 @@ bool DbService::isCorrectVersion() const
     tablesList.append(QString("DRT_LINKS"));
     tablesList.append(QString("DRT_LOAD_CALCULATION"));
     tablesList.append(QString("DRT_LOAD_DISTRIBUTION"));
+    tablesList.append(QString("DRT_FACTORS"));
 
     tablesList.append(QString("VIEW_FLOWS"));
     tablesList.append(QString("VIEW_LOAD_CALCULATION"));
@@ -625,6 +626,8 @@ void DbService::createLoadCalculationView() const
                "WHERE LCL.LCL_FLW_ID = VFLW.FLW_ID "
                "AND LCL.LCL_DSC_ID = DSC.DSC_ID "
                "GROUP BY LCL.LCL_ID");
+
+    qDebug() << query.lastError().text();
 }
 
 void DbService::createLoadCalculation() const
@@ -665,4 +668,36 @@ void DbService::createLoadDistribution() const
     query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(2,2);");
     query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(3,3);");
     query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(3,4);");
+}
+
+void DbService::createCoefficientTable() const
+{
+    qDebug() << __FUNCTION__;
+
+    QSqlQuery query;
+    query.exec("CREATE TABLE DRT_FACTORS("
+               "FCT_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
+               "FCT_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
+               "FCT_EXAMINATIONS INTEGER NOT NULL DEFAULT 0, "
+               "FCT_TESTS INTEGER NOT NULL DEFAULT 0, "
+               "FCT_CURRENT_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
+               "FCT_INTRODUCTORY_PRACTICE INTEGER NOT NULL DEFAULT 0, "
+               "FCT_PRE_DIPLOMA_PRACTICE INTEGER NOT NULL DEFAULT 0, "
+               "FCT_COURSEWORK INTEGER NOT NULL DEFAULT 0, "
+               "FCT_GUIDED_INDEPENDENT_WORK INTEGER NOT NULL DEFAULT 0, "
+               "FCT_CONTROL_WORK INTEGER NOT NULL DEFAULT 0, "
+               "FCT_GRADUATION_DESIGN INTEGER NOT NULL DEFAULT 0, "
+               "FCT_GUIDE_GRADUATE INTEGER NOT NULL DEFAULT 0, "
+               "FCT_STATE_EXAM INTEGER NOT NULL DEFAULT 0, "
+               "FCT_HES INTEGER NOT NULL DEFAULT 0, "
+               "FCT_GUIDE_CHAIR INTEGER NOT NULL DEFAULT 0, "
+               "FCT_UIRS INTEGER NOT NULL DEFAULT 0 "
+               ");");
+
+    QString fields("FCT_CONSULTATION,FCT_EXAMINATIONS,FCT_TESTS,FCT_CURRENT_CONSULTATION,FCT_INTRODUCTORY_PRACTICE,"
+                  "FCT_PRE_DIPLOMA_PRACTICE,FCT_COURSEWORK,FCT_GUIDED_INDEPENDENT_WORK,FCT_CONTROL_WORK,"
+                  "FCT_GRADUATION_DESIGN,FCT_GUIDE_GRADUATE,FCT_STATE_EXAM,FCT_HES,FCT_GUIDE_CHAIR,FCT_UIRS");
+
+    query.exec("INSERT INTO DRT_FACTORS (" + fields + ") VALUES (1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);");
+
 }
