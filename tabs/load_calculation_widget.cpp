@@ -8,15 +8,30 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
     QStringList columnNames;
     columnNames << "ID"
                 << "Название дисциплины"
-                << "Название потока";
+                << "Название потока"
+                << "Лекции"
+                << "Лабоработные"
+                << "Практики"
+                << "Консультации"
+                << "Зачет"
+                << "TESTS"
+                << "Текущие консультации"
+                << "INTRODUCTORY PRACTICE"
+                << "Преддипломная практика"
+                << "Курсовая работа"
+                << "GUIDED_INDEPENDENT_WORK"
+                << "Контрольная работа"
+                << "GRADUATION_DESIGN "
+                << "GUIDE_GRADUATE"
+                << "Экзамен"
+                << "ГЭК"
+                << "GUIDE_CHAIR"
+                << "УИРС";
 
-    QList<QPair<int, QSqlRelation> > relations;
-    relations.append(qMakePair(1, QSqlRelation("DRT_DISCIPLINES", "DSC_ID", "DSC_NAME")));
-    relations.append(qMakePair(2, QSqlRelation("DRT_FLOWS", "FLW_ID", "FLW_NAME")));
+    loadCalculationTableModel = EkonTables::createTableModel(this, "VIEW_LOAD_CALCULATION", columnNames);
+    loadCalculationTableView = EkonTables::createTableView(this, loadCalculationTableModel);
 
-    loadCalculationTableModel = EkonTables::createRelationalTableModel(this, "DRT_LOAD_CALCULATION", columnNames, relations);
-    loadCalculationTableView = EkonTables::createRelationTableView(this, loadCalculationTableModel);
-
+    loadCalculationTableView->setStyleSheet("QHeaderView::section {background-color:grey}");
     controlWidget = new ControlWidget(this);
 
     QGridLayout *layout = new QGridLayout(this);

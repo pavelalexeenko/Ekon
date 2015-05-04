@@ -420,6 +420,7 @@ void DbService::createDatabase() const
     QSqlDatabase::database().transaction();
     createUsersTypesTable();
     createUsersTable();
+    createFactorsTable();
     createDisciplinesTable();
     createTeachersTable();
     createGroupsTable();
@@ -446,6 +447,38 @@ void DbService::removeCurrentFile() const
     oldFile.rename(_defaultDatabaseFilename + QString("%1").arg(i));
 
     _db->open();
+}
+
+void DbService::createFactorsTable() const
+{
+    qDebug() << __FUNCTION__;
+
+    QSqlQuery query;
+    query.exec("CREATE TABLE DRT_FACTORS("
+               "FCT_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
+               "FCT_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
+               "FCT_EXAMINATIONS INTEGER NOT NULL DEFAULT 0, "
+               "FCT_TESTS INTEGER NOT NULL DEFAULT 0, "
+               "FCT_CURRENT_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
+               "FCT_INTRODUCTORY_PRACTICE INTEGER NOT NULL DEFAULT 0, "
+               "FCT_PRE_DIPLOMA_PRACTICE INTEGER NOT NULL DEFAULT 0, "
+               "FCT_COURSEWORK INTEGER NOT NULL DEFAULT 0, "
+               "FCT_GUIDED_INDEPENDENT_WORK INTEGER NOT NULL DEFAULT 0, "
+               "FCT_CONTROL_WORK INTEGER NOT NULL DEFAULT 0, "
+               "FCT_GRADUATION_DESIGN INTEGER NOT NULL DEFAULT 0, "
+               "FCT_GUIDE_GRADUATE INTEGER NOT NULL DEFAULT 0, "
+               "FCT_STATE_EXAM INTEGER NOT NULL DEFAULT 0, "
+               "FCT_HES INTEGER NOT NULL DEFAULT 0, "
+               "FCT_GUIDE_CHAIR INTEGER NOT NULL DEFAULT 0, "
+               "FCT_UIRS INTEGER NOT NULL DEFAULT 0 "
+               ");");
+
+    QString fields("FCT_CONSULTATION,FCT_EXAMINATIONS,FCT_TESTS,FCT_CURRENT_CONSULTATION,FCT_INTRODUCTORY_PRACTICE,"
+                  "FCT_PRE_DIPLOMA_PRACTICE,FCT_COURSEWORK,FCT_GUIDED_INDEPENDENT_WORK,FCT_CONTROL_WORK,"
+                  "FCT_GRADUATION_DESIGN,FCT_GUIDE_GRADUATE,FCT_STATE_EXAM,FCT_HES,FCT_GUIDE_CHAIR,FCT_UIRS");
+
+    query.exec("INSERT INTO DRT_FACTORS (" + fields + ") VALUES (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);");
+
 }
 
 void DbService::createUsersTypesTable() const
@@ -615,21 +648,6 @@ void DbService::createFlowsView() const
                "GROUP BY LNK.LNK_FLW_ID; ");
 }
 
-void DbService::createLoadCalculationView() const
-{
-    qDebug() << __FUNCTION__;
-
-    QSqlQuery query;
-    query.exec("CREATE VIEW VIEW_LOAD_CALCULATION AS "
-               "SELECT LCL.LCL_ID AS LCLV_ID, printf('%s (%s)', DSC.DSC_NAME , VFLW.FLW_NAME) as LCLV_NAME "
-               "FROM DRT_FLOWS FLW, DRT_LOAD_CALCULATION LCL, DRT_DISCIPLINES DSC, VIEW_FLOWS VFLW "
-               "WHERE LCL.LCL_FLW_ID = VFLW.FLW_ID "
-               "AND LCL.LCL_DSC_ID = DSC.DSC_ID "
-               "GROUP BY LCL.LCL_ID");
-
-    qDebug() << query.lastError().text();
-}
-
 void DbService::createLoadCalculation() const
 {
     qDebug() << __FUNCTION__;
@@ -670,34 +688,50 @@ void DbService::createLoadDistribution() const
     query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(3,4);");
 }
 
-void DbService::createCoefficientTable() const
+void DbService::createLoadCalculationView() const
 {
     qDebug() << __FUNCTION__;
 
     QSqlQuery query;
-    query.exec("CREATE TABLE DRT_FACTORS("
-               "FCT_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
-               "FCT_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
-               "FCT_EXAMINATIONS INTEGER NOT NULL DEFAULT 0, "
-               "FCT_TESTS INTEGER NOT NULL DEFAULT 0, "
-               "FCT_CURRENT_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
-               "FCT_INTRODUCTORY_PRACTICE INTEGER NOT NULL DEFAULT 0, "
-               "FCT_PRE_DIPLOMA_PRACTICE INTEGER NOT NULL DEFAULT 0, "
-               "FCT_COURSEWORK INTEGER NOT NULL DEFAULT 0, "
-               "FCT_GUIDED_INDEPENDENT_WORK INTEGER NOT NULL DEFAULT 0, "
-               "FCT_CONTROL_WORK INTEGER NOT NULL DEFAULT 0, "
-               "FCT_GRADUATION_DESIGN INTEGER NOT NULL DEFAULT 0, "
-               "FCT_GUIDE_GRADUATE INTEGER NOT NULL DEFAULT 0, "
-               "FCT_STATE_EXAM INTEGER NOT NULL DEFAULT 0, "
-               "FCT_HES INTEGER NOT NULL DEFAULT 0, "
-               "FCT_GUIDE_CHAIR INTEGER NOT NULL DEFAULT 0, "
-               "FCT_UIRS INTEGER NOT NULL DEFAULT 0 "
-               ");");
+    query.exec("CREATE VIEW VIEW_LOAD_CALCULATION AS "
+               "SELECT "
+               "LCL.LCL_ID AS LCLV_ID, "
+               "DSC.DSC_NAME as LVLC_DSC_NAME, "
+               "VFLW.FLW_NAME as LCLV_NAME, "
+               "DSC.DSC_LECTURES as LCLV_LECTURES, "
+               "DSC.DSC_LABORATORY as LCLV_LABORATORY, "
+               "DSC.DSC_PRACTICAL as LCLV_PRACTICAL, "
+               "DSC.DSC_CONSULTATION * FCT.FCT_CONSULTATION as LCLV_TEST, "
+               "DSC.DSC_EXAMINATIONS * FCT.FCT_EXAMINATIONS as LCLV_EXAMINATIONS, "
+               "DSC.DSC_TESTS * FCT.FCT_TESTS as LCLV_TESTS, "
+               "DSC.DSC_CURRENT_CONSULTATION * FCT.FCT_CURRENT_CONSULTATION as LCLV_CURRENT_CONSULTATION, "
+               "DSC.DSC_INTRODUCTORY_PRACTICE * FCT.FCT_INTRODUCTORY_PRACTICE as LCLV_INTRODUCTORY_PRACTICE, "
+               "DSC.DSC_PRE_DIPLOMA_PRACTICE * FCT.FCT_PRE_DIPLOMA_PRACTICE as LCLV_PRE_DIPLOMA_PRACTICE, "
+               "DSC.DSC_COURSEWORK * FCT.FCT_COURSEWORK as LCLV_COURSEWORK, "
+               "DSC.DSC_GUIDED_INDEPENDENT_WORK * FCT.FCT_GUIDED_INDEPENDENT_WORK as LCLV_GUIDED_INDEPENDENT_WORK, "
+               "DSC.DSC_CONTROL_WORK * FCT.FCT_CONTROL_WORK as LCLV_CONTROL_WORK, "
+               "DSC.DSC_GRADUATION_DESIGN * FCT.FCT_GRADUATION_DESIGN as LCLV_GRADUATION_DESIGN, "
+               "DSC.DSC_GUIDE_GRADUATE * FCT.FCT_GUIDE_GRADUATE as LCLV_GUIDE_GRADUATE, "
+               "DSC.DSC_STATE_EXAM * FCT.FCT_STATE_EXAM as LCLV_STATE_EXAM, "
+               "DSC.DSC_HES * FCT.FCT_HES as LCLV_HES, "
+               "DSC.DSC_GUIDE_CHAIR * FCT.FCT_GUIDE_CHAIR as LCLV_GUIDE_CHAIR, "
+               "DSC.DSC_UIRS * FCT.FCT_UIRS as LCLV_UIRS "
+               "FROM DRT_FLOWS FLW, DRT_LOAD_CALCULATION LCL, DRT_DISCIPLINES DSC, VIEW_FLOWS VFLW, DRT_FACTORS FCT "
+               "WHERE LCL.LCL_FLW_ID = VFLW.FLW_ID "
+               "AND LCL.LCL_DSC_ID = DSC.DSC_ID "
+               "AND FCT.FCT_ID = 1 "
+               "GROUP BY LCL.LCL_ID");
 
-    QString fields("FCT_CONSULTATION,FCT_EXAMINATIONS,FCT_TESTS,FCT_CURRENT_CONSULTATION,FCT_INTRODUCTORY_PRACTICE,"
-                  "FCT_PRE_DIPLOMA_PRACTICE,FCT_COURSEWORK,FCT_GUIDED_INDEPENDENT_WORK,FCT_CONTROL_WORK,"
-                  "FCT_GRADUATION_DESIGN,FCT_GUIDE_GRADUATE,FCT_STATE_EXAM,FCT_HES,FCT_GUIDE_CHAIR,FCT_UIRS");
-
-    query.exec("INSERT INTO DRT_FACTORS (" + fields + ") VALUES (1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);");
-
+    qDebug() << query.lastError().text();
 }
+
+
+
+
+
+
+
+
+
+
+

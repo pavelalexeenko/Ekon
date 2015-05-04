@@ -82,7 +82,7 @@ private:
     void createFlowsView() const;
     void createLoadCalculationView() const;
 
-    void createCoefficientTable() const;
+    void createFactorsTable() const;
 private:
     Group toGroupObject(const QSqlRecord& record) const;
     Flow toFlowObject(const QSqlRecord& record) const;
