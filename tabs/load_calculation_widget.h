@@ -17,7 +17,7 @@ public slots:
     void refresh();
 
 private:
-    QSqlTableModel *loadCalculationTableModel;
+    QSqlQueryModel *loadCalculationQueryModel;
     QTableView *loadCalculationTableView;
 
     ControlWidget *controlWidget;

@@ -6,22 +6,33 @@ AddLoadcalculationDialog::AddLoadcalculationDialog(QWidget *parent) :
   , disciplineComboBox(new QComboBox(this))
   , addButton(new QPushButton("Добавить", this))
 {
-    setWindowTitle("Добавление ");
+    qDebug() << __FUNCTION__;
+    setWindowTitle("Добавление расчета нагрузки");
 
-//    rateSpinBox->setRange(0, 2);
-//    rateSpinBox->setSingleStep(0.25);
+    connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));
 
-//    connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));
+    QFormLayout *formLayout = new QFormLayout(this);
 
-//    QFormLayout *formLayout = new QFormLayout(this);
-//    formLayout->addRow(tr("&ФИО:"), nameLineEdit);
-//    formLayout->addRow(tr("&Ставка:"), rateSpinBox);
-//    formLayout->addRow(tr("&Примечание:"), notePlainTextEdit);
-//    formLayout->addRow(tr(""), addButton);
-//    setLayout(formLayout);
+    formLayout->addRow(tr("&Название потока:"), flowComboBox);
+    formLayout->addRow(tr("&Название дисциплины:"), disciplineComboBox);
+    formLayout->addRow(tr(""), addButton);
+    setLayout(formLayout);
+
+    QList<Flow> flows = DbService::getInstance()->getAllFlows();
+    QList<Discipline> disciplines = DbService::getInstance()->getAllDisciplines();
+
+    for (Flow &flow : flows)
+        flowComboBox->addItem(flow.getName(), QVariant(flow.getId()));
+
+    for (Discipline &discipline : disciplines)
+        disciplineComboBox->addItem(discipline.getName(), QVariant(discipline.getId()));
 }
 
 void AddLoadcalculationDialog::addRow()
 {
-
+    if (DbService::getInstance()->addLoadCalculation(disciplineComboBox->itemData(disciplineComboBox->currentIndex()).toInt(),
+                                                     flowComboBox->itemData(flowComboBox->currentIndex()).toInt()))
+        this->accept();
+    else
+        QMessageBox::critical(this, tr("Error"), tr("Database error while adding a group."), QMessageBox::Ok);
 }

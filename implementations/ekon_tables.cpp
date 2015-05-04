@@ -57,6 +57,21 @@ QTableView* EkonTables::createTableView(QWidget* parentWidget, QSqlTableModel* m
     return tableView;
 }
 
+QTableView *EkonTables::createTableView(QWidget *parentWidget, QSqlQueryModel *model)
+{
+    QTableView *tableView = new QTableView(parentWidget);
+    tableView->setModel(model);
+    tableView->hideColumn(0);
+    tableView->show();
+    tableView->setSortingEnabled(true);
+    tableView->setDragEnabled(true);
+   // tableView->setStyleSheet("QHeaderView::section {background-color:grey}");
+   // tableView->verticalHeader()->hide();
+    tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+    return tableView;
+}
+
 QTableView* EkonTables::createRelationTableView(QWidget *parentWidget, QSqlRelationalTableModel *model)
 {
     QTableView *tableView = createTableView(parentWidget, model);

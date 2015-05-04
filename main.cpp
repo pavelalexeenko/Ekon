@@ -9,7 +9,6 @@ int main(int argc, char *argv[])
 
     DbService::getInstance()->loginAs("secretary", "123");
     MainWindow *mw = new MainWindow();
-    mw->show();
 
     return a.exec();
 }

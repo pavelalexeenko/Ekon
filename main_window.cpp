@@ -9,6 +9,12 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenu();
     this->resize(1300,500);
     updateTitle();
+    this->show();
+    if (!DbService::getInstance()->isLogged())
+    {
+        this->hide();
+        goToLoginWindow();
+    }
 }
 
 void MainWindow::updateTitle()

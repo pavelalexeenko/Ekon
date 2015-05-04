@@ -199,6 +199,21 @@ bool DbService::updateFlow(const Flow &flow)
     return _db->commit();;
 }
 
+bool DbService::addLoadCalculation(const int &disciplineId, const int &flowId)
+{
+    qDebug() << __FUNCTION__;
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("INSERT INTO DRT_LOAD_CALCULATION (LCL_DSC_ID,LCL_FLW_ID) VALUES(:disciplineId, :flowId);");
+    query.bindValue(":disciplineId", disciplineId);
+    query.bindValue(":flowId", flowId);
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();;
+}
+
 QString DbService::getGroupNameById(const int &id)
 {
     QSqlQuery query;
@@ -249,15 +264,28 @@ QList<Flow> DbService::getAllFlows() const
     if (!query.exec())
         throw QString(query.lastError().text());
 
-    if (query.size() < 1)
-        return QList<Flow>();
-
     QList<Flow> flows;
 
     while(query.next())
         flows.append(toFlowObject(query.record()));
 
     return flows;
+}
+
+QList<Discipline> DbService::getAllDisciplines() const
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM DRT_DISCIPLINES ORDER BY DSC_NAME");
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    QList<Discipline> disciplines;
+
+    while(query.next())
+        disciplines.append(toDisciplineObject(query.record()));
+
+    return disciplines;
 }
 
 Group DbService::toGroupObject(const QSqlRecord& record) const
@@ -285,6 +313,33 @@ Flow DbService::toFlowObject(const QSqlRecord& record) const
     flow.setGroupIds(getGroupsIdsByFlowId(flow.getId()));
 
     return flow;
+}
+
+Discipline DbService::toDisciplineObject(const QSqlRecord &record) const
+{
+    Discipline discipline;
+    discipline.setId(record.value("DSC_ID").toInt());
+    discipline.setName(record.value("DSC_NAME").toString());
+    discipline.setLectures(record.value("DSC_LECTURES").toDouble());
+    discipline.setLaboratory(record.value("DSC_LABORATORY").toDouble());
+    discipline.setPractical(record.value("DSC_PRACTICAL").toDouble());
+    discipline.setConsultation(record.value("DSC_CONSULTATION").toBool());
+    discipline.setExaminations(record.value("DSC_EXAMINATIONS").toBool());
+    discipline.setTests(record.value("DSC_TESTS").toBool());
+    discipline.setCurrentConsultation(record.value("DSC_CURRENT_CONSULTATION").toBool());
+    discipline.setIntroductoryPractice(record.value("DSC_INTRODUCTORY_PRACTICE").toBool());
+    discipline.setPreDiplomaPractice(record.value("DSC_PRE_DIPLOMA_PRACTICE").toBool());
+    discipline.setCourseWork(record.value("DSC_COURSEWORK").toBool());
+    discipline.setGuideIndependentWork(record.value("DSC_GUIDED_INDEPENDENT_WORK").toBool());
+    discipline.setControlWork(record.value("DSC_CONTROL_WORK").toBool());
+    discipline.setGraduationDesign(record.value("DSC_GRADUATION_DESIGN").toBool());
+    discipline.setGuideGraduate(record.value("DSC_GUIDE_GRADUATE").toBool());
+    discipline.setStateExam(record.value("DSC_STATE_EXAM").toBool());
+    discipline.setHes(record.value("DSC_HES").toBool());
+    discipline.setGuideChair(record.value("DSC_GUIDE_CHAIR").toBool());
+    discipline.setUirs(record.value("DSC_UIRS").toBool());
+
+    return discipline;
 }
 
 QSet<int> DbService::getGroupsIdsByFlowId(const int &flowId) const
@@ -409,6 +464,11 @@ bool DbService::loginAs(QString username, QString password)
     }
 
     return false;
+}
+
+bool DbService::isLogged() const
+{
+    return _currentUser.data()->getUserrole() != User::USER_ROLE_UNDEFINED;
 }
 
 void DbService::createDatabase() const

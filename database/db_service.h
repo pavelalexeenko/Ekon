@@ -51,6 +51,7 @@ public:
 
     bool connectToAnotherDatabase(QString filename);
     bool loginAs(QString username, QString password);
+    bool isLogged() const;
     bool testDatabaseConnection() const;
 
     bool addUser(const User& user);
@@ -59,9 +60,11 @@ public:
     bool addGroup(const Group& group);
     bool addFlow(const Flow& flow);
     bool updateFlow(const Flow& flow);
+    bool addLoadCalculation(const int& disciplineId, const int& flowId);
 
     QList<Group> getAllGroups() const;
     QList<Flow> getAllFlows() const;
+    QList<Discipline> getAllDisciplines() const;
 
 private:
     bool isCorrectVersion() const;
@@ -86,6 +89,7 @@ private:
 private:
     Group toGroupObject(const QSqlRecord& record) const;
     Flow toFlowObject(const QSqlRecord& record) const;
+    Discipline toDisciplineObject(const QSqlRecord& record) const;
 
     QSet<int> getGroupsIdsByFlowId(const int& flowId) const;
 

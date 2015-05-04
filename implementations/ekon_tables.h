@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QSqlTableModel>
 #include <QSqlRelationalTableModel>
+#include <QSqlQueryModel>
 #include <QSqlRelationalDelegate>
 #include <QSortFilterProxyModel>
 #include <QTableView>
@@ -22,6 +23,7 @@ public:
     static QSqlRelationalTableModel* createRelationalTableModel(QWidget* parentWidget, QString tableName, QStringList columnNames, QList<QPair<int, QSqlRelation> > relations);
 
     static QTableView* createTableView(QWidget* parentWidget, QSqlTableModel* model);
+    static QTableView* createTableView(QWidget* parentWidget, QSqlQueryModel* model);
     static QTableView* createRelationTableView(QWidget* parentWidget, QSqlRelationalTableModel* model);
 
 private:

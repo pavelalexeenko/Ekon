@@ -13,25 +13,30 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
                 << "Лабоработные"
                 << "Практики"
                 << "Консультации"
+                << "Экзамен"
                 << "Зачет"
-                << "TESTS"
-                << "Текущие консультации"
-                << "INTRODUCTORY PRACTICE"
+                << "Текущая консультации"
+                << "Ознакомительная практика"
                 << "Преддипломная практика"
                 << "Курсовая работа"
-                << "GUIDED_INDEPENDENT_WORK"
+                << "Управляемая самост. работа"
                 << "Контрольная работа"
-                << "GRADUATION_DESIGN "
-                << "GUIDE_GRADUATE"
-                << "Экзамен"
+                << "Дипломное проектирование"
+                << "Рук-во аспирантами"
+                << "Гос экзамен"
                 << "ГЭК"
-                << "GUIDE_CHAIR"
+                << "Руководство кафедрой"
                 << "УИРС";
 
-    loadCalculationTableModel = EkonTables::createTableModel(this, "VIEW_LOAD_CALCULATION", columnNames);
-    loadCalculationTableView = EkonTables::createTableView(this, loadCalculationTableModel);
+    loadCalculationQueryModel = new QSqlQueryModel(this);
+    loadCalculationQueryModel->setQuery("select * from VIEW_LOAD_CALCULATION");
 
-    loadCalculationTableView->setStyleSheet("QHeaderView::section {background-color:grey}");
+    for (int i = 0; i < columnNames.length(); i++)
+        loadCalculationQueryModel->setHeaderData(i, Qt::Horizontal, columnNames.at(i));
+
+    loadCalculationTableView = EkonTables::createTableView(this, loadCalculationQueryModel);
+
+    loadCalculationTableView->setStyleSheet("QModelIndex::section {background-color:grey}");
     controlWidget = new ControlWidget(this);
 
     QGridLayout *layout = new QGridLayout(this);
@@ -47,13 +52,13 @@ void LoadCalculationWidget::addRow()
 {
     qDebug() << __FUNCTION__;
 
-    AddLoadcalculationDialog *ald = new AddLoadcalculationDialog(this);
-    connect(ald, SIGNAL(accepted()), this, SLOT(refresh()));
-    ald->exec();
+    AddLoadcalculationDialog *alcd = new AddLoadcalculationDialog(this);
+    connect(alcd, SIGNAL(accepted()), this, SLOT(refresh()));
+    alcd->exec();
 }
 
 void LoadCalculationWidget::refresh()
 {
     qDebug() << __FUNCTION__;
-    loadCalculationTableModel->select();
+    loadCalculationQueryModel->setQuery("select * from VIEW_LOAD_CALCULATION");
 }
