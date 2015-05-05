@@ -1,5 +1,6 @@
 #include "groups_widget.h"
 #include "dialogs/add_group_dialog.h"
+#include "tables/worker_widget.h"
 
 GroupsWidget::GroupsWidget(QWidget *parent) : QWidget(parent)
 {
@@ -28,6 +29,7 @@ GroupsWidget::GroupsWidget(QWidget *parent) : QWidget(parent)
     this->setLayout(layout);
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
+    connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
 }
 
 void GroupsWidget::addRow()
@@ -42,4 +44,12 @@ void GroupsWidget::refresh()
 {
     qDebug() << __FUNCTION__;
     groupsTableModel->select();
+}
+
+void GroupsWidget::deleteRow()
+{
+    qDebug() << __FUNCTION__;
+
+    if (DbService::getInstance()->deleteGroup(groupsTableModel->data(groupsTableModel->index(groupsTableView->currentIndex().row(), 0)).toInt()))
+        this->refresh();
 }

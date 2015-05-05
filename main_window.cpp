@@ -11,10 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     updateTitle();
     this->show();
     if (!DbService::getInstance()->isLogged())
-    {
-        this->hide();
         goToLoginWindow();
-    }
 }
 
 void MainWindow::updateTitle()
@@ -30,6 +27,7 @@ void MainWindow::goToLoginWindow()
     qDebug() << __FUNCTION__;
     LoginWindow *lw = new LoginWindow(this);
     connect(lw, SIGNAL(accepted()), this, SLOT(updateTitle()));
+    this->hide();
     lw->show();
 }
 

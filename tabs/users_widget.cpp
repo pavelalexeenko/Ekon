@@ -27,6 +27,7 @@ UsersWidget::UsersWidget(QWidget *parent) :
     this->setLayout(layout);
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
+    connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
 }
 
 void UsersWidget::addRow()
@@ -41,4 +42,12 @@ void UsersWidget::refresh()
 {
     qDebug() << __FUNCTION__;
     usersTableModel->select();
+}
+
+void UsersWidget::deleteRow()
+{
+    qDebug() << __FUNCTION__;
+
+    if (DbService::getInstance()->deleteUser(usersTableModel->data(usersTableModel->index(usersTableView->currentIndex().row(), 0)).toInt()))
+        this->refresh();
 }

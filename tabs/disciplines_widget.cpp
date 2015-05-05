@@ -57,6 +57,7 @@ DisciplinesWidget::DisciplinesWidget(QWidget *parent) : QWidget(parent)
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
     connect(controlWidget, SIGNAL(search(QString)), this, SLOT(search(QString)));
+    connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
 }
 
 void DisciplinesWidget::addRow()
@@ -84,5 +85,13 @@ void DisciplinesWidget::refresh()
 {
     qDebug() << __FUNCTION__;
     disciplinesTableModel->select();
+}
+
+void DisciplinesWidget::deleteRow()
+{
+    qDebug() << __FUNCTION__;
+
+    if (DbService::getInstance()->deleteDiscipline(disciplinesTableModel->data(disciplinesTableModel->index(disciplinesTableView->currentIndex().row(), 0)).toInt()))
+        this->refresh();
 }
 

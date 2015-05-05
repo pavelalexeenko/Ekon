@@ -62,7 +62,12 @@ public:
     bool updateFlow(const Flow& flow);
     bool addLoadCalculation(const int& disciplineId, const int& flowId);
 
-    bool deleteLoadCalculation(const int& id);
+    bool deleteUser(const int& userId);
+    bool deleteTeacher(const int& teacherId);
+    bool deleteDiscipline(const int& disciplineId);
+    bool deleteGroup(const int& groupId);
+    bool deleteFlow(const int& flowId);
+    bool deleteLoadCalculation(const int& lclId);
 
     QList<Group> getAllGroups() const;
     QList<Flow> getAllFlows() const;
@@ -83,11 +88,10 @@ private:
     void createLinksTable() const;
     void createLoadCalculation() const;
     void createLoadDistribution() const;
-
     void createFlowsView() const;
     void createLoadCalculationView() const;
-
     void createFactorsTable() const;
+
 private:
     Group toGroupObject(const QSqlRecord& record) const;
     Flow toFlowObject(const QSqlRecord& record) const;

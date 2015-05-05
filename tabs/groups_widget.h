@@ -17,6 +17,7 @@ public:
 public slots:
     void addRow();
     void refresh();
+    void deleteRow();
 
 private:
     QSqlTableModel *groupsTableModel;

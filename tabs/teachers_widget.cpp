@@ -23,6 +23,7 @@ TeachersWidget::TeachersWidget(QWidget *parent) : QWidget(parent)
     this->setLayout(layout);
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
+    connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
 }
 
 void TeachersWidget::addRow()
@@ -37,4 +38,12 @@ void TeachersWidget::refresh()
 {
     qDebug() << __FUNCTION__;
     teachersTableModel->select();
+}
+
+void TeachersWidget::deleteRow()
+{
+    qDebug() << __FUNCTION__;
+
+    if (DbService::getInstance()->deleteTeacher(teachersTableModel->data(teachersTableModel->index(teachersTableView->currentIndex().row(), 0)).toInt()))
+        this->refresh();
 }

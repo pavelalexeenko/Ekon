@@ -24,6 +24,7 @@ FlowsWidget::FlowsWidget(QWidget *parent) : QWidget(parent)
     this->setLayout(layout);
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
+    connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
     connect(flowsTableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editRow(QModelIndex)));
 }
 
@@ -35,9 +36,12 @@ void FlowsWidget::addRow()
     afd->exec();
 }
 
-void FlowsWidget::deleteRow(const QModelIndex &index)
+void FlowsWidget::deleteRow()
 {
-   // flowsTableView->selectedIndexes();
+    qDebug() << __FUNCTION__;
+
+    if (DbService::getInstance()->deleteFlow(flowsTableModel->data(flowsTableModel->index(flowsTableView->currentIndex().row(), 0)).toInt()))
+        this->refresh();
 }
 
 void FlowsWidget::refresh()

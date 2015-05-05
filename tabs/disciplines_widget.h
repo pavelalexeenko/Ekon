@@ -19,6 +19,7 @@ public slots:
     void addRow();
     void search(QString str);
     void refresh();
+    void deleteRow();
 
 private:
     QSqlTableModel *disciplinesTableModel;

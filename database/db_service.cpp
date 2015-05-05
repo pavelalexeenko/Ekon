@@ -214,13 +214,95 @@ bool DbService::addLoadCalculation(const int &disciplineId, const int &flowId)
     return _db->commit();
 }
 
-bool DbService::deleteLoadCalculation(const int &id)
+bool DbService::deleteUser(const int &userId)
+{
+    qDebug() << __FUNCTION__;
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("DELETE FROM DRT_USERS WHERE USER_ID = :id;");
+    query.bindValue(":id", userId);
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
+}
+
+bool DbService::deleteTeacher(const int &teacherId)
+{
+    qDebug() << __FUNCTION__;
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("DELETE FROM DRT_TEACHERS WHERE TCH_ID = :id;");
+    query.bindValue(":id", teacherId);
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
+}
+
+bool DbService::deleteDiscipline(const int &disciplineId)
+{
+    qDebug() << __FUNCTION__;
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("DELETE FROM DRT_DISCIPLINES WHERE DSC_ID = :id;");
+    query.bindValue(":id", disciplineId);
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
+}
+
+bool DbService::deleteGroup(const int &groupId)
+{
+    qDebug() << __FUNCTION__;
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("DELETE FROM DRT_GROUPS WHERE GRP_ID = :id;");
+    query.bindValue(":id", groupId);
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    query.prepare("DELETE FROM DRT_LINKS WHERE LNK_GRP_ID = :id;");
+    query.bindValue(":id", groupId);
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
+}
+
+bool DbService::deleteFlow(const int &flowId)
+{
+    qDebug() << __FUNCTION__;
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("DELETE FROM DRT_FLOWS WHERE FLW_ID = :id;");
+    query.bindValue(":id", flowId);
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    query.prepare("DELETE FROM DRT_LINKS WHERE LNK_FLW_ID = :id;");
+    query.bindValue(":id", flowId);
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
+}
+
+bool DbService::deleteLoadCalculation(const int &lclId)
 {
     qDebug() << __FUNCTION__;
     _db->transaction();
     QSqlQuery query;
     query.prepare("DELETE FROM DRT_LOAD_CALCULATION WHERE LCL_ID = :id;");
-    query.bindValue(":id", id);
+    query.bindValue(":id", lclId);
 
     if (!query.exec())
         return !_db->rollback();

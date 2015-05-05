@@ -16,7 +16,7 @@ public:
 
 public slots:
     void addRow();
-    void deleteRow(const QModelIndex& index);
+    void deleteRow();
     void refresh();
     void editRow(const QModelIndex &index);
 
