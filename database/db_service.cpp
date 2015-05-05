@@ -196,7 +196,7 @@ bool DbService::updateFlow(const Flow &flow)
             return !_db->rollback();
     }
 
-    return _db->commit();;
+    return _db->commit();
 }
 
 bool DbService::addLoadCalculation(const int &disciplineId, const int &flowId)
@@ -211,7 +211,21 @@ bool DbService::addLoadCalculation(const int &disciplineId, const int &flowId)
     if (!query.exec())
         return !_db->rollback();
 
-    return _db->commit();;
+    return _db->commit();
+}
+
+bool DbService::deleteLoadCalculation(const int &id)
+{
+    qDebug() << __FUNCTION__;
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("DELETE FROM DRT_LOAD_CALCULATION WHERE LCL_ID = :id;");
+    query.bindValue(":id", id);
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
 }
 
 QString DbService::getGroupNameById(const int &id)

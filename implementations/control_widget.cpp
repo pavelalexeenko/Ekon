@@ -19,6 +19,7 @@ ControlWidget::ControlWidget(QWidget *parent) : QWidget(parent)
     connect(searchLineEdit, SIGNAL(returnPressed()), searchButton, SLOT(click()));
     connect(addRowButton, SIGNAL(clicked()), this, SIGNAL(addRow()));
     connect(searchButton, SIGNAL(clicked()), this, SLOT(search()));
+    connect(deleteRowButton, SIGNAL(clicked()), this, SIGNAL(removeRow()));
 }
 
 

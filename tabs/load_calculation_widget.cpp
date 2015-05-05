@@ -46,6 +46,7 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
     this->setLayout(layout);
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
+    connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
 }
 
 void LoadCalculationWidget::addRow()
@@ -61,4 +62,12 @@ void LoadCalculationWidget::refresh()
 {
     qDebug() << __FUNCTION__;
     loadCalculationQueryModel->setQuery("select * from VIEW_LOAD_CALCULATION");
+}
+
+void LoadCalculationWidget::deleteRow()
+{
+    qDebug() << __FUNCTION__;
+
+    if (DbService::getInstance()->deleteLoadCalculation(loadCalculationQueryModel->data(loadCalculationQueryModel->index(loadCalculationTableView->currentIndex().row(), 0)).toInt()))
+        this->refresh();
 }

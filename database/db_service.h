@@ -62,6 +62,8 @@ public:
     bool updateFlow(const Flow& flow);
     bool addLoadCalculation(const int& disciplineId, const int& flowId);
 
+    bool deleteLoadCalculation(const int& id);
+
     QList<Group> getAllGroups() const;
     QList<Flow> getAllFlows() const;
     QList<Discipline> getAllDisciplines() const;

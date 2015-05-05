@@ -16,6 +16,9 @@ public slots:
     void addRow();
     void refresh();
 
+private slots:
+    void deleteRow();
+
 private:
     QSqlQueryModel *loadCalculationQueryModel;
     QTableView *loadCalculationTableView;
