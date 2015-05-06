@@ -504,6 +504,8 @@ bool DbService::isCorrectVersion() const
     tablesList.append(QString("VIEW_FLOWS"));
     tablesList.append(QString("VIEW_LOAD_CALCULATION"));
 
+    tablesList.append(QString("VIEW_LOAD_DISTRIBUTION_HELPER"));
+
     QStringList databaseTablesList = _db->tables(QSql::AllTables);
 
     qDebug() << "Checking database version...";
@@ -586,6 +588,7 @@ void DbService::createDatabase() const
     createLoadCalculation();
     createLoadDistribution();
     createLoadCalculationView();
+    createLoadDistributionHelper();
     QSqlDatabase::database().commit();
 }
 
@@ -854,16 +857,12 @@ void DbService::createLoadDistribution() const
                "FOREIGN KEY(LDB_TCH_ID) REFERENCES DRT_TEACHERS(TCH_ID), "
                "FOREIGN KEY(LDB_LCL_ID) REFERENCES DRT_LOAD_CALCULATION(LCL_ID));");
 
-    qDebug() << query.lastError().text();
-
     QString fields("LDB_TCH_ID,LDB_LCL_ID");
 
     query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(1,1);");
     query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(2,2);");
     query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(3,3);");
     query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(3,4);");
-
-    qDebug() << query.lastError().text();
 }
 
 void DbService::createLoadCalculationView() const
@@ -899,8 +898,21 @@ void DbService::createLoadCalculationView() const
                "AND LCL.LCL_DSC_ID = DSC.DSC_ID "
                "AND FCT.FCT_ID = 1 "
                "GROUP BY LCL.LCL_ID");
+}
 
-    qDebug() << query.lastError().text();
+void DbService::createLoadDistributionHelper() const
+{
+    qDebug() << __FUNCTION__;
+
+    QSqlQuery query;
+    query.exec("CREATE VIEW VIEW_LOAD_DISTRIBUTION_HELPER AS "
+               "SELECT "
+               "LCL.LCL_ID AS LDH_ID, "
+               "printf('%s (%s)', DSC.DSC_NAME , VFLW.FLW_NAME) as LDH_NAME "
+               "FROM DRT_LOAD_CALCULATION LCL, DRT_DISCIPLINES DSC, VIEW_FLOWS VFLW "
+               "WHERE LCL.LCL_FLW_ID = VFLW.FLW_ID "
+               "AND LCL.LCL_DSC_ID = DSC.DSC_ID "
+               "GROUP BY LCL.LCL_ID");
 }
 
 

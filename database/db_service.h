@@ -90,6 +90,7 @@ private:
     void createLoadDistribution() const;
     void createFlowsView() const;
     void createLoadCalculationView() const;
+    void createLoadDistributionHelper() const;
     void createFactorsTable() const;
 
 private:

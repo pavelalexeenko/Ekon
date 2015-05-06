@@ -8,7 +8,6 @@ LoadDistributionWidget::LoadDistributionWidget(QWidget *parent) : QWidget(parent
     columnNames << "ID"
                 << "ФИО преподавателя"
                 << "Название\n дисциплины и потока"
-                << "Название\n потока"
                 << "Лекции"
                 << "Лабоработные"
                 << "Практики"
@@ -31,7 +30,7 @@ LoadDistributionWidget::LoadDistributionWidget(QWidget *parent) : QWidget(parent
 
     QList<QPair<int, QSqlRelation> > relations;
     relations.append(qMakePair(1, QSqlRelation("DRT_TEACHERS", "TCH_ID", "TCH_NAME")));
-    relations.append(qMakePair(2, QSqlRelation("VIEW_LOAD_CALCULATION", "LCLV_ID", "LCLV_NAME")));
+    relations.append(qMakePair(2, QSqlRelation("VIEW_LOAD_DISTRIBUTION_HELPER", "LDH_ID", "LDH_NAME")));
 
     loadDistributionTableModel = EkonTables::createRelationalTableModel(this, "DRT_LOAD_DISTRIBUTION", columnNames, relations);
     loadDistributionTableView = EkonTables::createRelationTableView(this, loadDistributionTableModel);
