@@ -3,6 +3,7 @@
 CheckableSortFilterProxyModel::CheckableSortFilterProxyModel(QObject *parent) :
     QSortFilterProxyModel(parent)
 {
+    setDynamicSortFilter(true);
 }
 
 void CheckableSortFilterProxyModel::setParameters(QList<int> boolCols, QList<int> readonlyCols, QList<int> passwordCols)
@@ -59,9 +60,8 @@ void CheckableSortFilterProxyModel::setNullAndNotNullColumns(QList<int> nullCols
     }
 }
 
-bool CheckableSortFilterProxyModel::filterAcceptsRow (int source_row, const QModelIndex & source_parent) const
+bool CheckableSortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex & source_parent) const
 {
-    Q_UNUSED(source_parent);
     if (!notNullSet.isEmpty())
     {
         QSqlQueryModel *m = static_cast<QSqlQueryModel*>(sourceModel());
@@ -78,7 +78,27 @@ bool CheckableSortFilterProxyModel::filterAcceptsRow (int source_row, const QMod
                 return false;
     }
 
-    return true;
+    for (int i = 0; i < sourceModel()->columnCount(source_parent); i++)
+    {
+        QRegExp searchString = filterRegExp();
+        searchString.setCaseSensitivity(Qt::CaseInsensitive);
+        if (sourceModel()->data(sourceModel()->index(source_row, i, source_parent)).toString().contains(searchString))
+            return true;
+    }
+
+    return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+}
+
+void CheckableSortFilterProxyModel::setColorFilterString(const QString filter)
+{
+    colorFilter = filter;
+    setFilterFixedString(QString(""));
+}
+
+void CheckableSortFilterProxyModel::setFilterFixedString(const QString &pattern)
+{
+    colorFilter.clear();
+    QSortFilterProxyModel::setFilterFixedString(pattern);
 }
 
 QVariant CheckableSortFilterProxyModel::data(const QModelIndex &index, int role) const
@@ -95,7 +115,7 @@ QVariant CheckableSortFilterProxyModel::data(const QModelIndex &index, int role)
     }
     else if (passwordSet.contains(index.column()) && (role == Qt::DisplayRole))
     {
-        return QVariant("***");
+        return QVariant("*****");
     }
     else if (readonlySet.contains(index.column()) && (role == Qt::BackgroundRole))
     {
@@ -104,6 +124,14 @@ QVariant CheckableSortFilterProxyModel::data(const QModelIndex &index, int role)
     else if (readonlySet.contains(index.column()) && (role == Qt::TextColorRole))
     {
         return QColor(0,0,0);
+    }
+    else if ((role == Qt::BackgroundRole) && !colorFilter.isEmpty() &&(sourceModel()->data(index).toString().contains(colorFilter, Qt::CaseInsensitive)))
+    {
+        return QColor(Qt::yellow);
+    }
+    else if (role == Qt::BackgroundRole && modifiedCells.contains(qMakePair(index.row(), index.column())))
+    {
+        return QColor(QColor("#CC3333"));
     }
     else
         return QSortFilterProxyModel::data(index,role);
@@ -121,12 +149,21 @@ bool CheckableSortFilterProxyModel::setData(const QModelIndex &index, const QVar
         QVariant data = (value.toInt() == Qt::Checked) ? QVariant(1) : QVariant (0);
         return QSortFilterProxyModel::setData(index, data, Qt::EditRole);
     }
+    else if (role == Qt::EditRole)
+    {
+        QSortFilterProxyModel::setData(index,value,role);
+        QVector<int> vec;
+        vec.append(Qt::BackgroundRole);
+        vec.append(Qt::EditRole);
+        modifiedCells.insert(qMakePair(index.row(), index.column()));
+        emit dataChanged(index, index, vec);
+    }
     else
         return QSortFilterProxyModel::setData(index,value,role);
 
 }
 
-Qt::ItemFlags CheckableSortFilterProxyModel::flags ( const QModelIndex & index ) const
+Qt::ItemFlags CheckableSortFilterProxyModel::flags(const QModelIndex & index) const
 {
     if(!index.isValid())
         return Qt::ItemIsEnabled;
