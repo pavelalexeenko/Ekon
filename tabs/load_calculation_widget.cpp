@@ -43,8 +43,6 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
     loadCalculationTableView = EkonTables::createTableView(this, loadCalculationTableModel);
     loadCalculationTableView->setModel(cfpm);
 
-    loadCalculationTableView->setItemDelegate(new ReadOnlyDelegate());
-
     //loadCalculationTableView->setStyleSheet("QTableView::item {background-color: #D4D0C8; color: black;}");
     controlWidget = new ControlWidget(this);
 
