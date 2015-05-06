@@ -1,6 +1,7 @@
 #include "load_calculation_widget.h"
 #include "dialogs/add_loadcalculation_dialog.h"
 #include "implementations/read_only_delegate.h"
+#include "implementations/checkable_sort_filter_proxy_model.h"
 
 LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
 {
@@ -30,7 +31,17 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
                 << "УИРС";
 
     loadCalculationTableModel = EkonTables::createTableModel(this, "VIEW_LOAD_CALCULATION", columnNames);
+
+    CheckableSortFilterProxyModel *cfpm = new CheckableSortFilterProxyModel(this);
+    QList<int> readonlyCols;
+    for (int i = 0; i < 21; i++)
+        readonlyCols.append(i);
+
+    cfpm->setParameters(QList<int>(), readonlyCols, QList<int>());
+    cfpm->setSourceModel(loadCalculationTableModel);
+
     loadCalculationTableView = EkonTables::createTableView(this, loadCalculationTableModel);
+    loadCalculationTableView->setModel(cfpm);
 
     loadCalculationTableView->setItemDelegate(new ReadOnlyDelegate());
 

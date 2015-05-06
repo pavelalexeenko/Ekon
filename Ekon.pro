@@ -43,7 +43,8 @@ SOURCES += main.cpp\
     dialogs/add_group_to_flow_dialog.cpp \
     dialogs/add_loadcalculation_dialog.cpp \
     implementations/check_box_delegate.cpp \
-    implementations/read_only_delegate.cpp
+    implementations/read_only_delegate.cpp \
+    implementations/checkable_sort_filter_proxy_model.cpp
 
 HEADERS  += \
     main_window.h \
@@ -75,6 +76,7 @@ HEADERS  += \
     dialogs/add_group_to_flow_dialog.h \
     dialogs/add_loadcalculation_dialog.h \
     implementations/check_box_delegate.h \
-    implementations/read_only_delegate.h
+    implementations/read_only_delegate.h \
+    implementations/checkable_sort_filter_proxy_model.h
 
 CONFIG += c++11
