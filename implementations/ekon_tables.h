@@ -13,6 +13,7 @@
 #include <QHeaderView>
 #include <QList>
 #include <QPair>
+#include "implementations/checkable_sort_filter_proxy_model.h"
 
 class EkonTables
 {
@@ -24,6 +25,7 @@ public:
 
     static QTableView* createTableView(QWidget* parentWidget, QSqlTableModel* model);
     static QTableView* createTableView(QWidget* parentWidget, QSqlQueryModel* model);
+    static QTableView* createTableView(QWidget* parentWidget, CheckableSortFilterProxyModel* model);
     static QTableView* createRelationTableView(QWidget* parentWidget, QSqlRelationalTableModel* model);
 
 private:

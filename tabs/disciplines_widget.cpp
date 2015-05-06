@@ -1,7 +1,6 @@
 #include "disciplines_widget.h"
 #include "dialogs/add_discipline_dialog.h"
 #include "implementations/check_box_delegate.h"
-#include "implementations/checkable_sort_filter_proxy_model.h"
 
 DisciplinesWidget::DisciplinesWidget(QWidget *parent) : QWidget(parent)
 {
@@ -31,16 +30,14 @@ DisciplinesWidget::DisciplinesWidget(QWidget *parent) : QWidget(parent)
 
     disciplinesTableModel = EkonTables::createTableModel(this, "DRT_DISCIPLINES", columnNames);
 
-    CheckableSortFilterProxyModel *cfpm = new CheckableSortFilterProxyModel(this);
+    filterProxyModel = new CheckableSortFilterProxyModel(this);
     QList<int> boolCols;
     for (int i = 5; i < 20; i++)
         boolCols.append(i);
+    filterProxyModel->setParameters(boolCols, QList<int>(), QList<int>());
+    filterProxyModel->setSourceModel(disciplinesTableModel);
 
-    cfpm->setParameters(boolCols, QList<int>(), QList<int>());
-    cfpm->setSourceModel(disciplinesTableModel);
-
-    disciplinesTableView = EkonTables::createTableView(this, disciplinesTableModel);
-    disciplinesTableView->setModel(cfpm);
+    disciplinesTableView = EkonTables::createTableView(this, filterProxyModel);
 
     controlWidget = new ControlWidget(this);
 
@@ -51,8 +48,10 @@ DisciplinesWidget::DisciplinesWidget(QWidget *parent) : QWidget(parent)
     this->setLayout(layout);
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
-    connect(controlWidget, SIGNAL(search(QString)), this, SLOT(search(QString)));
     connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
+    connect(controlWidget, SIGNAL(filter(QString)), filterProxyModel, SLOT(setFilterFixedString(QString)));
+    connect(controlWidget, SIGNAL(search(QString)), this, SLOT(search(QString)));
+
 }
 
 void DisciplinesWidget::addRow()
@@ -61,19 +60,6 @@ void DisciplinesWidget::addRow()
     AddDisciplineDialog *add = new AddDisciplineDialog(this);
     connect(add, SIGNAL(accepted()), this, SLOT(refresh()));
     add->exec();
-}
-
-void DisciplinesWidget::search(QString str)
-{
-    qDebug() << __FUNCTION__ << "  " << str;
-
-    for (int i = 0; i < disciplinesTableModel->rowCount(); i++)
-        for (int j = 0; j < disciplinesTableModel->columnCount(); j++)
-        {
-         //   if (disciplinesTableModel->index(i,j).data().toString().contains(str.trimmed()))
-            //    disciplinesTableView->back
-            ;
-        }
 }
 
 void DisciplinesWidget::refresh()
@@ -88,5 +74,11 @@ void DisciplinesWidget::deleteRow()
 
     if (DbService::getInstance()->deleteDiscipline(disciplinesTableModel->data(disciplinesTableModel->index(disciplinesTableView->currentIndex().row(), 0)).toInt()))
         this->refresh();
+}
+
+void DisciplinesWidget::search(QString str)
+{
+    filterProxyModel->setColorFilterString(str);
+    disciplinesTableView->reset();
 }
 

@@ -7,6 +7,10 @@
 #include <QColor>
 #include <QString>
 #include <QFont>
+#include <QDebug>
+#include <QAbstractItemModel>
+#include <QSet>
+#include <QPair>
 
 class CheckableSortFilterProxyModel : public QSortFilterProxyModel
 {
@@ -27,6 +31,8 @@ protected:
 signals:
 
 public slots:
+    void setColorFilterString(const QString filter);
+    void setFilterFixedString(const QString &pattern);
 
 private:
     QList<int> booleanSet;
@@ -34,6 +40,9 @@ private:
     QList<int> readonlySet;
     QList<int> notNullSet;
     QList<int> nullSet;
+
+    QString colorFilter;
+    QSet<QPair<int, int> > modifiedCells;
 
 };
 #endif // CHECKABLESORTFILTERPROXYMODEL_H

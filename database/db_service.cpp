@@ -908,7 +908,7 @@ void DbService::createLoadDistributionHelper() const
     query.exec("CREATE VIEW VIEW_LOAD_DISTRIBUTION_HELPER AS "
                "SELECT "
                "LCL.LCL_ID AS LDH_ID, "
-               "printf('%s (%s)', DSC.DSC_NAME , VFLW.FLW_NAME) as LDH_NAME "
+               "DSC.DSC_NAME || ' (' || VFLW.FLW_NAME || ')' as LDH_NAME "
                "FROM DRT_LOAD_CALCULATION LCL, DRT_DISCIPLINES DSC, VIEW_FLOWS VFLW "
                "WHERE LCL.LCL_FLW_ID = VFLW.FLW_ID "
                "AND LCL.LCL_DSC_ID = DSC.DSC_ID "

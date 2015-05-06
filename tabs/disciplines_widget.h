@@ -3,8 +3,9 @@
 
 #include <QWidget>
 #include <QGridLayout>
-#include <implementations/control_widget.h>
-#include <implementations/ekon_tables.h>
+#include "implementations/control_widget.h"
+#include "implementations/ekon_tables.h"
+#include "implementations/checkable_sort_filter_proxy_model.h"
 
 #include <QDebug>
 #include <QSqlQuery>
@@ -17,12 +18,13 @@ public:
 
 public slots:
     void addRow();
-    void search(QString str);
     void refresh();
     void deleteRow();
+    void search(QString str);
 
 private:
     QSqlTableModel *disciplinesTableModel;
+    CheckableSortFilterProxyModel *filterProxyModel;
     QTableView *disciplinesTableView;
 
     ControlWidget *controlWidget;

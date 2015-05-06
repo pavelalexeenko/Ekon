@@ -68,6 +68,15 @@ QTableView *EkonTables::createTableView(QWidget *parentWidget, QSqlQueryModel *m
     return tableView;
 }
 
+QTableView *EkonTables::createTableView(QWidget *parentWidget, CheckableSortFilterProxyModel *model)
+{
+    QTableView *tableView = new QTableView(parentWidget);
+    tableView->setModel(model);
+    configureTableView(tableView);
+
+    return tableView;
+}
+
 QTableView* EkonTables::createRelationTableView(QWidget *parentWidget, QSqlRelationalTableModel *model)
 {
     QTableView *tableView = createTableView(parentWidget, model);
