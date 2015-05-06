@@ -18,7 +18,15 @@ void EkonTables::configureTableModel(QSqlTableModel *tableModel, QStringList col
 
 void EkonTables::configureTableView(QTableView *tableView)
 {
-    Q_UNUSED(tableView);
+    tableView->hideColumn(0);
+    tableView->show();
+    tableView->setSortingEnabled(true);
+    tableView->setDragEnabled(true);
+   // tableView->setStyleSheet("QHeaderView::section {background-color:grey}");
+   // tableView->verticalHeader()->hide();
+    //tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    tableView->resizeRowsToContents();
+    tableView->resizeColumnsToContents();
 }
 
 QSqlTableModel* EkonTables::createTableModel(QWidget *parentWidget, QString tableName, QStringList columnNames)
@@ -46,13 +54,7 @@ QTableView* EkonTables::createTableView(QWidget* parentWidget, QSqlTableModel* m
 {
     QTableView *tableView = new QTableView(parentWidget);
     tableView->setModel(model);
-    tableView->hideColumn(0);
-    tableView->show();
-    tableView->setSortingEnabled(true);
-    tableView->setDragEnabled(true);
-   // tableView->setStyleSheet("QHeaderView::section {background-color:grey}");
-   // tableView->verticalHeader()->hide();
-    tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    configureTableView(tableView);
 
     return tableView;
 }
@@ -61,13 +63,7 @@ QTableView *EkonTables::createTableView(QWidget *parentWidget, QSqlQueryModel *m
 {
     QTableView *tableView = new QTableView(parentWidget);
     tableView->setModel(model);
-    tableView->hideColumn(0);
-    tableView->show();
-    tableView->setSortingEnabled(true);
-    tableView->setDragEnabled(true);
-   // tableView->setStyleSheet("QHeaderView::section {background-color:grey}");
-   // tableView->verticalHeader()->hide();
-    tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    configureTableView(tableView);
 
     return tableView;
 }

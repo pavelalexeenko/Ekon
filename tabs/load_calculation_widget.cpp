@@ -1,5 +1,6 @@
 #include "load_calculation_widget.h"
 #include "dialogs/add_loadcalculation_dialog.h"
+#include "implementations/read_only_delegate.h"
 
 LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
 {
@@ -7,36 +8,33 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
 
     QStringList columnNames;
     columnNames << "ID"
-                << "Название дисциплины"
-                << "Название потока"
+                << "Название\n дисциплины"
+                << "Название\n потока"
                 << "Лекции"
                 << "Лабоработные"
                 << "Практики"
                 << "Консультации"
                 << "Экзамен"
                 << "Зачет"
-                << "Текущая консультации"
-                << "Ознакомительная практика"
-                << "Преддипломная практика"
-                << "Курсовая работа"
-                << "Управляемая самост. работа"
-                << "Контрольная работа"
-                << "Дипломное проектирование"
-                << "Рук-во аспирантами"
+                << "Текущая\n консультации"
+                << "Ознакомительная\n практика"
+                << "Преддипломная\n практика"
+                << "Курсовая\n работа"
+                << "Управляемая\n самост. работа"
+                << "Контрольная\n работа"
+                << "Дипломное\n проектирование"
+                << "Рук-во\n аспирантами"
                 << "Гос экзамен"
                 << "ГЭК"
-                << "Руководство кафедрой"
+                << "Руководство\n кафедрой"
                 << "УИРС";
 
-    loadCalculationQueryModel = new QSqlQueryModel(this);
-    loadCalculationQueryModel->setQuery("select * from VIEW_LOAD_CALCULATION");
+    loadCalculationTableModel = EkonTables::createTableModel(this, "VIEW_LOAD_CALCULATION", columnNames);
+    loadCalculationTableView = EkonTables::createTableView(this, loadCalculationTableModel);
 
-    for (int i = 0; i < columnNames.length(); i++)
-        loadCalculationQueryModel->setHeaderData(i, Qt::Horizontal, columnNames.at(i));
+    loadCalculationTableView->setItemDelegate(new ReadOnlyDelegate());
 
-    loadCalculationTableView = EkonTables::createTableView(this, loadCalculationQueryModel);
-
-    loadCalculationTableView->setStyleSheet("QModelIndex::section {background-color:grey}");
+    //loadCalculationTableView->setStyleSheet("QTableView::item {background-color: #D4D0C8; color: black;}");
     controlWidget = new ControlWidget(this);
 
     QGridLayout *layout = new QGridLayout(this);
@@ -61,13 +59,13 @@ void LoadCalculationWidget::addRow()
 void LoadCalculationWidget::refresh()
 {
     qDebug() << __FUNCTION__;
-    loadCalculationQueryModel->setQuery("select * from VIEW_LOAD_CALCULATION");
+    loadCalculationTableModel->select();
 }
 
 void LoadCalculationWidget::deleteRow()
 {
     qDebug() << __FUNCTION__;
 
-    if (DbService::getInstance()->deleteLoadCalculation(loadCalculationQueryModel->data(loadCalculationQueryModel->index(loadCalculationTableView->currentIndex().row(), 0)).toInt()))
+    if (DbService::getInstance()->deleteLoadCalculation(loadCalculationTableModel->data(loadCalculationTableModel->index(loadCalculationTableView->currentIndex().row(), 0)).toInt()))
         this->refresh();
 }

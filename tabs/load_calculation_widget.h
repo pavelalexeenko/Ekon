@@ -20,7 +20,7 @@ private slots:
     void deleteRow();
 
 private:
-    QSqlQueryModel *loadCalculationQueryModel;
+    QSqlTableModel *loadCalculationTableModel;
     QTableView *loadCalculationTableView;
 
     ControlWidget *controlWidget;

@@ -66,3 +66,23 @@ bool CheckBoxDelegate::editorEvent(QEvent *event,
     bool checked = index.model()->data(index, Qt::DisplayRole).toBool();
     return model->setData(index, !checked, Qt::EditRole);
 }
+/*
+QWidget *CheckBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    // создаем элемент
+    QWidget *editor = new QWidget(parent);
+
+    // возвращаем элемент
+    return editor;
+}
+
+void CheckBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+    // перехватываем значения ячейки таблицы
+    bool value =index.model()->data(index, Qt::EditRole).toBool();
+    // создаем spinBox для ввода данных, без проверки типов данных
+    QCheckBox *spinbox = static_cast<QCheckBox*>(editor);
+    // записывает данные из ячейки в sninBox
+    spinbox->setChecked(value);
+}
+*/

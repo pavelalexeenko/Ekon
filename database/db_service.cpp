@@ -833,8 +833,28 @@ void DbService::createLoadDistribution() const
                "LDB_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
                "LDB_TCH_ID INTEGER NOT NULL, "
                "LDB_LCL_ID INTEGER NOT NULL, "
+               "LDB_LECTURES INTEGER NOT NULL DEFAULT 0, "
+               "LDB_LABORATORY INTEGER NOT NULL DEFAULT 0, "
+               "LDB_PRACTICAL INTEGER NOT NULL DEFAULT 0, "
+               "LDB_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
+               "LDB_EXAMINATIONS INTEGER NOT NULL DEFAULT 0, "
+               "LDB_TESTS INTEGER NOT NULL DEFAULT 0, "
+               "LDB_CURRENT_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
+               "LDB_INTRODUCTORY_PRACTICE INTEGER NOT NULL DEFAULT 0, "
+               "LDB_PRE_DIPLOMA_PRACTICE INTEGER NOT NULL DEFAULT 0, "
+               "LDB_COURSEWORK INTEGER NOT NULL DEFAULT 0, "
+               "LDB_GUIDED_INDEPENDENT_WORK INTEGER NOT NULL DEFAULT 0, "
+               "LDB_CONTROL_WORK INTEGER NOT NULL DEFAULT 0, "
+               "LDB_GRADUATION_DESIGN INTEGER NOT NULL DEFAULT 0, "
+               "LDB_GUIDE_GRADUATE INTEGER NOT NULL DEFAULT 0, "
+               "LDB_STATE_EXAM INTEGER NOT NULL DEFAULT 0, "
+               "LDB_HES INTEGER NOT NULL DEFAULT 0, "
+               "LDB_GUIDE_CHAIR INTEGER NOT NULL DEFAULT 0, "
+               "LDB_UIRS INTEGER NOT NULL DEFAULT 0, "
                "FOREIGN KEY(LDB_TCH_ID) REFERENCES DRT_TEACHERS(TCH_ID), "
                "FOREIGN KEY(LDB_LCL_ID) REFERENCES DRT_LOAD_CALCULATION(LCL_ID));");
+
+    qDebug() << query.lastError().text();
 
     QString fields("LDB_TCH_ID,LDB_LCL_ID");
 
@@ -842,6 +862,8 @@ void DbService::createLoadDistribution() const
     query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(2,2);");
     query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(3,3);");
     query.exec("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") VALUES(3,4);");
+
+    qDebug() << query.lastError().text();
 }
 
 void DbService::createLoadCalculationView() const
