@@ -5,6 +5,8 @@
 #include <QSqlQueryModel>
 #include <QSqlRecord>
 #include <QColor>
+#include <QString>
+#include <QFont>
 
 class CheckableSortFilterProxyModel : public QSortFilterProxyModel
 {
