@@ -50,8 +50,7 @@ DisciplinesWidget::DisciplinesWidget(QWidget *parent) : QWidget(parent)
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
     connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
     connect(controlWidget, SIGNAL(filter(QString)), filterProxyModel, SLOT(setFilterFixedString(QString)));
-    connect(controlWidget, SIGNAL(search(QString)), this, SLOT(search(QString)));
-
+    connect(controlWidget, SIGNAL(search(QString)), filterProxyModel, SLOT(setColorFilterString(QString)));
 }
 
 void DisciplinesWidget::addRow()
@@ -75,10 +74,3 @@ void DisciplinesWidget::deleteRow()
     if (DbService::getInstance()->deleteDiscipline(disciplinesTableModel->data(disciplinesTableModel->index(disciplinesTableView->currentIndex().row(), 0)).toInt()))
         this->refresh();
 }
-
-void DisciplinesWidget::search(QString str)
-{
-    filterProxyModel->setColorFilterString(str);
-    disciplinesTableView->reset();
-}
-

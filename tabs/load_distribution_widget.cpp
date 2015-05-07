@@ -1,4 +1,5 @@
 #include "load_distribution_widget.h"
+#include "dialogs/add_loaddistribution_dialog.h"
 
 LoadDistributionWidget::LoadDistributionWidget(QWidget *parent) : QWidget(parent)
 {
@@ -53,11 +54,16 @@ LoadDistributionWidget::LoadDistributionWidget(QWidget *parent) : QWidget(parent
     this->setLayout(layout);
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
+    connect(controlWidget, SIGNAL(filter(QString)), cfpm, SLOT(setFilterFixedString(QString)));
+    connect(controlWidget, SIGNAL(search(QString)), cfpm, SLOT(setColorFilterString(QString)));
 }
 
 void LoadDistributionWidget::addRow()
 {
     qDebug() << __FUNCTION__;
+    AddLoadDistributionDialog *aldd = new AddLoadDistributionDialog(this);
+    connect(aldd, SIGNAL(accepted()), this, SLOT(refresh()));
+    aldd->exec();
 }
 
 void LoadDistributionWidget::refresh()

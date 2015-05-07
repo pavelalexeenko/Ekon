@@ -57,6 +57,8 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
     connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
+    connect(controlWidget, SIGNAL(filter(QString)), cfpm, SLOT(setFilterFixedString(QString)));
+    connect(controlWidget, SIGNAL(search(QString)), cfpm, SLOT(setColorFilterString(QString)));
 }
 
 void LoadCalculationWidget::addRow()

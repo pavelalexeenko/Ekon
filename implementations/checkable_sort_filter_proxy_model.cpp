@@ -129,10 +129,6 @@ QVariant CheckableSortFilterProxyModel::data(const QModelIndex &index, int role)
     {
         return QColor(Qt::yellow);
     }
-    else if (role == Qt::BackgroundRole && modifiedCells.contains(qMakePair(index.row(), index.column())))
-    {
-        return QColor(QColor("#CC3333"));
-    }
     else
         return QSortFilterProxyModel::data(index,role);
 
@@ -148,15 +144,6 @@ bool CheckableSortFilterProxyModel::setData(const QModelIndex &index, const QVar
     {
         QVariant data = (value.toInt() == Qt::Checked) ? QVariant(1) : QVariant (0);
         return QSortFilterProxyModel::setData(index, data, Qt::EditRole);
-    }
-    else if (role == Qt::EditRole)
-    {
-        QSortFilterProxyModel::setData(index,value,role);
-        QVector<int> vec;
-        vec.append(Qt::BackgroundRole);
-        vec.append(Qt::EditRole);
-        modifiedCells.insert(qMakePair(index.row(), index.column()));
-        emit dataChanged(index, index, vec);
     }
     else
         return QSortFilterProxyModel::setData(index,value,role);

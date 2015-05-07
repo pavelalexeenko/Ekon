@@ -19,6 +19,7 @@ public:
 
 private slots:
     void addRow();
+    void changeLayout(int index);
 
 private:
     QComboBox *loadcalculationComboBox;

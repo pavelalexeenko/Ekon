@@ -42,7 +42,5 @@ private:
     QList<int> nullSet;
 
     QString colorFilter;
-    QSet<QPair<int, int> > modifiedCells;
-
 };
 #endif // CHECKABLESORTFILTERPROXYMODEL_H

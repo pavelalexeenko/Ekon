@@ -50,7 +50,7 @@ public:
     QString getGroupNameById(const int& id);
     Flow getFlowById(const int& id);
     Discipline getDisciplineById(const int& id);
-    LoadCalculation getLoadCalculation(const int& id);
+    LoadCalculation getLoadCalculationById(const int& id);
 
     bool connectToAnotherDatabase(QString filename);
     bool loginAs(QString username, QString password);
@@ -76,6 +76,9 @@ public:
     QList<Flow> getAllFlows() const;
     QList<Discipline> getAllDisciplines() const;
     QList<Teacher> getAllTeachers() const;
+    QList<LoadCalculation> getAllLoadCalculation() const;
+
+    QList<QPair<int, QString> > getLoadCalculationIdsAndNames() const;
 
 private:
     bool isCorrectVersion() const;
