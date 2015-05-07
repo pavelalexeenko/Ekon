@@ -33,7 +33,16 @@ LoadDistributionWidget::LoadDistributionWidget(QWidget *parent) : QWidget(parent
     relations.append(qMakePair(2, QSqlRelation("VIEW_LOAD_DISTRIBUTION_HELPER", "LDH_ID", "LDH_NAME")));
 
     loadDistributionTableModel = EkonTables::createRelationalTableModel(this, "DRT_LOAD_DISTRIBUTION", columnNames, relations);
-    loadDistributionTableView = EkonTables::createRelationTableView(this, loadDistributionTableModel);
+
+    CheckableSortFilterProxyModel *cfpm = new CheckableSortFilterProxyModel(this);
+    QList<int> readonlyCols;
+    for (int i = 0; i < 21; i++)
+        readonlyCols.append(i);
+
+    cfpm->setParameters(QList<int>(), readonlyCols, QList<int>());
+    cfpm->setSourceModel(loadDistributionTableModel);
+    loadDistributionTableView = EkonTables::createTableView(this, cfpm);
+    loadDistributionTableView->setItemDelegate(new QSqlRelationalDelegate(loadDistributionTableView));
 
     controlWidget = new ControlWidget(this);
 

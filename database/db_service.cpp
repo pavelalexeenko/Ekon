@@ -336,6 +336,32 @@ Flow DbService::getFlowById(const int &id)
     return toFlowObject(query.record());
 }
 
+Discipline DbService::getDisciplineById(const int &id)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM DRT_DISCIPLINES WHERE DSC_ID = :id");
+    query.bindValue(":id", id);
+    query.exec();
+
+    if (!query.first())
+        throw QString("No discipline with such id.");
+
+    return toDisciplineObject(query.record());
+}
+
+LoadCalculation DbService::getLoadCalculation(const int &id)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM VIEW_LOAD_CALCULATION WHERE LCL_ID = :id");
+    query.bindValue(":id", id);
+    query.exec();
+
+    if (!query.first())
+        throw QString("No load calculation with such id.");
+
+    return toLoadCalculationObject(query.record());
+}
+
 QList<Group> DbService::getAllGroups() const
 {
     QSqlQuery query;
@@ -382,6 +408,22 @@ QList<Discipline> DbService::getAllDisciplines() const
         disciplines.append(toDisciplineObject(query.record()));
 
     return disciplines;
+}
+
+QList<Teacher> DbService::getAllTeachers() const
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM DRT_TEACHERS ORDER BY DSC_NAME");
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    QList<Teacher> teachers;
+
+    while(query.next())
+        teachers.append(toTeacherObject(query.record()));
+
+    return teachers;
 }
 
 Group DbService::toGroupObject(const QSqlRecord& record) const
@@ -436,6 +478,27 @@ Discipline DbService::toDisciplineObject(const QSqlRecord &record) const
     discipline.setUirs(record.value("DSC_UIRS").toBool());
 
     return discipline;
+}
+
+Teacher DbService::toTeacherObject(const QSqlRecord &record) const
+{
+    Teacher teacher;
+    teacher.setId(record.value("TCH_ID").toInt());
+    teacher.setName(record.value("TCH_NAME").toString());
+    teacher.setRate(record.value("TCH_RATE").toDouble());
+    teacher.setInfo(record.value("TCH_INFO").toString());
+
+    return teacher;
+}
+
+LoadCalculation DbService::toLoadCalculationObject(const QSqlRecord &record) const
+{
+    LoadCalculation lcl;
+    lcl.setId(record.value("LCL_ID").toInt());
+    lcl.setFlowId(record.value("LCL_FLW_ID").toInt());
+    lcl.setDisciplineId(record.value("LCL_DSC_ID").toInt());
+
+    return lcl;
 }
 
 QSet<int> DbService::getGroupsIdsByFlowId(const int &flowId) const
@@ -636,7 +699,7 @@ void DbService::createFactorsTable() const
                   "FCT_PRE_DIPLOMA_PRACTICE,FCT_COURSEWORK,FCT_GUIDED_INDEPENDENT_WORK,FCT_CONTROL_WORK,"
                   "FCT_GRADUATION_DESIGN,FCT_GUIDE_GRADUATE,FCT_STATE_EXAM,FCT_HES,FCT_GUIDE_CHAIR,FCT_UIRS");
 
-    query.exec("INSERT INTO DRT_FACTORS (" + fields + ") VALUES (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);");
+    query.exec("INSERT INTO DRT_FACTORS (" + fields + ") VALUES (1,2,3,4,5,6,7,8,9,1.0,1.1,1.2,1.3,1.4,1.5);");
 
 }
 
@@ -800,7 +863,10 @@ void DbService::createFlowsView() const
 
     QSqlQuery query;
     query.exec("CREATE VIEW VIEW_FLOWS AS "
-               "SELECT FLW.FLW_ID, FLW.FLW_NAME, GROUP_CONCAT(GRP.GRP_NAME, ', ') as FLW_GROUPS, FLW.FLW_NOTE "
+               "SELECT "
+               "FLW.FLW_ID, "
+               "FLW.FLW_NAME, "
+               "GROUP_CONCAT(GRP.GRP_NAME, ', ') as FLW_GROUPS, FLW.FLW_NOTE "
                "FROM DRT_FLOWS FLW, DRT_GROUPS GRP, DRT_LINKS LNK "
                "WHERE FLW.FLW_ID = LNK.LNK_FLW_ID "
                "AND LNK.LNK_GRP_ID = GRP.GRP_ID "
@@ -873,31 +939,39 @@ void DbService::createLoadCalculationView() const
     query.exec("CREATE VIEW VIEW_LOAD_CALCULATION AS "
                "SELECT "
                "LCL.LCL_ID AS LCLV_ID, "
+               "DSC.DSC_ID AS LVLV_DSC_ID, "
                "DSC.DSC_NAME as LVLC_DSC_NAME, "
-               "VFLW.FLW_NAME as LCLV_NAME, "
+               "VFLW.FLW_ID as LCLV_FLW_ID, "
+               "VFLW.FLW_NAME as LCLV_FLW_NAME, "
                "DSC.DSC_LECTURES as LCLV_LECTURES, "
-               "DSC.DSC_LABORATORY as LCLV_LABORATORY, "
+               "DSC.DSC_LABORATORY * STUD.STUDENTS_NUMBER as LCLV_LABORATORY, "
                "DSC.DSC_PRACTICAL as LCLV_PRACTICAL, "
-               "DSC.DSC_CONSULTATION * FCT.FCT_CONSULTATION as LCLV_TEST, "
-               "DSC.DSC_EXAMINATIONS * FCT.FCT_EXAMINATIONS as LCLV_EXAMINATIONS, "
-               "DSC.DSC_TESTS * FCT.FCT_TESTS as LCLV_TESTS, "
-               "DSC.DSC_CURRENT_CONSULTATION * FCT.FCT_CURRENT_CONSULTATION as LCLV_CURRENT_CONSULTATION, "
-               "DSC.DSC_INTRODUCTORY_PRACTICE * FCT.FCT_INTRODUCTORY_PRACTICE as LCLV_INTRODUCTORY_PRACTICE, "
-               "DSC.DSC_PRE_DIPLOMA_PRACTICE * FCT.FCT_PRE_DIPLOMA_PRACTICE as LCLV_PRE_DIPLOMA_PRACTICE, "
-               "DSC.DSC_COURSEWORK * FCT.FCT_COURSEWORK as LCLV_COURSEWORK, "
-               "DSC.DSC_GUIDED_INDEPENDENT_WORK * FCT.FCT_GUIDED_INDEPENDENT_WORK as LCLV_GUIDED_INDEPENDENT_WORK, "
-               "DSC.DSC_CONTROL_WORK * FCT.FCT_CONTROL_WORK as LCLV_CONTROL_WORK, "
-               "DSC.DSC_GRADUATION_DESIGN * FCT.FCT_GRADUATION_DESIGN as LCLV_GRADUATION_DESIGN, "
-               "DSC.DSC_GUIDE_GRADUATE * FCT.FCT_GUIDE_GRADUATE as LCLV_GUIDE_GRADUATE, "
-               "DSC.DSC_STATE_EXAM * FCT.FCT_STATE_EXAM as LCLV_STATE_EXAM, "
-               "DSC.DSC_HES * FCT.FCT_HES as LCLV_HES, "
-               "DSC.DSC_GUIDE_CHAIR * FCT.FCT_GUIDE_CHAIR as LCLV_GUIDE_CHAIR, "
-               "DSC.DSC_UIRS * FCT.FCT_UIRS as LCLV_UIRS "
-               "FROM DRT_FLOWS FLW, DRT_LOAD_CALCULATION LCL, DRT_DISCIPLINES DSC, VIEW_FLOWS VFLW, DRT_FACTORS FCT "
+               "DSC.DSC_CONSULTATION * STUD.STUDENTS_NUMBER * FCT.FCT_CONSULTATION as LCLV_TEST, "
+               "DSC.DSC_EXAMINATIONS * STUD.STUDENTS_NUMBER * FCT.FCT_EXAMINATIONS as LCLV_EXAMINATIONS, "
+               "DSC.DSC_TESTS * STUD.STUDENTS_NUMBER * FCT.FCT_TESTS as LCLV_TESTS, "
+               "DSC.DSC_CURRENT_CONSULTATION * STUD.STUDENTS_NUMBER * FCT.FCT_CURRENT_CONSULTATION as LCLV_CURRENT_CONSULTATION, "
+               "DSC.DSC_INTRODUCTORY_PRACTICE * STUD.STUDENTS_NUMBER * FCT.FCT_INTRODUCTORY_PRACTICE as LCLV_INTRODUCTORY_PRACTICE, "
+               "DSC.DSC_PRE_DIPLOMA_PRACTICE * STUD.STUDENTS_NUMBER * FCT.FCT_PRE_DIPLOMA_PRACTICE as LCLV_PRE_DIPLOMA_PRACTICE, "
+               "DSC.DSC_COURSEWORK * STUD.STUDENTS_NUMBER * FCT.FCT_COURSEWORK as LCLV_COURSEWORK, "
+               "DSC.DSC_GUIDED_INDEPENDENT_WORK * STUD.STUDENTS_NUMBER * FCT.FCT_GUIDED_INDEPENDENT_WORK as LCLV_GUIDED_INDEPENDENT_WORK, "
+               "DSC.DSC_CONTROL_WORK * STUD.STUDENTS_NUMBER * FCT.FCT_CONTROL_WORK as LCLV_CONTROL_WORK, "
+               "DSC.DSC_GRADUATION_DESIGN * STUD.STUDENTS_NUMBER * FCT.FCT_GRADUATION_DESIGN as LCLV_GRADUATION_DESIGN, "
+               "DSC.DSC_GUIDE_GRADUATE * STUD.STUDENTS_NUMBER * FCT.FCT_GUIDE_GRADUATE as LCLV_GUIDE_GRADUATE, "
+               "DSC.DSC_STATE_EXAM * STUD.STUDENTS_NUMBER * FCT.FCT_STATE_EXAM as LCLV_STATE_EXAM, "
+               "DSC.DSC_HES * STUD.STUDENTS_NUMBER * FCT.FCT_HES as LCLV_HES, "
+               "DSC.DSC_GUIDE_CHAIR * STUD.STUDENTS_NUMBER * FCT.FCT_GUIDE_CHAIR as LCLV_GUIDE_CHAIR, "
+               "DSC.DSC_UIRS * STUD.STUDENTS_NUMBER * FCT.FCT_UIRS as LCLV_UIRS "
+               "FROM DRT_FLOWS FLW, DRT_LOAD_CALCULATION LCL, DRT_DISCIPLINES DSC, VIEW_FLOWS VFLW, DRT_FACTORS FCT, DRT_GROUPS GRP, DRT_LINKS LNK "
+               "JOIN (SELECT LNK.LNK_FLW_ID as FLW_ID, TOTAL(GRP.GRP_NUMBER_OF_STUDENTS) as STUDENTS_NUMBER FROM DRT_GROUPS GRP, DRT_LINKS LNK WHERE GRP.GRP_ID = LNK.LNK_GRP_ID GROUP BY LNK.LNK_FLW_ID) STUD ON STUD.FLW_ID = LCL.LCL_FLW_ID "
                "WHERE LCL.LCL_FLW_ID = VFLW.FLW_ID "
                "AND LCL.LCL_DSC_ID = DSC.DSC_ID "
+               "AND LCL.LCL_FLW_ID = FLW.FLW_ID "
+               "AND FLW.FLW_ID = LNK.LNK_FLW_ID "
+               "AND GRP.GRP_ID = LNK.LNK_GRP_ID "
                "AND FCT.FCT_ID = 1 "
                "GROUP BY LCL.LCL_ID");
+
+     qDebug() << query.lastError().text();
 }
 
 void DbService::createLoadDistributionHelper() const

@@ -119,7 +119,7 @@ QVariant CheckableSortFilterProxyModel::data(const QModelIndex &index, int role)
     }
     else if (readonlySet.contains(index.column()) && (role == Qt::BackgroundRole))
     {
-        return QColor(212, 208, 200);
+        return QColor(235, 238, 240);
     }
     else if (readonlySet.contains(index.column()) && (role == Qt::TextColorRole))
     {

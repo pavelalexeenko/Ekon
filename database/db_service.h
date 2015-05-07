@@ -6,6 +6,7 @@
 #include "objects/discipline.h"
 #include "objects/group.h"
 #include "objects/flow.h"
+#include "objects/loadcalculation.h"
 
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -48,6 +49,8 @@ public:
 
     QString getGroupNameById(const int& id);
     Flow getFlowById(const int& id);
+    Discipline getDisciplineById(const int& id);
+    LoadCalculation getLoadCalculation(const int& id);
 
     bool connectToAnotherDatabase(QString filename);
     bool loginAs(QString username, QString password);
@@ -72,6 +75,7 @@ public:
     QList<Group> getAllGroups() const;
     QList<Flow> getAllFlows() const;
     QList<Discipline> getAllDisciplines() const;
+    QList<Teacher> getAllTeachers() const;
 
 private:
     bool isCorrectVersion() const;
@@ -97,6 +101,8 @@ private:
     Group toGroupObject(const QSqlRecord& record) const;
     Flow toFlowObject(const QSqlRecord& record) const;
     Discipline toDisciplineObject(const QSqlRecord& record) const;
+    Teacher toTeacherObject(const QSqlRecord& record) const;
+    LoadCalculation toLoadCalculationObject(const QSqlRecord& record) const;
 
     QSet<int> getGroupsIdsByFlowId(const int& flowId) const;
 

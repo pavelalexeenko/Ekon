@@ -9,7 +9,9 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
 
     QStringList columnNames;
     columnNames << "ID"
+                << "DSC_ID"
                 << "Название\n дисциплины"
+                << "FLW_ID"
                 << "Название\n потока"
                 << "Лекции"
                 << "Лабоработные"
@@ -34,13 +36,15 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
 
     CheckableSortFilterProxyModel *cfpm = new CheckableSortFilterProxyModel(this);
     QList<int> readonlyCols;
-    for (int i = 5; i < 21; i++)
+    for (int i = 0; i < 23; i++)
         readonlyCols.append(i);
 
     cfpm->setParameters(QList<int>(), readonlyCols, QList<int>());
     cfpm->setSourceModel(loadCalculationTableModel);
 
     loadCalculationTableView = EkonTables::createTableView(this, cfpm);
+    loadCalculationTableView->hideColumn(1);
+    loadCalculationTableView->hideColumn(3);
 
     //loadCalculationTableView->setStyleSheet("QTableView::item {background-color: #D4D0C8; color: black;}");
     controlWidget = new ControlWidget(this);

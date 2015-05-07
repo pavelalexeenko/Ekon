@@ -44,7 +44,9 @@ SOURCES += main.cpp\
     dialogs/add_loadcalculation_dialog.cpp \
     implementations/check_box_delegate.cpp \
     implementations/read_only_delegate.cpp \
-    implementations/checkable_sort_filter_proxy_model.cpp
+    implementations/checkable_sort_filter_proxy_model.cpp \
+    dialogs/add_loaddistribution_dialog.cpp \
+    objects/loadcalculation.cpp
 
 HEADERS  += \
     main_window.h \
@@ -77,6 +79,8 @@ HEADERS  += \
     dialogs/add_loadcalculation_dialog.h \
     implementations/check_box_delegate.h \
     implementations/read_only_delegate.h \
-    implementations/checkable_sort_filter_proxy_model.h
+    implementations/checkable_sort_filter_proxy_model.h \
+    dialogs/add_loaddistribution_dialog.h \
+    objects/loadcalculation.h
 
 CONFIG += c++11

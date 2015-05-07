@@ -25,8 +25,6 @@ private:
     QComboBox *disciplineComboBox;
 
     QPushButton *addButton;
-
-    int _id;
 };
 
 #endif // ADD_LOADCALCULATION_DIALOG_H
