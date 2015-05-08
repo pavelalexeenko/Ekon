@@ -365,6 +365,7 @@ LoadCalculation DbService::getLoadCalculationById(const int &id)
 LoadCalculation DbService::getNotDistributedLoadById(const int &loadcalculationId)
 {
     LoadCalculation lcl = getLoadCalculationById(loadcalculationId);
+
 }
 
 QList<Group> DbService::getAllGroups() const
