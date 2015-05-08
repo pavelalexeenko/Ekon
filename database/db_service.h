@@ -51,6 +51,7 @@ public:
     Flow getFlowById(const int& id);
     Discipline getDisciplineById(const int& id);
     LoadCalculation getLoadCalculationById(const int& id);
+    LoadCalculation getNotDistributedLoadById(const int& loadcalculationId);
 
     bool connectToAnotherDatabase(QString filename);
     bool loginAs(QString username, QString password);

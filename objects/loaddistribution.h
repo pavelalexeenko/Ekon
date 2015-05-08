@@ -1,14 +1,14 @@
-#ifndef LOADCALCULATION_H
-#define LOADCALCULATION_H
+#ifndef LOADDISTRIBUTION_H
+#define LOADDISTRIBUTION_H
 
-class LoadCalculation
+class LoadDistribution
 {
 public:
-    LoadCalculation();
+    LoadDistribution();
 
     int getId() const;
-    int getFlowId() const;
-    int getDisciplineId() const;
+    int getLoadCalculaionId() const;
+    int getTeacherId() const;
     double getLectures() const;
     double getLaboratory() const;
     double getPractical() const;
@@ -29,8 +29,8 @@ public:
     double getUirs() const;
 
     void setId(const int id);
-    void setFlowId(const int flowId);
-    void setDisciplineId(const int disciplineId);
+    void setLoadCalculaionId(const int loadCalculaionId);
+    void setTeacherId(const int teacherId);
     void setLectures(const double& lectures);
     void setLaboratory(const double& laboratory);
     void setPractical(const double& practical);
@@ -52,8 +52,8 @@ public:
 
 private:
     int _id;
-    int _flowId;
-    int _disciplineId;
+    int _loadCalculaionId;
+    int _teacherId;
 
     double _lectures;
     double _laboratory;
@@ -75,4 +75,4 @@ private:
     double _uirs;
 };
 
-#endif // LOADCALCULATION_H
+#endif // LOADDISTRIBUTION_H
