@@ -366,6 +366,8 @@ LoadCalculation DbService::getNotDistributedLoadById(const int &loadcalculationI
 {
     LoadCalculation lcl = getLoadCalculationById(loadcalculationId);
 
+
+
     return lcl;
 }
 
@@ -434,6 +436,22 @@ QList<Teacher> DbService::getAllTeachers() const
 }
 
 QList<LoadCalculation> DbService::getAllLoadCalculation() const
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM VIEW_LOAD_CALCULATION ORDER BY LVLV_DSC_NAME");
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    QList<LoadCalculation> lcls;
+
+    while(query.next())
+        lcls.append(toLoadCalculationObject(query.record()));
+
+    return lcls;
+}
+
+QList<LoadDistribution> DbService::getLoadDistributionsByLoadCalculationId(const int loadCalculationId)
 {
     QSqlQuery query;
     query.prepare("SELECT * FROM VIEW_LOAD_CALCULATION ORDER BY LVLV_DSC_NAME");
@@ -560,6 +578,34 @@ LoadCalculation DbService::toLoadCalculationObject(const QSqlRecord &record) con
     lcl.setUirs(record.value("LCLV_UIRS").toDouble());
 
     return lcl;
+}
+
+LoadDistribution DbService::toLoadDistributionObject(const QSqlRecord &record) const
+{
+    LoadDistribution ld;
+    ld.setId(record.value("LDB_ID").toInt());
+    ld.setTeacherId(record.value("LDB_TCH_ID").toInt());
+    ld.setLoadCalculaionId(record.value("LDB_LCL_ID").toInt());
+    ld.setLectures(record.value("LDB_LECTURES").toDouble());
+    ld.setLaboratory(record.value("LDB_LABORATORY").toDouble());
+    ld.setPractical(record.value("LDB_PRACTICAL").toDouble());
+    ld.setConsultation(record.value("LDB_CONSULTATION").toDouble());
+    ld.setExaminations(record.value("LDB_EXAMINATIONS").toDouble());
+    ld.setTests(record.value("LDB_TESTS").toDouble());
+    ld.setCurrentConsultation(record.value("LDB_CURRENT_CONSULTATION").toDouble());
+    ld.setIntroductoryPractice(record.value("LDB_INTRODUCTORY_PRACTICE").toDouble());
+    ld.setPreDiplomaPractice(record.value("LDB_PRE_DIPLOMA_PRACTICE").toDouble());
+    ld.setCourseWork(record.value("LDB_COURSEWORK").toDouble());
+    ld.setGuideIndependentWork(record.value("LDB_GUIDED_INDEPENDENT_WORK").toDouble());
+    ld.setControlWork(record.value("LDB_CONTROL_WORK").toDouble());
+    ld.setGraduationDesign(record.value("LDB_GRADUATION_DESIGN").toDouble());
+    ld.setGuideGraduate(record.value("LDB_GUIDE_GRADUATE").toDouble());
+    ld.setStateExam(record.value("LDB_STATE_EXAM").toDouble());
+    ld.setHes(record.value("LDB_HES").toDouble());
+    ld.setGuideChair(record.value("LDB_GUIDE_CHAIR").toDouble());
+    ld.setUirs(record.value("LDB_UIRS").toDouble());
+
+    return ld;
 }
 
 QSet<int> DbService::getGroupsIdsByFlowId(const int &flowId) const

@@ -7,6 +7,7 @@
 #include "objects/group.h"
 #include "objects/flow.h"
 #include "objects/loadcalculation.h"
+#include "objects/loaddistribution.h"
 
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -79,6 +80,8 @@ public:
     QList<Teacher> getAllTeachers() const;
     QList<LoadCalculation> getAllLoadCalculation() const;
 
+    QList<LoadDistribution> getLoadDistributionsByLoadCalculationId(const int loadCalculationId);
+
     QList<QPair<int, QString> > getLoadCalculationIdsAndNames() const;
 
 private:
@@ -107,6 +110,7 @@ private:
     Discipline toDisciplineObject(const QSqlRecord& record) const;
     Teacher toTeacherObject(const QSqlRecord& record) const;
     LoadCalculation toLoadCalculationObject(const QSqlRecord& record) const;
+    LoadDistribution toLoadDistributionObject(const QSqlRecord& record) const;
 
     QSet<int> getGroupsIdsByFlowId(const int& flowId) const;
 
