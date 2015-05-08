@@ -9,7 +9,9 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenu();
     this->resize(1300,500);
     updateTitle();
+    tablesWidget->updateLayout();
     this->show();
+
     if (!DbService::getInstance()->isLogged())
         goToLoginWindow();
 }
@@ -19,7 +21,6 @@ void MainWindow::updateTitle()
     qDebug() << __FUNCTION__;
     QSharedPointer<User> user = DbService::getInstance()->getCurrentUser();
     this->setWindowTitle(QString("Logged as: ") + user->getUsername() + " - " + user->getUserroleAsString());
-    tablesWidget->updateLayout();
 }
 
 void MainWindow::goToLoginWindow()
@@ -27,6 +28,7 @@ void MainWindow::goToLoginWindow()
     qDebug() << __FUNCTION__;
     LoginWindow *lw = new LoginWindow(this);
     connect(lw, SIGNAL(accepted()), this, SLOT(updateTitle()));
+    connect(lw, SIGNAL(accepted()), tablesWidget, SLOT(updateLayout()));
     this->hide();
     lw->show();
 }
@@ -45,12 +47,6 @@ void MainWindow::createMenu()
     exitAct = new QAction(tr("&Exit"), this);
     fileMenu->addAction(exitAct);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
-
-    saveMenu = menuBar()->addMenu(tr("&Save"));
-
-    saveAct = new QAction(tr("&Save"), this);
-    saveMenu->addAction(saveAct);
-    connect(saveAct, SIGNAL(triggered()), tablesWidget, SLOT(updateLayout()));
 
     refreshAct = new QAction(tr("&Refresh"), this);
     menuBar()->addAction(refreshAct);
