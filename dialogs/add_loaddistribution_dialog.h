@@ -42,7 +42,7 @@ private:
     HoursWidget *preDiplomaPracticeHoursWidget;
     HoursWidget *courseworkHoursWidget;
     HoursWidget *guidedIndependentWorkHoursWidget;
-    HoursWidget *controlHoursWidget;
+    HoursWidget *controlWorkHoursWidget;
     HoursWidget *graduationDesignHoursWidget;
     HoursWidget *guideGraduateHoursWidget;
     HoursWidget *stateExamHoursWidget;

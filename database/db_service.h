@@ -66,6 +66,7 @@ public:
     bool addFlow(const Flow& flow);
     bool updateFlow(const Flow& flow);
     bool addLoadCalculation(const int& disciplineId, const int& flowId);
+    bool addLoadDistribution(const LoadDistribution& loadDistribution);
 
     bool deleteUser(const int& userId);
     bool deleteTeacher(const int& teacherId);

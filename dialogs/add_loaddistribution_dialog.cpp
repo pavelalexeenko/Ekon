@@ -16,7 +16,7 @@ AddLoadDistributionDialog::AddLoadDistributionDialog(QWidget *parent) :
   , preDiplomaPracticeHoursWidget(new HoursWidget())
   , courseworkHoursWidget(new HoursWidget())
   , guidedIndependentWorkHoursWidget(new HoursWidget())
-  , controlHoursWidget(new HoursWidget())
+  , controlWorkHoursWidget(new HoursWidget())
   , graduationDesignHoursWidget(new HoursWidget())
   , guideGraduateHoursWidget(new HoursWidget())
   , stateExamHoursWidget(new HoursWidget())
@@ -38,56 +38,35 @@ AddLoadDistributionDialog::AddLoadDistributionDialog(QWidget *parent) :
 
 void AddLoadDistributionDialog::addRow()
 {
-    if (0/*DbService::getInstance()->addLoadCalculation(disciplineComboBox->itemData(disciplineComboBox->currentIndex()).toInt(),
-                                                                                             flowComboBox->itemData(flowComboBox->currentIndex()).toInt())*/)
+    qDebug() << __FUNCTION__;
+
+    LoadDistribution ld;
+
+    ld.setTeacherId(teacherComboBox->currentData().toInt());
+    ld.setLoadCalculaionId(loadcalculationComboBox->currentData().toInt());
+    ld.setLectures(lecturesHoursWidget->getHours());
+    ld.setLaboratory(laboratoryHoursWidget->getHours());
+    ld.setPractical(practicalHoursWidget->getHours());
+    ld.setConsultation(consultationHoursWidget->getHours());
+    ld.setExaminations(examinationsHoursWidget->getHours());
+    ld.setTests(testsHoursWidget->getHours());
+    ld.setCurrentConsultation(currentConsultationHoursWidget->getHours());
+    ld.setIntroductoryPractice(introductoryPracticeHoursWidget->getHours());
+    ld.setPreDiplomaPractice(preDiplomaPracticeHoursWidget->getHours());
+    ld.setCourseWork(courseworkHoursWidget->getHours());
+    ld.setGuideIndependentWork(guidedIndependentWorkHoursWidget->getHours());
+    ld.setControlWork(controlWorkHoursWidget->getHours());
+    ld.setGraduationDesign(graduationDesignHoursWidget->getHours());
+    ld.setGuideGraduate(guideGraduateHoursWidget->getHours());
+    ld.setStateExam(stateExamHoursWidget->getHours());
+    ld.setHes(hesHoursWidget->getHours());
+    ld.setGuideChair(guideChairHoursWidget->getHours());
+    ld.setUirs(uirsHoursWidget->getHours());
+
+    if (DbService::getInstance()->addLoadDistribution(ld))
         this->accept();
     else
         QMessageBox::critical(this, tr("Error"), tr("Database error while adding a group."), QMessageBox::Ok);
-}
-
-void AddLoadDistributionDialog::createLayout()
-{
-    setWindowTitle("Добавление распределения учебной нагрузки");
-
-    QFormLayout *formLayout = new QFormLayout(this);
-    formLayout->addRow(tr("&Название потоковой дисциплины:"), loadcalculationComboBox);
-    formLayout->addRow(tr("&Имя преподавателя:"), teacherComboBox);
-
-    QFormLayout *firstFormLayout = new QFormLayout();
-    firstFormLayout->addRow(tr("&Лекции:"), lecturesHoursWidget);
-    firstFormLayout->addRow(tr("&Лабораторные:"), laboratoryHoursWidget);
-    firstFormLayout->addRow(tr("&Практические:"), practicalHoursWidget);
-    firstFormLayout->addRow(tr("&Консультации:"), consultationHoursWidget);
-    firstFormLayout->addRow(tr("&Экзамен:"), examinationsHoursWidget);
-    firstFormLayout->addRow(tr("&Зачет:"), testsHoursWidget);
-    firstFormLayout->addRow(tr("&Текущая консультация:"), currentConsultationHoursWidget);
-    firstFormLayout->addRow(tr("&Ознакомительная практика:"), introductoryPracticeHoursWidget);
-    firstFormLayout->addRow(tr("&Преддипломная практика:"), preDiplomaPracticeHoursWidget);
-    firstFormLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
-
-    QFormLayout *secondFormLayout = new QFormLayout();
-    secondFormLayout->addRow(tr("&Курсовая работа:"), courseworkHoursWidget);
-    secondFormLayout->addRow(tr("&Управляемая самост. работа:"), guidedIndependentWorkHoursWidget);
-    secondFormLayout->addRow(tr("&Контрольная работа:"), controlHoursWidget);
-    secondFormLayout->addRow(tr("&Дипломное проектирование:"), graduationDesignHoursWidget);
-    secondFormLayout->addRow(tr("&Рук-во аспирантами:"), guideGraduateHoursWidget);
-    secondFormLayout->addRow(tr("&Гос экзамен:"), stateExamHoursWidget);
-    secondFormLayout->addRow(tr("&ГЭК:"), hesHoursWidget);
-    secondFormLayout->addRow(tr("&Руководство кафедрой:"), guideChairHoursWidget);
-    secondFormLayout->addRow(tr("&УИРС:"), uirsHoursWidget);
-    secondFormLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
-
-    QHBoxLayout *lay = new QHBoxLayout();
-    lay->addLayout(firstFormLayout);
-    lay->addLayout(secondFormLayout);
-
-    formLayout->addRow(lay);
-    formLayout->addRow(addButton);
-    formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    formLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    formLayout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
-
-    setLayout(formLayout);
 }
 
 void AddLoadDistributionDialog::fillComboBoxes()
@@ -117,25 +96,26 @@ void AddLoadDistributionDialog::setHours()
     {
         int selectedLclId = loadcalculationComboBox->currentData().toInt();
         LoadCalculation lcl = DbService::getInstance()->getLoadCalculationById(selectedLclId);
+        LoadCalculation notDistributedLcl = DbService::getInstance()->getNotDistributedLoadById(selectedLclId);
 
-        lecturesHoursWidget->setTotalHours(lcl.getLectures());
-        laboratoryHoursWidget->setTotalHours(lcl.getLaboratory());
-        practicalHoursWidget->setTotalHours(lcl.getPractical());
-        consultationHoursWidget->setTotalHours(lcl.getConsultation());
-        examinationsHoursWidget->setTotalHours(lcl.getExamination());
-        testsHoursWidget->setTotalHours(lcl.getTests());
-        currentConsultationHoursWidget->setTotalHours(lcl.getCurrentConsultation());
-        introductoryPracticeHoursWidget->setTotalHours(lcl.getIntroductoryPractice());
-        preDiplomaPracticeHoursWidget->setTotalHours(lcl.getPreDiplomaPractice());
-        courseworkHoursWidget->setTotalHours(lcl.getCourseWork());
-        guidedIndependentWorkHoursWidget->setTotalHours(lcl.getGuideIndependentWork());
-        controlHoursWidget->setTotalHours(lcl.getControlWork());
-        graduationDesignHoursWidget->setTotalHours(lcl.getGraduationDesign());
-        guideGraduateHoursWidget->setTotalHours(lcl.getGuideGraduate());
-        stateExamHoursWidget->setTotalHours(lcl.getStateExam());
-        hesHoursWidget->setTotalHours(lcl.getHes());
-        guideChairHoursWidget->setTotalHours(lcl.getGuideChair());
-        uirsHoursWidget->setTotalHours(lcl.getUirs());
+        lecturesHoursWidget->setHours(notDistributedLcl.getLectures(), lcl.getLectures());
+        laboratoryHoursWidget->setHours(notDistributedLcl.getLaboratory(), lcl.getLaboratory());
+        practicalHoursWidget->setHours(notDistributedLcl.getPractical(), lcl.getPractical());
+        consultationHoursWidget->setHours(notDistributedLcl.getConsultation(), lcl.getConsultation());
+        examinationsHoursWidget->setHours(notDistributedLcl.getExamination(), lcl.getExamination());
+        testsHoursWidget->setHours(notDistributedLcl.getTests(), lcl.getTests());
+        currentConsultationHoursWidget->setHours(notDistributedLcl.getCurrentConsultation(), lcl.getCurrentConsultation());
+        introductoryPracticeHoursWidget->setHours(notDistributedLcl.getIntroductoryPractice(), lcl.getIntroductoryPractice());
+        preDiplomaPracticeHoursWidget->setHours(notDistributedLcl.getPreDiplomaPractice(), lcl.getPreDiplomaPractice());
+        courseworkHoursWidget->setHours(notDistributedLcl.getCourseWork(), lcl.getCourseWork());
+        guidedIndependentWorkHoursWidget->setHours(notDistributedLcl.getGuideIndependentWork(), lcl.getGuideIndependentWork());
+        controlWorkHoursWidget->setHours(notDistributedLcl.getControlWork(), lcl.getControlWork());
+        graduationDesignHoursWidget->setHours(notDistributedLcl.getGraduationDesign(), lcl.getGraduationDesign());
+        guideGraduateHoursWidget->setHours(notDistributedLcl.getGuideGraduate(), lcl.getGuideGraduate());
+        stateExamHoursWidget->setHours(notDistributedLcl.getStateExam(), lcl.getStateExam());
+        hesHoursWidget->setHours(notDistributedLcl.getHes(), lcl.getHes());
+        guideChairHoursWidget->setHours(notDistributedLcl.getGuideChair(), lcl.getGuideChair());
+        uirsHoursWidget->setHours(notDistributedLcl.getUirs(), lcl.getUirs());
 
         this->updateGeometry();
     }
@@ -146,4 +126,49 @@ void AddLoadDistributionDialog::setHours()
     catch(...)
     {
     }
+}
+
+void AddLoadDistributionDialog::createLayout()
+{
+    setWindowTitle("Добавление распределения учебной нагрузки");
+
+    QFormLayout *formLayout = new QFormLayout(this);
+    formLayout->addRow(tr("&Название потоковой дисциплины:"), loadcalculationComboBox);
+    formLayout->addRow(tr("&Имя преподавателя:"), teacherComboBox);
+
+    QFormLayout *firstFormLayout = new QFormLayout();
+    firstFormLayout->addRow(tr("&Лекции:"), lecturesHoursWidget);
+    firstFormLayout->addRow(tr("&Лабораторные:"), laboratoryHoursWidget);
+    firstFormLayout->addRow(tr("&Практические:"), practicalHoursWidget);
+    firstFormLayout->addRow(tr("&Консультации:"), consultationHoursWidget);
+    firstFormLayout->addRow(tr("&Экзамен:"), examinationsHoursWidget);
+    firstFormLayout->addRow(tr("&Зачет:"), testsHoursWidget);
+    firstFormLayout->addRow(tr("&Текущая консультация:"), currentConsultationHoursWidget);
+    firstFormLayout->addRow(tr("&Ознакомительная практика:"), introductoryPracticeHoursWidget);
+    firstFormLayout->addRow(tr("&Преддипломная практика:"), preDiplomaPracticeHoursWidget);
+    firstFormLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
+    QFormLayout *secondFormLayout = new QFormLayout();
+    secondFormLayout->addRow(tr("&Курсовая работа:"), courseworkHoursWidget);
+    secondFormLayout->addRow(tr("&Управляемая самост. работа:"), guidedIndependentWorkHoursWidget);
+    secondFormLayout->addRow(tr("&Контрольная работа:"), controlWorkHoursWidget);
+    secondFormLayout->addRow(tr("&Дипломное проектирование:"), graduationDesignHoursWidget);
+    secondFormLayout->addRow(tr("&Рук-во аспирантами:"), guideGraduateHoursWidget);
+    secondFormLayout->addRow(tr("&Гос экзамен:"), stateExamHoursWidget);
+    secondFormLayout->addRow(tr("&ГЭК:"), hesHoursWidget);
+    secondFormLayout->addRow(tr("&Руководство кафедрой:"), guideChairHoursWidget);
+    secondFormLayout->addRow(tr("&УИРС:"), uirsHoursWidget);
+    secondFormLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
+    QHBoxLayout *lay = new QHBoxLayout();
+    lay->addLayout(firstFormLayout);
+    lay->addLayout(secondFormLayout);
+
+    formLayout->addRow(lay);
+    formLayout->addRow(addButton);
+    formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    formLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    formLayout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
+
+    setLayout(formLayout);
 }

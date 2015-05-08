@@ -45,32 +45,36 @@ bool DbService::addUser(const User& user)
 {
     qDebug() << __FUNCTION__;
 
+    _db->transaction();
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) "
                   "VALUES (:username, :password, :type)");
     query.bindValue(":username", user.getUsername());
     query.bindValue(":password", user.getPassword());
     query.bindValue(":type", user.getUserrole());
-    if (!query.exec())
-        return false;
 
-    return true;
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
 }
 
 bool DbService::addTeacher(const Teacher &teacher)
 {
     qDebug() << __FUNCTION__;
 
+    _db->transaction();
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_TEACHERS (TCH_NAME, TCH_RATE, TCH_INFO) "
                   "VALUES (:name, :rate, :info)");
     query.bindValue(":name", teacher.getName());
     query.bindValue(":rate", teacher.getRate());
     query.bindValue(":info", teacher.getInfo());
-    if (!query.exec())
-        return false;
 
-    return true;
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
 }
 
 bool DbService::addDiscipline(const Discipline &discipline)
@@ -81,6 +85,7 @@ bool DbService::addDiscipline(const Discipline &discipline)
                    "DSC_INTRODUCTORY_PRACTICE,DSC_PRE_DIPLOMA_PRACTICE,DSC_COURSEWORK,DSC_GUIDED_INDEPENDENT_WORK,DSC_CONTROL_WORK, "
                    "DSC_GRADUATION_DESIGN,DSC_GUIDE_GRADUATE,DSC_STATE_EXAM,DSC_HES,DSC_GUIDE_CHAIR,DSC_UIRS");
 
+    _db->transaction();
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_DISCIPLINES (" + fields + ") "
                   "VALUES (:name, :lec, :lab, :prac, :consult, :exam, :tests, :curCons, :intrPrac, :preDiplPrac, :course, :guIndWork, :contrl, "
@@ -107,9 +112,9 @@ bool DbService::addDiscipline(const Discipline &discipline)
     query.bindValue(":uirs", discipline.hasUirs());
 
     if (!query.exec())
-        return false;
+        return !_db->rollback();
 
-    return true;
+    return _db->commit();
 }
 
 bool DbService::addGroup(const Group& group)
@@ -117,7 +122,7 @@ bool DbService::addGroup(const Group& group)
     qDebug() << __FUNCTION__;
 
     QString fields("GRP_NAME,GRP_NUMBER_OF_STUDENTS,GRP_COURSE,GRP_NUMBER_OF_SUBGROUPS,GRP_SEMESTR,GRP_FACULTET,GRP_SPECIALITY,GRP_NOTE");
-
+    _db->transaction();
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_GROUPS (" + fields + ") "
                   "VALUES(:name, :students, :course, :subgroups, :semestr, :faculty, :spec, :note);");
@@ -132,9 +137,9 @@ bool DbService::addGroup(const Group& group)
     query.bindValue(":note", group.getNote());
 
     if (!query.exec())
-        return false;
+        return !_db->rollback();
 
-    return true;
+    return _db->commit();
 }
 
 bool DbService::addFlow(const Flow &flow)
@@ -207,6 +212,48 @@ bool DbService::addLoadCalculation(const int &disciplineId, const int &flowId)
     query.prepare("INSERT INTO DRT_LOAD_CALCULATION (LCL_DSC_ID,LCL_FLW_ID) VALUES(:disciplineId, :flowId);");
     query.bindValue(":disciplineId", disciplineId);
     query.bindValue(":flowId", flowId);
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
+}
+
+bool DbService::addLoadDistribution(const LoadDistribution &loadDistribution)
+{
+    qDebug() << __FUNCTION__;
+
+    QString fields("LDB_TCH_ID, LDB_LCL_ID, LDB_LECTURES, LDB_LABORATORY, LDB_PRACTICAL ,LDB_CONSULTATION ,LDB_EXAMINATIONS, "
+                   "LDB_TESTS ,LDB_CURRENT_CONSULTATION ,LDB_INTRODUCTORY_PRACTICE ,LDB_PRE_DIPLOMA_PRACTICE ,LDB_COURSEWORK, "
+                   "LDB_GUIDED_INDEPENDENT_WORK ,LDB_CONTROL_WORK ,LDB_GRADUATION_DESIGN,LDB_GUIDE_GRADUATE ,LDB_STATE_EXAM, "
+                   "LDB_HES,LDB_GUIDE_CHAIR,LDB_UIRS");
+
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") "
+                  "VALUES (:teacherId, :lclId, :lec, :lab, :prac, :consult, :exam, :tests, :curCons, :intrPrac, :preDiplPrac, :course, :guIndWork, :contrl, "
+                  " :gradDesign, :guGrad, :stateExam, :hes, :guideChair, :uirs)");
+
+    query.bindValue(":teacherId", loadDistribution.getTeacherId());
+    query.bindValue(":lclId", loadDistribution.getLoadCalculaionId());
+    query.bindValue(":lec", loadDistribution.getLectures());
+    query.bindValue(":lab", loadDistribution.getLaboratory());
+    query.bindValue(":prac", loadDistribution.getPractical());
+    query.bindValue(":consult", loadDistribution.getConsultation());
+    query.bindValue(":exam", loadDistribution.getExamination());
+    query.bindValue(":tests", loadDistribution.getTests());
+    query.bindValue(":curCons", loadDistribution.getCurrentConsultation());
+    query.bindValue(":intrPrac", loadDistribution.getIntroductoryPractice());
+    query.bindValue(":preDiplPrac", loadDistribution.getPreDiplomaPractice());
+    query.bindValue(":course", loadDistribution.getCourseWork());
+    query.bindValue(":guIndWork", loadDistribution.getGuideIndependentWork());
+    query.bindValue(":contrl", loadDistribution.getControlWork());
+    query.bindValue(":gradDesign", loadDistribution.getGraduationDesign());
+    query.bindValue(":guGrad", loadDistribution.getGuideGraduate());
+    query.bindValue(":stateExam", loadDistribution.getStateExam());
+    query.bindValue(":hes", loadDistribution.getHes());
+    query.bindValue(":guideChair", loadDistribution.getGuideChair());
+    query.bindValue(":uirs", loadDistribution.getUirs());
 
     if (!query.exec())
         return !_db->rollback();
@@ -365,8 +412,32 @@ LoadCalculation DbService::getLoadCalculationById(const int &id)
 LoadCalculation DbService::getNotDistributedLoadById(const int &loadcalculationId)
 {
     LoadCalculation lcl = getLoadCalculationById(loadcalculationId);
+    QList<LoadDistribution> lds = getLoadDistributionsByLoadCalculationId(loadcalculationId);
 
+    for (LoadDistribution ld : lds)
+    {
+        if (ld.getLoadCalculaionId() != lcl.getId())
+            throw QString("Function take wrong loaddistribution list from database");
 
+        lcl.setLectures(lcl.getLectures() - ld.getLectures());
+        lcl.setLaboratory(lcl.getLaboratory() - ld.getLaboratory());
+        lcl.setPractical(lcl.getPractical() - ld.getPractical());
+        lcl.setConsultation(lcl.getConsultation() - ld.getConsultation());
+        lcl.setExaminations(lcl.getExamination() - ld.getExamination());
+        lcl.setTests(lcl.getTests() - ld.getTests());
+        lcl.setCurrentConsultation(lcl.getCurrentConsultation() - ld.getCurrentConsultation());
+        lcl.setIntroductoryPractice(lcl.getIntroductoryPractice() - ld.getIntroductoryPractice());
+        lcl.setPreDiplomaPractice(lcl.getPreDiplomaPractice() - ld.getPreDiplomaPractice());
+        lcl.setCourseWork(lcl.getCourseWork() - ld.getCourseWork());
+        lcl.setGuideIndependentWork(lcl.getGuideIndependentWork() - ld.getGuideIndependentWork());
+        lcl.setControlWork(lcl.getControlWork() - ld.getControlWork());
+        lcl.setGraduationDesign(lcl.getGraduationDesign() - ld.getGraduationDesign());
+        lcl.setGuideGraduate(lcl.getGuideGraduate() - ld.getGuideGraduate());
+        lcl.setStateExam(lcl.getStateExam() - ld.getStateExam());
+        lcl.setHes(lcl.getHes() - ld.getHes());
+        lcl.setGuideChair(lcl.getGuideChair() - ld.getGuideChair());
+        lcl.setUirs(lcl.getUirs() - ld.getUirs());
+    }
 
     return lcl;
 }
@@ -454,17 +525,18 @@ QList<LoadCalculation> DbService::getAllLoadCalculation() const
 QList<LoadDistribution> DbService::getLoadDistributionsByLoadCalculationId(const int loadCalculationId)
 {
     QSqlQuery query;
-    query.prepare("SELECT * FROM VIEW_LOAD_CALCULATION ORDER BY LVLV_DSC_NAME");
+    query.prepare("SELECT * FROM DRT_LOAD_DISTRIBUTION WHERE LDB_LCL_ID = :lclId");
+    query.bindValue(":lclId", loadCalculationId);
 
     if (!query.exec())
         throw QString(query.lastError().text());
 
-    QList<LoadCalculation> lcls;
+    QList<LoadDistribution> lds;
 
     while(query.next())
-        lcls.append(toLoadCalculationObject(query.record()));
+        lds.append(toLoadDistributionObject(query.record()));
 
-    return lcls;
+    return lds;
 }
 
 QList<QPair<int, QString> > DbService::getLoadCalculationIdsAndNames() const
@@ -785,21 +857,21 @@ void DbService::createFactorsTable() const
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_FACTORS("
                "FCT_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
-               "FCT_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
-               "FCT_EXAMINATIONS INTEGER NOT NULL DEFAULT 0, "
-               "FCT_TESTS INTEGER NOT NULL DEFAULT 0, "
-               "FCT_CURRENT_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
-               "FCT_INTRODUCTORY_PRACTICE INTEGER NOT NULL DEFAULT 0, "
-               "FCT_PRE_DIPLOMA_PRACTICE INTEGER NOT NULL DEFAULT 0, "
-               "FCT_COURSEWORK INTEGER NOT NULL DEFAULT 0, "
-               "FCT_GUIDED_INDEPENDENT_WORK INTEGER NOT NULL DEFAULT 0, "
-               "FCT_CONTROL_WORK INTEGER NOT NULL DEFAULT 0, "
-               "FCT_GRADUATION_DESIGN INTEGER NOT NULL DEFAULT 0, "
-               "FCT_GUIDE_GRADUATE INTEGER NOT NULL DEFAULT 0, "
-               "FCT_STATE_EXAM INTEGER NOT NULL DEFAULT 0, "
-               "FCT_HES INTEGER NOT NULL DEFAULT 0, "
-               "FCT_GUIDE_CHAIR INTEGER NOT NULL DEFAULT 0, "
-               "FCT_UIRS INTEGER NOT NULL DEFAULT 0 "
+               "FCT_CONSULTATION REAL NOT NULL DEFAULT 0, "
+               "FCT_EXAMINATIONS REAL NOT NULL DEFAULT 0, "
+               "FCT_TESTS REAL NOT NULL DEFAULT 0, "
+               "FCT_CURRENT_CONSULTATION REAL NOT NULL DEFAULT 0, "
+               "FCT_INTRODUCTORY_PRACTICE REAL NOT NULL DEFAULT 0, "
+               "FCT_PRE_DIPLOMA_PRACTICE REAL NOT NULL DEFAULT 0, "
+               "FCT_COURSEWORK REAL NOT NULL DEFAULT 0, "
+               "FCT_GUIDED_INDEPENDENT_WORK REAL NOT NULL DEFAULT 0, "
+               "FCT_CONTROL_WORK REAL NOT NULL DEFAULT 0, "
+               "FCT_GRADUATION_DESIGN REAL NOT NULL DEFAULT 0, "
+               "FCT_GUIDE_GRADUATE REAL NOT NULL DEFAULT 0, "
+               "FCT_STATE_EXAM REAL NOT NULL DEFAULT 0, "
+               "FCT_HES REAL NOT NULL DEFAULT 0, "
+               "FCT_GUIDE_CHAIR REAL NOT NULL DEFAULT 0, "
+               "FCT_UIRS REAL NOT NULL DEFAULT 0 "
                ");");
 
     QString fields("FCT_CONSULTATION,FCT_EXAMINATIONS,FCT_TESTS,FCT_CURRENT_CONSULTATION,FCT_INTRODUCTORY_PRACTICE,"
@@ -807,7 +879,6 @@ void DbService::createFactorsTable() const
                   "FCT_GRADUATION_DESIGN,FCT_GUIDE_GRADUATE,FCT_STATE_EXAM,FCT_HES,FCT_GUIDE_CHAIR,FCT_UIRS");
 
     query.exec("INSERT INTO DRT_FACTORS (" + fields + ") VALUES (1,2,3,4,5,6,7,8,9,1.0,1.1,1.2,1.3,1.4,1.5);");
-
 }
 
 void DbService::createUsersTypesTable() const
@@ -847,9 +918,9 @@ void DbService::createDisciplinesTable() const
     query.exec("CREATE TABLE DRT_DISCIPLINES("
                "DSC_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
                "DSC_NAME VARCHAR(100) NOT NULL UNIQUE, "
-               "DSC_LECTURES INTEGER NOT NULL DEFAULT 0, "
-               "DSC_LABORATORY INTEGER NOT NULL DEFAULT 0, "
-               "DSC_PRACTICAL INTEGER NOT NULL DEFAULT 0, "
+               "DSC_LECTURES REAL NOT NULL DEFAULT 0, "
+               "DSC_LABORATORY REAL NOT NULL DEFAULT 0, "
+               "DSC_PRACTICAL REAL NOT NULL DEFAULT 0, "
                "DSC_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
                "DSC_EXAMINATIONS INTEGER NOT NULL DEFAULT 0, "
                "DSC_TESTS INTEGER NOT NULL DEFAULT 0, "
@@ -1009,24 +1080,24 @@ void DbService::createLoadDistribution() const
                "LDB_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
                "LDB_TCH_ID INTEGER NOT NULL, "
                "LDB_LCL_ID INTEGER NOT NULL, "
-               "LDB_LECTURES INTEGER NOT NULL DEFAULT 0, "
-               "LDB_LABORATORY INTEGER NOT NULL DEFAULT 0, "
-               "LDB_PRACTICAL INTEGER NOT NULL DEFAULT 0, "
-               "LDB_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
-               "LDB_EXAMINATIONS INTEGER NOT NULL DEFAULT 0, "
-               "LDB_TESTS INTEGER NOT NULL DEFAULT 0, "
-               "LDB_CURRENT_CONSULTATION INTEGER NOT NULL DEFAULT 0, "
-               "LDB_INTRODUCTORY_PRACTICE INTEGER NOT NULL DEFAULT 0, "
-               "LDB_PRE_DIPLOMA_PRACTICE INTEGER NOT NULL DEFAULT 0, "
-               "LDB_COURSEWORK INTEGER NOT NULL DEFAULT 0, "
-               "LDB_GUIDED_INDEPENDENT_WORK INTEGER NOT NULL DEFAULT 0, "
-               "LDB_CONTROL_WORK INTEGER NOT NULL DEFAULT 0, "
-               "LDB_GRADUATION_DESIGN INTEGER NOT NULL DEFAULT 0, "
-               "LDB_GUIDE_GRADUATE INTEGER NOT NULL DEFAULT 0, "
-               "LDB_STATE_EXAM INTEGER NOT NULL DEFAULT 0, "
-               "LDB_HES INTEGER NOT NULL DEFAULT 0, "
-               "LDB_GUIDE_CHAIR INTEGER NOT NULL DEFAULT 0, "
-               "LDB_UIRS INTEGER NOT NULL DEFAULT 0, "
+               "LDB_LECTURES REAL NOT NULL DEFAULT 0, "
+               "LDB_LABORATORY REAL NOT NULL DEFAULT 0, "
+               "LDB_PRACTICAL REAL NOT NULL DEFAULT 0, "
+               "LDB_CONSULTATION REAL NOT NULL DEFAULT 0, "
+               "LDB_EXAMINATIONS REAL NOT NULL DEFAULT 0, "
+               "LDB_TESTS REAL NOT NULL DEFAULT 0, "
+               "LDB_CURRENT_CONSULTATION REAL NOT NULL DEFAULT 0, "
+               "LDB_INTRODUCTORY_PRACTICE REAL NOT NULL DEFAULT 0, "
+               "LDB_PRE_DIPLOMA_PRACTICE REAL NOT NULL DEFAULT 0, "
+               "LDB_COURSEWORK REAL NOT NULL DEFAULT 0, "
+               "LDB_GUIDED_INDEPENDENT_WORK REAL NOT NULL DEFAULT 0, "
+               "LDB_CONTROL_WORK REAL NOT NULL DEFAULT 0, "
+               "LDB_GRADUATION_DESIGN REAL NOT NULL DEFAULT 0, "
+               "LDB_GUIDE_GRADUATE REAL NOT NULL DEFAULT 0, "
+               "LDB_STATE_EXAM REAL NOT NULL DEFAULT 0, "
+               "LDB_HES REAL NOT NULL DEFAULT 0, "
+               "LDB_GUIDE_CHAIR REAL NOT NULL DEFAULT 0, "
+               "LDB_UIRS REAL NOT NULL DEFAULT 0, "
                "FOREIGN KEY(LDB_TCH_ID) REFERENCES DRT_TEACHERS(TCH_ID), "
                "FOREIGN KEY(LDB_LCL_ID) REFERENCES DRT_LOAD_CALCULATION(LCL_ID));");
 
