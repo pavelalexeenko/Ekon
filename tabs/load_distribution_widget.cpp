@@ -35,14 +35,14 @@ LoadDistributionWidget::LoadDistributionWidget(QWidget *parent) : QWidget(parent
 
     loadDistributionTableModel = EkonTables::createRelationalTableModel(this, "DRT_LOAD_DISTRIBUTION", columnNames, relations);
 
-    CheckableSortFilterProxyModel *cfpm = new CheckableSortFilterProxyModel(this);
+    filterProxyModel = new CheckableSortFilterProxyModel(this);
     QList<int> readonlyCols;
     for (int i = 0; i < 21; i++)
         readonlyCols.append(i);
 
-    cfpm->setParameters(QList<int>(), readonlyCols, QList<int>());
-    cfpm->setSourceModel(loadDistributionTableModel);
-    loadDistributionTableView = EkonTables::createTableView(this, cfpm);
+    filterProxyModel->setParameters(QList<int>(), readonlyCols, QList<int>());
+    filterProxyModel->setSourceModel(loadDistributionTableModel);
+    loadDistributionTableView = EkonTables::createTableView(this, filterProxyModel);
     loadDistributionTableView->setItemDelegate(new QSqlRelationalDelegate(loadDistributionTableView));
 
     controlWidget = new ControlWidget(this);
@@ -54,8 +54,10 @@ LoadDistributionWidget::LoadDistributionWidget(QWidget *parent) : QWidget(parent
     this->setLayout(layout);
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
-    connect(controlWidget, SIGNAL(filter(QString)), cfpm, SLOT(setFilterFixedString(QString)));
-    connect(controlWidget, SIGNAL(search(QString)), cfpm, SLOT(setColorFilterString(QString)));
+    connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
+    connect(controlWidget, SIGNAL(filter(QString)), filterProxyModel, SLOT(setFilterFixedString(QString)));
+    connect(controlWidget, SIGNAL(search(QString)), filterProxyModel, SLOT(setColorFilterString(QString)));
+    connect(loadDistributionTableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editRow(QModelIndex)));
 }
 
 void LoadDistributionWidget::addRow()
@@ -66,8 +68,24 @@ void LoadDistributionWidget::addRow()
     aldd->exec();
 }
 
+void LoadDistributionWidget::deleteRow()
+{
+    qDebug() << __FUNCTION__;
+
+    if (DbService::getInstance()->deleteLoadDistribution(filterProxyModel->data(filterProxyModel->index(loadDistributionTableView->currentIndex().row(), 0)).toInt()))
+        this->refresh();
+}
+
 void LoadDistributionWidget::refresh()
 {
     qDebug() << __FUNCTION__;
     loadDistributionTableModel->select();
+}
+
+void LoadDistributionWidget::editRow(const QModelIndex &index)
+{
+    qDebug() << __FUNCTION__;
+    AddLoadDistributionDialog *afd = new AddLoadDistributionDialog(filterProxyModel->data(filterProxyModel->index(index.row(), 0)).toInt(), this);
+    connect(afd, SIGNAL(accepted()), this, SLOT(refresh()));
+    afd->exec();
 }

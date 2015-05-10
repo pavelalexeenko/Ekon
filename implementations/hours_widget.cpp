@@ -5,6 +5,7 @@ HoursWidget::HoursWidget(QWidget *parent) :
   , hoursSpinBox(new QDoubleSpinBox(this))
   , leftHoursLabel(new QLabel(QString("Осталось: 0 "),this))
   , totalHoursLabel(new QLabel(QString("Всего: 0 "),this))
+  , _activeHours(0)
   , _leftHours(0)
   , _totalHours(0)
 {
@@ -17,6 +18,7 @@ HoursWidget::HoursWidget(const double leftHours, const double totalHours, QWidge
   , hoursSpinBox(new QDoubleSpinBox(this))
   , leftHoursLabel(new QLabel(QString("Осталось: %1 ").arg(leftHours),this))
   , totalHoursLabel(new QLabel(QString("Всего: %1 ").arg(totalHours),this))
+  , _activeHours(0)
   , _leftHours(leftHours)
   , _totalHours(totalHours)
 {
@@ -24,9 +26,10 @@ HoursWidget::HoursWidget(const double leftHours, const double totalHours, QWidge
     createLayout();
 }
 
-void HoursWidget::setHours(const double left, const double total)
+void HoursWidget::setHours(const double left, const double total, const double active)
 {
-    setLeftHours(left);
+    setLeftHours(left + active);
+    setActiveHours(active); 
     setTotalHours(total);
 }
 
@@ -45,6 +48,13 @@ void HoursWidget::setTotalHours(const double total)
     this->updateGeometry();
 }
 
+void HoursWidget::setActiveHours(const double active)
+{
+    _activeHours = active;
+    hoursSpinBox->setValue(_activeHours);
+    this->updateGeometry();
+}
+
 double HoursWidget::getHours()
 {
     return hoursSpinBox->value();
@@ -54,6 +64,9 @@ void HoursWidget::initControlDefaults()
 {
     hoursSpinBox->setMinimum(0);
     hoursSpinBox->setMaximum(_leftHours);
+    hoursSpinBox->setMinimumWidth(80);
+    leftHoursLabel->setMinimumWidth(80);
+    totalHoursLabel->setMinimumWidth(80);
 }
 
 void HoursWidget::createLayout()

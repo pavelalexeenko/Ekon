@@ -2,7 +2,7 @@
 
 ControlWidget::ControlWidget(QWidget *parent) :
     QWidget(parent)
-  , searchType(SearchType::SEARCH)
+  , searchType(SearchType::FILTER)
   , addRowButton(new QPushButton(tr("Добавить"), this))
   , deleteRowButton(new QPushButton(tr("Удалить"), this))
   , searchLineEdit(new QLineEdit(this))
@@ -18,6 +18,7 @@ ControlWidget::ControlWidget(QWidget *parent) :
     layout->addWidget(searchButton, 0, 3);
     layout->addWidget(filterButton, 0, 4);
     setLayout(layout);
+    searchButton->hide();
 
 
     connect(addRowButton, SIGNAL(clicked()), this, SIGNAL(addRow()));

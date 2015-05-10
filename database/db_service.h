@@ -53,6 +53,7 @@ public:
     Discipline getDisciplineById(const int& id);
     LoadCalculation getLoadCalculationById(const int& id);
     LoadCalculation getNotDistributedLoadById(const int& loadcalculationId);
+    LoadDistribution getLoadDistributionById(const int& loadDistributionId);
 
     bool connectToAnotherDatabase(QString filename);
     bool loginAs(QString username, QString password);
@@ -67,6 +68,7 @@ public:
     bool updateFlow(const Flow& flow);
     bool addLoadCalculation(const int& disciplineId, const int& flowId);
     bool addLoadDistribution(const LoadDistribution& loadDistribution);
+    bool updateLoadDistribution(const LoadDistribution& loadDistribution);
 
     bool deleteUser(const int& userId);
     bool deleteTeacher(const int& teacherId);
@@ -74,6 +76,7 @@ public:
     bool deleteGroup(const int& groupId);
     bool deleteFlow(const int& flowId);
     bool deleteLoadCalculation(const int& lclId);
+    bool deleteLoadDistribution(const int& ldId);
 
     QList<Group> getAllGroups() const;
     QList<Flow> getAllFlows() const;
@@ -81,9 +84,11 @@ public:
     QList<Teacher> getAllTeachers() const;
     QList<LoadCalculation> getAllLoadCalculation() const;
 
-    QList<LoadDistribution> getLoadDistributionsByLoadCalculationId(const int loadCalculationId);
+    QList<LoadDistribution> getLoadDistributionsByLoadCalculationId(const int loadCalculationId) const;
 
     QList<QPair<int, QString> > getLoadCalculationIdsAndNames() const;
+
+    QList<int> getTeachersIdsForLoadCalculation(const int& lclId) const;
 
 private:
     bool isCorrectVersion() const;

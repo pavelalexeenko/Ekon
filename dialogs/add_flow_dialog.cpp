@@ -9,6 +9,7 @@ AddFlowDialog::AddFlowDialog(QWidget *parent):
   , addGroupButton(new QPushButton(QString("&Добавить группу"), this))
   , removeGroupButton(new QPushButton(QString("&Удалить группу"), this))
   , addButton(new QPushButton(QString("&Добавить"), this))
+  , _id(-1)
 {
     qDebug() << __FUNCTION__;
 

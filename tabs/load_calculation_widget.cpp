@@ -1,7 +1,6 @@
 #include "load_calculation_widget.h"
 #include "dialogs/add_loadcalculation_dialog.h"
 #include "implementations/read_only_delegate.h"
-#include "implementations/checkable_sort_filter_proxy_model.h"
 
 LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
 {
@@ -34,15 +33,15 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
 
     loadCalculationTableModel = EkonTables::createTableModel(this, "VIEW_LOAD_CALCULATION", columnNames);
 
-    CheckableSortFilterProxyModel *cfpm = new CheckableSortFilterProxyModel(this);
+    filterProxyModel = new CheckableSortFilterProxyModel(this);
     QList<int> readonlyCols;
     for (int i = 0; i < 23; i++)
         readonlyCols.append(i);
 
-    cfpm->setParameters(QList<int>(), readonlyCols, QList<int>());
-    cfpm->setSourceModel(loadCalculationTableModel);
+    filterProxyModel->setParameters(QList<int>(), readonlyCols, QList<int>());
+    filterProxyModel->setSourceModel(loadCalculationTableModel);
 
-    loadCalculationTableView = EkonTables::createTableView(this, cfpm);
+    loadCalculationTableView = EkonTables::createTableView(this, filterProxyModel);
     loadCalculationTableView->hideColumn(1);
     loadCalculationTableView->hideColumn(3);
 
@@ -57,8 +56,8 @@ LoadCalculationWidget::LoadCalculationWidget(QWidget *parent) : QWidget(parent)
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
     connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
-    connect(controlWidget, SIGNAL(filter(QString)), cfpm, SLOT(setFilterFixedString(QString)));
-    connect(controlWidget, SIGNAL(search(QString)), cfpm, SLOT(setColorFilterString(QString)));
+    connect(controlWidget, SIGNAL(filter(QString)), filterProxyModel, SLOT(setFilterFixedString(QString)));
+    connect(controlWidget, SIGNAL(search(QString)), filterProxyModel, SLOT(setColorFilterString(QString)));
 }
 
 void LoadCalculationWidget::addRow()
@@ -80,6 +79,6 @@ void LoadCalculationWidget::deleteRow()
 {
     qDebug() << __FUNCTION__;
 
-    if (DbService::getInstance()->deleteLoadCalculation(loadCalculationTableModel->data(loadCalculationTableModel->index(loadCalculationTableView->currentIndex().row(), 0)).toInt()))
+    if (DbService::getInstance()->deleteLoadCalculation(filterProxyModel->data(filterProxyModel->index(loadCalculationTableView->currentIndex().row(), 0)).toInt()))
         this->refresh();
 }

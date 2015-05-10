@@ -4,7 +4,6 @@ AddLoadDistributionDialog::AddLoadDistributionDialog(QWidget *parent) :
     QDialog(parent)
   , loadcalculationComboBox(new QComboBox(this))
   , teacherComboBox(new QComboBox(this))
-  , addButton(new QPushButton("&Добавить",this))
   , lecturesHoursWidget(new HoursWidget())
   , laboratoryHoursWidget(new HoursWidget())
   , practicalHoursWidget(new HoursWidget())
@@ -23,27 +22,75 @@ AddLoadDistributionDialog::AddLoadDistributionDialog(QWidget *parent) :
   , hesHoursWidget(new HoursWidget())
   , guideChairHoursWidget(new HoursWidget())
   , uirsHoursWidget(new HoursWidget())
+  , addButton(new QPushButton("&Добавить",this))
+  , _id(-1)
 {
     qDebug() << __FUNCTION__;
 
+    setWindowTitle("Добавление распределения учебной нагрузки");
     createLayout();
     fillComboBoxes();
 
-    connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));
-    connect(loadcalculationComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setHours()));
+    setHours();
+    setConnections();
+}
+
+AddLoadDistributionDialog::AddLoadDistributionDialog(const int loadDistributionId, QWidget *parent):
+    QDialog(parent)
+  , loadcalculationComboBox(new QComboBox(this))
+  , teacherComboBox(new QComboBox(this))
+  , lecturesHoursWidget(new HoursWidget())
+  , laboratoryHoursWidget(new HoursWidget())
+  , practicalHoursWidget(new HoursWidget())
+  , consultationHoursWidget(new HoursWidget())
+  , examinationsHoursWidget(new HoursWidget())
+  , testsHoursWidget(new HoursWidget())
+  , currentConsultationHoursWidget(new HoursWidget())
+  , introductoryPracticeHoursWidget(new HoursWidget())
+  , preDiplomaPracticeHoursWidget(new HoursWidget())
+  , courseworkHoursWidget(new HoursWidget())
+  , guidedIndependentWorkHoursWidget(new HoursWidget())
+  , controlWorkHoursWidget(new HoursWidget())
+  , graduationDesignHoursWidget(new HoursWidget())
+  , guideGraduateHoursWidget(new HoursWidget())
+  , stateExamHoursWidget(new HoursWidget())
+  , hesHoursWidget(new HoursWidget())
+  , guideChairHoursWidget(new HoursWidget())
+  , uirsHoursWidget(new HoursWidget())
+  , addButton(new QPushButton("&Изменить",this))
+  , _id(loadDistributionId)
+{
+    qDebug() << __FUNCTION__;
+
+    setWindowTitle("Изменение распределения учебной нагрузки");
+    createLayout();
+    fillComboBoxes();
+
+    LoadDistribution currentLoadDistribution = DbService::getInstance()->getLoadDistributionById(_id);
+    for (int i = 0; i < loadcalculationComboBox->count(); i++)
+        if (loadcalculationComboBox->itemData(i).toInt() == currentLoadDistribution.getLoadCalculaionId())
+        {
+            loadcalculationComboBox->setCurrentIndex(i);
+            qDebug() << i;
+            break;
+        }
 
     setHours();
+    setConnections();
 }
 
 
-void AddLoadDistributionDialog::addRow()
+void AddLoadDistributionDialog::saveRow()
 {
     qDebug() << __FUNCTION__;
 
     LoadDistribution ld;
 
-    ld.setTeacherId(teacherComboBox->currentData().toInt());
-    ld.setLoadCalculaionId(loadcalculationComboBox->currentData().toInt());
+    if (-1 != _id)
+        ld.setId(_id);
+
+    ld.setTeacherId(teacherComboBox->itemData(teacherComboBox->currentIndex()).toInt());
+    ld.setLoadCalculaionId(loadcalculationComboBox->itemData(loadcalculationComboBox->currentIndex()).toInt());
     ld.setLectures(lecturesHoursWidget->getHours());
     ld.setLaboratory(laboratoryHoursWidget->getHours());
     ld.setPractical(practicalHoursWidget->getHours());
@@ -63,10 +110,21 @@ void AddLoadDistributionDialog::addRow()
     ld.setGuideChair(guideChairHoursWidget->getHours());
     ld.setUirs(uirsHoursWidget->getHours());
 
-    if (DbService::getInstance()->addLoadDistribution(ld))
-        this->accept();
+    if (-1 != _id)
+    {
+        if (DbService::getInstance()->updateLoadDistribution(ld))
+            this->accept();
+        else
+            QMessageBox::critical(this, tr("Error"), tr("Database error while adding a group."), QMessageBox::Ok);
+    }
     else
-        QMessageBox::critical(this, tr("Error"), tr("Database error while adding a group."), QMessageBox::Ok);
+    {
+        if (DbService::getInstance()->addLoadDistribution(ld))
+            this->accept();
+        else
+            QMessageBox::critical(this, tr("Error"), tr("Database error while adding a group."), QMessageBox::Ok);
+    }
+
 }
 
 void AddLoadDistributionDialog::fillComboBoxes()
@@ -88,34 +146,57 @@ void AddLoadDistributionDialog::fillComboBoxes()
     }
 }
 
+void AddLoadDistributionDialog::setConnections()
+{
+    connect(addButton, SIGNAL(clicked()), this, SLOT(saveRow()));
+    connect(loadcalculationComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setHours()));
+    connect(teacherComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkTeacher()));
+    connect(loadcalculationComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkTeacher()));
+}
+
 void AddLoadDistributionDialog::setHours()
 {
     qDebug() << __FUNCTION__;
 
     try
     {
-        int selectedLclId = loadcalculationComboBox->currentData().toInt();
-        LoadCalculation lcl = DbService::getInstance()->getLoadCalculationById(selectedLclId);
+        int selectedLclId = loadcalculationComboBox->itemData(loadcalculationComboBox->currentIndex()).toInt();
+        LoadCalculation totalLcl = DbService::getInstance()->getLoadCalculationById(selectedLclId);
         LoadCalculation notDistributedLcl = DbService::getInstance()->getNotDistributedLoadById(selectedLclId);
 
-        lecturesHoursWidget->setHours(notDistributedLcl.getLectures(), lcl.getLectures());
-        laboratoryHoursWidget->setHours(notDistributedLcl.getLaboratory(), lcl.getLaboratory());
-        practicalHoursWidget->setHours(notDistributedLcl.getPractical(), lcl.getPractical());
-        consultationHoursWidget->setHours(notDistributedLcl.getConsultation(), lcl.getConsultation());
-        examinationsHoursWidget->setHours(notDistributedLcl.getExamination(), lcl.getExamination());
-        testsHoursWidget->setHours(notDistributedLcl.getTests(), lcl.getTests());
-        currentConsultationHoursWidget->setHours(notDistributedLcl.getCurrentConsultation(), lcl.getCurrentConsultation());
-        introductoryPracticeHoursWidget->setHours(notDistributedLcl.getIntroductoryPractice(), lcl.getIntroductoryPractice());
-        preDiplomaPracticeHoursWidget->setHours(notDistributedLcl.getPreDiplomaPractice(), lcl.getPreDiplomaPractice());
-        courseworkHoursWidget->setHours(notDistributedLcl.getCourseWork(), lcl.getCourseWork());
-        guidedIndependentWorkHoursWidget->setHours(notDistributedLcl.getGuideIndependentWork(), lcl.getGuideIndependentWork());
-        controlWorkHoursWidget->setHours(notDistributedLcl.getControlWork(), lcl.getControlWork());
-        graduationDesignHoursWidget->setHours(notDistributedLcl.getGraduationDesign(), lcl.getGraduationDesign());
-        guideGraduateHoursWidget->setHours(notDistributedLcl.getGuideGraduate(), lcl.getGuideGraduate());
-        stateExamHoursWidget->setHours(notDistributedLcl.getStateExam(), lcl.getStateExam());
-        hesHoursWidget->setHours(notDistributedLcl.getHes(), lcl.getHes());
-        guideChairHoursWidget->setHours(notDistributedLcl.getGuideChair(), lcl.getGuideChair());
-        uirsHoursWidget->setHours(notDistributedLcl.getUirs(), lcl.getUirs());
+        if (_id != -1)
+        {
+            LoadDistribution currentLoadDistribution = DbService::getInstance()->getLoadDistributionById(_id);
+            if (currentLoadDistribution.getLoadCalculaionId() == selectedLclId)
+            {
+                lecturesHoursWidget->setHours(notDistributedLcl.getLectures(), totalLcl.getLectures(), currentLoadDistribution.getLectures());
+                laboratoryHoursWidget->setHours(notDistributedLcl.getLaboratory(), totalLcl.getLaboratory(), currentLoadDistribution.getLaboratory());
+                practicalHoursWidget->setHours(notDistributedLcl.getPractical(), totalLcl.getPractical(), currentLoadDistribution.getPractical());
+                consultationHoursWidget->setHours(notDistributedLcl.getConsultation(), totalLcl.getConsultation(), currentLoadDistribution.getConsultation());
+                examinationsHoursWidget->setHours(notDistributedLcl.getExamination(), totalLcl.getExamination(), currentLoadDistribution.getExamination());
+                testsHoursWidget->setHours(notDistributedLcl.getTests(), totalLcl.getTests(), currentLoadDistribution.getTests());
+                currentConsultationHoursWidget->setHours(notDistributedLcl.getCurrentConsultation(), totalLcl.getCurrentConsultation(), currentLoadDistribution.getCurrentConsultation());
+                introductoryPracticeHoursWidget->setHours(notDistributedLcl.getIntroductoryPractice(), totalLcl.getIntroductoryPractice(), currentLoadDistribution.getIntroductoryPractice());
+                preDiplomaPracticeHoursWidget->setHours(notDistributedLcl.getPreDiplomaPractice(), totalLcl.getPreDiplomaPractice(), currentLoadDistribution.getPreDiplomaPractice());
+                courseworkHoursWidget->setHours(notDistributedLcl.getCourseWork(), totalLcl.getCourseWork(), currentLoadDistribution.getCourseWork());
+                guidedIndependentWorkHoursWidget->setHours(notDistributedLcl.getGuideIndependentWork(), totalLcl.getGuideIndependentWork(), currentLoadDistribution.getGuideIndependentWork());
+                controlWorkHoursWidget->setHours(notDistributedLcl.getControlWork(), totalLcl.getControlWork(), currentLoadDistribution.getControlWork());
+                graduationDesignHoursWidget->setHours(notDistributedLcl.getGraduationDesign(), totalLcl.getGraduationDesign(), currentLoadDistribution.getGraduationDesign());
+                guideGraduateHoursWidget->setHours(notDistributedLcl.getGuideGraduate(), totalLcl.getGuideGraduate(), currentLoadDistribution.getGuideGraduate());
+                stateExamHoursWidget->setHours(notDistributedLcl.getStateExam(), totalLcl.getStateExam(), currentLoadDistribution.getStateExam());
+                hesHoursWidget->setHours(notDistributedLcl.getHes(), totalLcl.getHes(), currentLoadDistribution.getHes());
+                guideChairHoursWidget->setHours(notDistributedLcl.getGuideChair(), totalLcl.getGuideChair(), currentLoadDistribution.getGuideChair());
+                uirsHoursWidget->setHours(notDistributedLcl.getUirs(), totalLcl.getUirs(), currentLoadDistribution.getUirs());
+            }
+            else
+            {
+                setEmptyHours(notDistributedLcl, totalLcl);
+            }
+        }
+        else
+        {
+            setEmptyHours(notDistributedLcl, totalLcl);
+        }
 
         this->updateGeometry();
     }
@@ -125,14 +206,54 @@ void AddLoadDistributionDialog::setHours()
     }
     catch(...)
     {
-        QMessageBox::critical(this, tr("Something go wrong"), str, QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error"), tr("Something go wrong"), QMessageBox::Ok);
     }
+}
+
+void AddLoadDistributionDialog::checkTeacher()
+{
+    int selectedLclId = loadcalculationComboBox->itemData(loadcalculationComboBox->currentIndex()).toInt();
+    teachersThatAlreadyStudyWithLcl = DbService::getInstance()->getTeachersIdsForLoadCalculation(selectedLclId);
+
+    int selectedTeacherId = teacherComboBox->itemData(teacherComboBox->currentIndex()).toInt();
+
+    if (teachersThatAlreadyStudyWithLcl.contains(selectedTeacherId))
+    {
+        addButton->setEnabled(false);
+        addButton->setToolTip("Выбранный преподаватель уже читает данную дисциплину!");
+        QMessageBox::information(this, tr("Внимание"), tr("Выбранный преподаватель уже читает данную дисциплину!"), QMessageBox::Ok);
+    }
+    else
+    {
+        addButton->setEnabled(true);
+        addButton->setToolTip("");
+    }
+}
+
+void AddLoadDistributionDialog::setEmptyHours(LoadCalculation notDistributedLcl, LoadCalculation totalLcl)
+{
+    lecturesHoursWidget->setHours(notDistributedLcl.getLectures(), totalLcl.getLectures());
+    laboratoryHoursWidget->setHours(notDistributedLcl.getLaboratory(), totalLcl.getLaboratory());
+    practicalHoursWidget->setHours(notDistributedLcl.getPractical(), totalLcl.getPractical());
+    consultationHoursWidget->setHours(notDistributedLcl.getConsultation(), totalLcl.getConsultation());
+    examinationsHoursWidget->setHours(notDistributedLcl.getExamination(), totalLcl.getExamination());
+    testsHoursWidget->setHours(notDistributedLcl.getTests(), totalLcl.getTests());
+    currentConsultationHoursWidget->setHours(notDistributedLcl.getCurrentConsultation(), totalLcl.getCurrentConsultation());
+    introductoryPracticeHoursWidget->setHours(notDistributedLcl.getIntroductoryPractice(), totalLcl.getIntroductoryPractice());
+    preDiplomaPracticeHoursWidget->setHours(notDistributedLcl.getPreDiplomaPractice(), totalLcl.getPreDiplomaPractice());
+    courseworkHoursWidget->setHours(notDistributedLcl.getCourseWork(), totalLcl.getCourseWork());
+    guidedIndependentWorkHoursWidget->setHours(notDistributedLcl.getGuideIndependentWork(), totalLcl.getGuideIndependentWork());
+    controlWorkHoursWidget->setHours(notDistributedLcl.getControlWork(), totalLcl.getControlWork());
+    graduationDesignHoursWidget->setHours(notDistributedLcl.getGraduationDesign(), totalLcl.getGraduationDesign());
+    guideGraduateHoursWidget->setHours(notDistributedLcl.getGuideGraduate(), totalLcl.getGuideGraduate());
+    stateExamHoursWidget->setHours(notDistributedLcl.getStateExam(), totalLcl.getStateExam());
+    hesHoursWidget->setHours(notDistributedLcl.getHes(), totalLcl.getHes());
+    guideChairHoursWidget->setHours(notDistributedLcl.getGuideChair(), totalLcl.getGuideChair());
+    uirsHoursWidget->setHours(notDistributedLcl.getUirs(), totalLcl.getUirs());
 }
 
 void AddLoadDistributionDialog::createLayout()
 {
-    setWindowTitle("Добавление распределения учебной нагрузки");
-
     QFormLayout *formLayout = new QFormLayout(this);
     formLayout->addRow(tr("&Название потоковой дисциплины:"), loadcalculationComboBox);
     formLayout->addRow(tr("&Имя преподавателя:"), teacherComboBox);

@@ -18,14 +18,18 @@ class AddLoadDistributionDialog : public QDialog
     Q_OBJECT
 public:
     explicit AddLoadDistributionDialog(QWidget *parent = 0);
+    explicit AddLoadDistributionDialog(const int loadDistributionId, QWidget *parent = 0);
 
 private slots:
-    void addRow();
+    void saveRow();
     void setHours();
+    void checkTeacher();
 
 private:
     void createLayout();
     void fillComboBoxes();
+    void setConnections();
+    void setEmptyHours(LoadCalculation notDistributedLcl, LoadCalculation totalLcl);
 
 private:
     QComboBox *loadcalculationComboBox;
@@ -51,6 +55,9 @@ private:
     HoursWidget *uirsHoursWidget;
 
     QPushButton *addButton;
+
+    int _id;
+    QList<int> teachersThatAlreadyStudyWithLcl;
 };
 
 #endif // ADDLOADDISTRIBUTIONDIALOG_H

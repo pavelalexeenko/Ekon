@@ -261,6 +261,48 @@ bool DbService::addLoadDistribution(const LoadDistribution &loadDistribution)
     return _db->commit();
 }
 
+bool DbService::updateLoadDistribution(const LoadDistribution &loadDistribution)
+{
+    qDebug() << __FUNCTION__;
+
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("UPDATE DRT_LOAD_DISTRIBUTION SET "
+                  "LDB_TCH_ID = :teacherId, LDB_LCL_ID = :lclId, LDB_LECTURES = :lec, LDB_LABORATORY = :lab, LDB_PRACTICAL = :prac, "
+                  "LDB_CONSULTATION = :consult, LDB_EXAMINATIONS = :exam, LDB_TESTS = :tests, LDB_CURRENT_CONSULTATION = :curCons, "
+                  "LDB_INTRODUCTORY_PRACTICE = :intrPrac, LDB_PRE_DIPLOMA_PRACTICE = :preDiplPrac, LDB_COURSEWORK = :course, "
+                  "LDB_GUIDED_INDEPENDENT_WORK = :guIndWork, LDB_CONTROL_WORK = :contrl, LDB_GRADUATION_DESIGN = :gradDesign, "
+                  "LDB_GUIDE_GRADUATE = :guGrad, LDB_STATE_EXAM = :stateExam, LDB_HES = :hes, LDB_GUIDE_CHAIR = :guideChair, LDB_UIRS = :uirs "
+                  "WHERE LDB_ID = :id");
+
+    query.bindValue(":id", loadDistribution.getId());
+    query.bindValue(":teacherId", loadDistribution.getTeacherId());
+    query.bindValue(":lclId", loadDistribution.getLoadCalculaionId());
+    query.bindValue(":lec", loadDistribution.getLectures());
+    query.bindValue(":lab", loadDistribution.getLaboratory());
+    query.bindValue(":prac", loadDistribution.getPractical());
+    query.bindValue(":consult", loadDistribution.getConsultation());
+    query.bindValue(":exam", loadDistribution.getExamination());
+    query.bindValue(":tests", loadDistribution.getTests());
+    query.bindValue(":curCons", loadDistribution.getCurrentConsultation());
+    query.bindValue(":intrPrac", loadDistribution.getIntroductoryPractice());
+    query.bindValue(":preDiplPrac", loadDistribution.getPreDiplomaPractice());
+    query.bindValue(":course", loadDistribution.getCourseWork());
+    query.bindValue(":guIndWork", loadDistribution.getGuideIndependentWork());
+    query.bindValue(":contrl", loadDistribution.getControlWork());
+    query.bindValue(":gradDesign", loadDistribution.getGraduationDesign());
+    query.bindValue(":guGrad", loadDistribution.getGuideGraduate());
+    query.bindValue(":stateExam", loadDistribution.getStateExam());
+    query.bindValue(":hes", loadDistribution.getHes());
+    query.bindValue(":guideChair", loadDistribution.getGuideChair());
+    query.bindValue(":uirs", loadDistribution.getUirs());
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
+}
+
 bool DbService::deleteUser(const int &userId)
 {
     qDebug() << __FUNCTION__;
@@ -357,6 +399,20 @@ bool DbService::deleteLoadCalculation(const int &lclId)
     return _db->commit();
 }
 
+bool DbService::deleteLoadDistribution(const int &ldId)
+{
+    qDebug() << __FUNCTION__;
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("DELETE FROM DRT_LOAD_DISTRIBUTION WHERE LDB_ID = :id;");
+    query.bindValue(":id", ldId);
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
+}
+
 QString DbService::getGroupNameById(const int &id)
 {
     QSqlQuery query;
@@ -442,6 +498,19 @@ LoadCalculation DbService::getNotDistributedLoadById(const int &loadcalculationI
     return lcl;
 }
 
+LoadDistribution DbService::getLoadDistributionById(const int &loadDistributionId)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM DRT_LOAD_DISTRIBUTION WHERE LDB_ID = :id");
+    query.bindValue(":id", loadDistributionId);
+    query.exec();
+
+    if (!query.first())
+        throw QString("No load distribution with such id.");
+
+    return toLoadDistributionObject(query.record());
+}
+
 QList<Group> DbService::getAllGroups() const
 {
     QSqlQuery query;
@@ -522,7 +591,7 @@ QList<LoadCalculation> DbService::getAllLoadCalculation() const
     return lcls;
 }
 
-QList<LoadDistribution> DbService::getLoadDistributionsByLoadCalculationId(const int loadCalculationId)
+QList<LoadDistribution> DbService::getLoadDistributionsByLoadCalculationId(const int loadCalculationId) const
 {
     QSqlQuery query;
     query.prepare("SELECT * FROM DRT_LOAD_DISTRIBUTION WHERE LDB_LCL_ID = :lclId");
@@ -557,6 +626,23 @@ QList<QPair<int, QString> > DbService::getLoadCalculationIdsAndNames() const
     }
 
     return result;
+}
+
+QList<int> DbService::getTeachersIdsForLoadCalculation(const int &lclId) const
+{
+    QSqlQuery query;
+    query.prepare("SELECT LDB_TCH_ID FROM DRT_LOAD_DISTRIBUTION WHERE LDB_LCL_ID = :lclId");
+    query.bindValue(":lclId", lclId);
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    QList<int> ids;
+
+    while(query.next())
+        ids.append((query.record().value("LDB_TCH_ID").toInt()));
+
+    return ids;
 }
 
 Group DbService::toGroupObject(const QSqlRecord& record) const

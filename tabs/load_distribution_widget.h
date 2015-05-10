@@ -14,10 +14,13 @@ public:
 
 public slots:
     void addRow();
+    void deleteRow();
     void refresh();
+    void editRow(const QModelIndex &index);
 
 private:
     QSqlRelationalTableModel *loadDistributionTableModel;
+    CheckableSortFilterProxyModel *filterProxyModel;
     QTableView *loadDistributionTableView;
 
     ControlWidget *controlWidget;

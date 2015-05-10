@@ -23,6 +23,24 @@ private slots:
 private:
     QComboBox *flowComboBox;
     QComboBox *disciplineComboBox;
+    QLabel *lecturesLabel;
+    QLabel *laboratoryLabel;
+    QLabel *practicalLabel;
+    QLabel *consultationLabel;
+    QLabel *examinationsLabel;
+    QLabel *testsLabel;
+    QLabel *currentConsultationLabel;
+    QLabel *introductoryPracticeLabel;
+    QLabel *preDiplomaPracticeLabel;
+    QLabel *courseworkLabel;
+    QLabel *guidedIndependentWorkLabel;
+    QLabel *controlWorkLabel;
+    QLabel *graduationDesignLabel;
+    QLabel *guideGraduateLabel;
+    QLabel *stateExamLabel;
+    QLabel *hesLabel;
+    QLabel *guideChairLabel;
+    QLabel *uirsLabel;
 
     QPushButton *addButton;
 };
