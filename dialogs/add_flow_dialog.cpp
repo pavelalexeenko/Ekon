@@ -133,6 +133,8 @@ void AddFlowDialog::addGroups()
             groupsListWidget->addItem(item);
         }
     }
+
+    groupsListWidget->sortItems(Qt::AscendingOrder);
 }
 
 void AddFlowDialog::removeGroups()
@@ -150,6 +152,8 @@ void AddFlowDialog::removeGroups()
     {
         delete item;
     }
+
+    groupsListWidget->sortItems(Qt::AscendingOrder);
 }
 
 void AddFlowDialog::changeFlow()

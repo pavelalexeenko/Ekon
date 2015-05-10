@@ -12,7 +12,9 @@ TeachersWidget::TeachersWidget(QWidget *parent) : QWidget(parent)
                 << "Примечание";
 
     teachersTableModel = EkonTables::createTableModel(this, "DRT_TEACHERS", columnNames);
-    teachersTableView = EkonTables::createTableView(this, teachersTableModel);
+    filterProxyModel = new CheckableSortFilterProxyModel(this);
+    filterProxyModel->setSourceModel(teachersTableModel);
+    teachersTableView = EkonTables::createTableView(this, filterProxyModel);
 
     controlWidget = new ControlWidget(this);
 
@@ -24,6 +26,8 @@ TeachersWidget::TeachersWidget(QWidget *parent) : QWidget(parent)
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
     connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
+    connect(controlWidget, SIGNAL(filter(QString)), filterProxyModel, SLOT(setFilterFixedString(QString)));
+    connect(controlWidget, SIGNAL(search(QString)), filterProxyModel, SLOT(setColorFilterString(QString)));
 }
 
 void TeachersWidget::addRow()

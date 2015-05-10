@@ -21,6 +21,7 @@ public slots:
 
 private:
     QSqlTableModel *groupsTableModel;
+    CheckableSortFilterProxyModel *filterProxyModel;
     QTableView *groupsTableView;
 
     ControlWidget *controlWidget;

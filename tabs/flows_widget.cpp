@@ -12,7 +12,9 @@ FlowsWidget::FlowsWidget(QWidget *parent) : QWidget(parent)
                 << "Примечание";
 
     flowsTableModel = EkonTables::createTableModel(this, "VIEW_FLOWS", columnNames);
-    flowsTableView = EkonTables::createTableView(this, flowsTableModel);
+    filterProxyModel = new CheckableSortFilterProxyModel(this);
+    filterProxyModel->setSourceModel(flowsTableModel);
+    flowsTableView = EkonTables::createTableView(this, filterProxyModel);
     flowsTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     controlWidget = new ControlWidget(this);
@@ -26,6 +28,8 @@ FlowsWidget::FlowsWidget(QWidget *parent) : QWidget(parent)
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
     connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
     connect(flowsTableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editRow(QModelIndex)));
+    connect(controlWidget, SIGNAL(filter(QString)), filterProxyModel, SLOT(setFilterFixedString(QString)));
+    connect(controlWidget, SIGNAL(search(QString)), filterProxyModel, SLOT(setColorFilterString(QString)));
 }
 
 void FlowsWidget::addRow()

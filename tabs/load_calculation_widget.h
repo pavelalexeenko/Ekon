@@ -5,7 +5,6 @@
 #include <QGridLayout>
 #include <implementations/control_widget.h>
 #include <implementations/ekon_tables.h>
-#include "implementations/checkable_sort_filter_proxy_model.h"
 
 class LoadCalculationWidget : public QWidget
 {

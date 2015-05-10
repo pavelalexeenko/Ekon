@@ -22,7 +22,6 @@ public slots:
 private:
     QSqlRelationalTableModel *usersTableModel;
     QTableView *usersTableView;
-    QSortFilterProxyModel *usersSortFilterProxyModel;
 
     ControlWidget *controlWidget;
 };

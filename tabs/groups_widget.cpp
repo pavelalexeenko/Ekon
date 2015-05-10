@@ -18,7 +18,9 @@ GroupsWidget::GroupsWidget(QWidget *parent) : QWidget(parent)
                 << "Примечание";
 
     groupsTableModel = EkonTables::createTableModel(this, "DRT_GROUPS", columnNames);
-    groupsTableView = EkonTables::createTableView(this, groupsTableModel);
+    filterProxyModel = new CheckableSortFilterProxyModel(this);
+    filterProxyModel->setSourceModel(groupsTableModel);
+    groupsTableView = EkonTables::createTableView(this, filterProxyModel);
 
     controlWidget = new ControlWidget(this);
 
@@ -30,6 +32,8 @@ GroupsWidget::GroupsWidget(QWidget *parent) : QWidget(parent)
 
     connect(controlWidget, SIGNAL(addRow()), this, SLOT(addRow()));
     connect(controlWidget, SIGNAL(removeRow()), this, SLOT(deleteRow()));
+    connect(controlWidget, SIGNAL(filter(QString)), filterProxyModel, SLOT(setFilterFixedString(QString)));
+    connect(controlWidget, SIGNAL(search(QString)), filterProxyModel, SLOT(setColorFilterString(QString)));
 }
 
 void GroupsWidget::addRow()
