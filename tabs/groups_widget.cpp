@@ -54,6 +54,6 @@ void GroupsWidget::deleteRow()
 {
     qDebug() << __FUNCTION__;
 
-    if (DbService::getInstance()->deleteGroup(groupsTableModel->data(groupsTableModel->index(groupsTableView->currentIndex().row(), 0)).toInt()))
+    if (DbService::getInstance()->deleteGroup(filterProxyModel->data(filterProxyModel->index(groupsTableView->currentIndex().row(), 0)).toInt()))
         this->refresh();
 }

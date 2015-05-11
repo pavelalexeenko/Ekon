@@ -19,7 +19,7 @@ ControlWidget::ControlWidget(QWidget *parent) :
     layout->addWidget(filterButton, 0, 4);
     setLayout(layout);
     searchButton->hide();
-
+    filterButton->hide();
 
     connect(addRowButton, SIGNAL(clicked()), this, SIGNAL(addRow()));
     connect(deleteRowButton, SIGNAL(clicked()), this, SIGNAL(removeRow()));

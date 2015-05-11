@@ -90,6 +90,9 @@ public:
 
     QList<int> getTeachersIdsForLoadCalculation(const int& lclId) const;
 
+    int getStudentsNumberByFlowId(const int flowId) const;
+    int getSubGroupsNumberByFlowId(const int flowId) const;
+
 private:
     bool isCorrectVersion() const;
 

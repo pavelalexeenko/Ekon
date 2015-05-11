@@ -1,6 +1,27 @@
 #include "loaddistribution.h"
 
-LoadDistribution::LoadDistribution()
+LoadDistribution::LoadDistribution() :
+    _id(0)
+  , _loadCalculaionId(0)
+  , _teacherId(0)
+  , _lectures(0)
+  , _laboratory(0)
+  , _practical(0)
+  , _consultation(0)
+  , _examinations(0)
+  , _tests(0)
+  , _currentConsultation(0)
+  , _introductoryPractice(0)
+  , _preDiplomaPractice(0)
+  , _courseWork(0)
+  , _guideIndependentWork(0)
+  , _controlWork(0)
+  , _graduationDesign(0)
+  , _guideGraduate(0)
+  , _stateExam(0)
+  , _hes(0)
+  , _guideChair(0)
+  , _uirs(0)
 {
 
 }

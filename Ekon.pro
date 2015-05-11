@@ -48,7 +48,8 @@ SOURCES += main.cpp\
     dialogs/add_loaddistribution_dialog.cpp \
     objects/loadcalculation.cpp \
     implementations/hours_widget.cpp \
-    objects/loaddistribution.cpp
+    objects/loaddistribution.cpp \
+    objects/factors.cpp
 
 HEADERS  += \
     main_window.h \
@@ -85,6 +86,7 @@ HEADERS  += \
     dialogs/add_loaddistribution_dialog.h \
     objects/loadcalculation.h \
     implementations/hours_widget.h \
-    objects/loaddistribution.h
+    objects/loaddistribution.h \
+    objects/factors.h
 
 CONFIG += c++11

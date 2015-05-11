@@ -6,6 +6,7 @@ AddGroupToFlowDialog::AddGroupToFlowDialog(QWidget *parent) :
   , addButton(new QPushButton(QString("&Добавить")))
   , exitButton(new QPushButton(QString("&Отмена")))
 {
+    qDebug() << __FUNCTION__;
     setWindowTitle("Выбор групп");
 
     groupsListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

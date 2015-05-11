@@ -12,7 +12,6 @@ AddFlowDialog::AddFlowDialog(QWidget *parent):
   , _id(-1)
 {
     qDebug() << __FUNCTION__;
-
     setWindowTitle("Добавление потока");
 
     connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));

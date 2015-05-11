@@ -7,6 +7,7 @@ AddUserDialog::AddUserDialog(QWidget *parent) :
     , userrolesComboBox(new QComboBox(this))
     , addButton(new QPushButton(QString("Добавить"), this))
 {
+    qDebug() << __FUNCTION__;
     setWindowTitle("Добавление пользователя");
 
     userrolesComboBox->addItems(DbService::getInstance()->getAllUserroles());

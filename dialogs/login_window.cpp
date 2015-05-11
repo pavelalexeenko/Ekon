@@ -14,18 +14,19 @@ LoginWindow::LoginWindow(QWidget *parent) :
   , _mainLayout(new QGridLayout(this))
 
 {
-    connect(this, SIGNAL(accepted()), parent, SLOT(show()));
-    connect(_loginButton, SIGNAL(clicked()), this, SLOT(login()));
-    connect(_exitButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(_connectToAnotherDatabaseButton, SIGNAL(clicked()), this, SLOT(connectToAnotherDatabase()));
-
-    this->setWindowTitle(QString("Please login"));
-    this->setWindowModality(Qt::ApplicationModal);
+    qDebug() << __FUNCTION__;
+    setWindowTitle(QString("Please login"));
+    setWindowModality(Qt::ApplicationModal);
 
     _passwordLineEdit->setEchoMode(QLineEdit::Password);
 
     updateUsers();
     createLayout();
+
+    connect(this, SIGNAL(accepted()), parent, SLOT(show()));
+    connect(_loginButton, SIGNAL(clicked()), this, SLOT(login()));
+    connect(_exitButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(_connectToAnotherDatabaseButton, SIGNAL(clicked()), this, SLOT(connectToAnotherDatabase()));
 }
 
 void LoginWindow::login()

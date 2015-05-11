@@ -27,23 +27,18 @@ AddLoadcalculationDialog::AddLoadcalculationDialog(QWidget *parent) :
     qDebug() << __FUNCTION__;
     setWindowTitle("Добавление расчета нагрузки");
 
-    connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));
-
-    QFormLayout *formLayout = new QFormLayout(this);
-
-    formLayout->addRow(tr("&Название потока:"), flowComboBox);
-    formLayout->addRow(tr("&Название дисциплины:"), disciplineComboBox);
-    formLayout->addRow(tr(""), addButton);
-    setLayout(formLayout);
-
-    QList<Flow> flows = DbService::getInstance()->getAllFlows();
-    QList<Discipline> disciplines = DbService::getInstance()->getAllDisciplines();
+    flows = DbService::getInstance()->getAllFlows();
+    disciplines = DbService::getInstance()->getAllDisciplines();
 
     for (Flow &flow : flows)
         flowComboBox->addItem(flow.getName(), QVariant(flow.getId()));
 
     for (Discipline &discipline : disciplines)
         disciplineComboBox->addItem(discipline.getName(), QVariant(discipline.getId()));
+
+    createLayout();
+
+    connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));
 }
 
 void AddLoadcalculationDialog::addRow()
@@ -53,4 +48,29 @@ void AddLoadcalculationDialog::addRow()
         this->accept();
     else
         QMessageBox::critical(this, tr("Error"), tr("Database error while adding a group."), QMessageBox::Ok);
+}
+
+void AddLoadcalculationDialog::createLayout()
+{
+    QFormLayout *formLayout = new QFormLayout(this);
+
+    formLayout->addRow(tr("&Название потока:"), flowComboBox);
+    formLayout->addRow(tr("&Название дисциплины:"), disciplineComboBox);
+    formLayout->addRow(lecturesLabel, laboratoryLabel);
+    formLayout->addRow(practicalLabel, consultationLabel);
+    formLayout->addRow(examinationsLabel, testsLabel);
+    formLayout->addRow(currentConsultationLabel, introductoryPracticeLabel);
+    formLayout->addRow(preDiplomaPracticeLabel, courseworkLabel);
+    formLayout->addRow(courseworkLabel, guidedIndependentWorkLabel);
+    formLayout->addRow(controlWorkLabel, graduationDesignLabel);
+    formLayout->addRow(guideGraduateLabel, stateExamLabel);
+    formLayout->addRow(hesLabel, guideChairLabel);
+    formLayout->addRow(uirsLabel, new QLabel());
+    formLayout->addRow(addButton);
+    setLayout(formLayout);
+}
+
+void AddLoadcalculationDialog::setHours()
+{
+    Flow;
 }

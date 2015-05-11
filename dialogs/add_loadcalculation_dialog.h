@@ -21,6 +21,10 @@ private slots:
     void addRow();
 
 private:
+    void createLayout();
+    void setHours();
+
+private:
     QComboBox *flowComboBox;
     QComboBox *disciplineComboBox;
     QLabel *lecturesLabel;
@@ -43,6 +47,9 @@ private:
     QLabel *uirsLabel;
 
     QPushButton *addButton;
+
+    QList<Flow> flows;
+    QList<Discipline> disciplines;
 };
 
 #endif // ADD_LOADCALCULATION_DIALOG_H

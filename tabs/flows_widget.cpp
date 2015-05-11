@@ -44,7 +44,7 @@ void FlowsWidget::deleteRow()
 {
     qDebug() << __FUNCTION__;
 
-    if (DbService::getInstance()->deleteFlow(flowsTableModel->data(flowsTableModel->index(flowsTableView->currentIndex().row(), 0)).toInt()))
+    if (DbService::getInstance()->deleteFlow(filterProxyModel->data(filterProxyModel->index(flowsTableView->currentIndex().row(), 0)).toInt()))
         this->refresh();
 }
 
@@ -57,7 +57,7 @@ void FlowsWidget::refresh()
 void FlowsWidget::editRow(const QModelIndex &index)
 {
     qDebug() << __FUNCTION__;
-    AddFlowDialog *afd = new AddFlowDialog(flowsTableModel->data(flowsTableModel->index(index.row(), 0)).toInt(), this);
+    AddFlowDialog *afd = new AddFlowDialog(filterProxyModel->data(filterProxyModel->index(index.row(), 0)).toInt(), this);
     connect(afd, SIGNAL(accepted()), this, SLOT(refresh()));
     afd->exec();
 }

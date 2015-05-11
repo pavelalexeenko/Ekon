@@ -23,6 +23,9 @@ private slots:
     void addRow();
 
 private:
+    void createLayout();
+
+private:
     QPlainTextEdit *namePlainTextEdit;
     QDoubleSpinBox *lecturesSpinBox;
     QDoubleSpinBox *laboratorySpinBox;

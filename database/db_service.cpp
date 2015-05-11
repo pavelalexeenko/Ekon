@@ -11,11 +11,25 @@ DbService::DbService() :
     _db.reset(new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE")));
     _db->setDatabaseName(_defaultDatabaseFilename);
 
-    if (!_db->open())
-        qDebug() << "Can't open database.";
-
-    if (!isCorrectVersion())
+    if (QFile::exists(_defaultDatabaseFilename))
+    {
+        qDebug() << "File already exists";
+        if (_db->open())
+            if (!isCorrectVersion())
+            {
+                qDebug() << "Creating database";
+                createDatabase();
+            }
+            else
+            {
+                qDebug() << "Version is correct";
+            }
+    }
+    else
+    {
+        qDebug() << "There is no database file. Creating database";
         createDatabase();
+    }
 }
 
 QSharedPointer<User> DbService::getCurrentUser() const
@@ -88,8 +102,8 @@ bool DbService::addDiscipline(const Discipline &discipline)
     _db->transaction();
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_DISCIPLINES (" + fields + ") "
-                  "VALUES (:name, :lec, :lab, :prac, :consult, :exam, :tests, :curCons, :intrPrac, :preDiplPrac, :course, :guIndWork, :contrl, "
-                  " :gradDesign, :guGrad, :stateExam, :hes, :guideChair, :uirs)");
+                                                             "VALUES (:name, :lec, :lab, :prac, :consult, :exam, :tests, :curCons, :intrPrac, :preDiplPrac, :course, :guIndWork, :contrl, "
+                                                             " :gradDesign, :guGrad, :stateExam, :hes, :guideChair, :uirs)");
 
     query.bindValue(":name", discipline.getName());
     query.bindValue(":lec", discipline.getLectures());
@@ -125,7 +139,7 @@ bool DbService::addGroup(const Group& group)
     _db->transaction();
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_GROUPS (" + fields + ") "
-                  "VALUES(:name, :students, :course, :subgroups, :semestr, :faculty, :spec, :note);");
+                                                        "VALUES(:name, :students, :course, :subgroups, :semestr, :faculty, :spec, :note);");
 
     query.bindValue(":name", group.getName());
     query.bindValue(":students", group.getNumberOfStudents());
@@ -231,8 +245,8 @@ bool DbService::addLoadDistribution(const LoadDistribution &loadDistribution)
     _db->transaction();
     QSqlQuery query;
     query.prepare("INSERT INTO DRT_LOAD_DISTRIBUTION (" + fields + ") "
-                  "VALUES (:teacherId, :lclId, :lec, :lab, :prac, :consult, :exam, :tests, :curCons, :intrPrac, :preDiplPrac, :course, :guIndWork, :contrl, "
-                  " :gradDesign, :guGrad, :stateExam, :hes, :guideChair, :uirs)");
+                                                                   "VALUES (:teacherId, :lclId, :lec, :lab, :prac, :consult, :exam, :tests, :curCons, :intrPrac, :preDiplPrac, :course, :guIndWork, :contrl, "
+                                                                   " :gradDesign, :guGrad, :stateExam, :hes, :guideChair, :uirs)");
 
     query.bindValue(":teacherId", loadDistribution.getTeacherId());
     query.bindValue(":lclId", loadDistribution.getLoadCalculaionId());
@@ -640,9 +654,37 @@ QList<int> DbService::getTeachersIdsForLoadCalculation(const int &lclId) const
     QList<int> ids;
 
     while(query.next())
-        ids.append((query.record().value("LDB_TCH_ID").toInt()));
+        ids.append(query.record().value("LDB_TCH_ID").toInt());
 
     return ids;
+}
+
+int DbService::getStudentsNumberByFlowId(const int flowId) const
+{
+    QSqlQuery query;
+    query.prepare("SELECT LNK.LNK_FLW_ID as FLW_ID, TOTAL(GRP.GRP_NUMBER_OF_STUDENTS) as STUDENTS_NUMBER "
+                  "FROM DRT_GROUPS GRP, DRT_LINKS LNK "
+                  "WHERE GRP.GRP_ID = LNK.LNK_GRP_ID AND LNK.LNK_FLW_ID = :flowId ");
+    query.bindValue(":flowId", flowId);
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    return query.record().value("STUDENTS_NUMBER").toInt();
+}
+
+int DbService::getSubGroupsNumberByFlowId(const int flowId) const
+{
+    QSqlQuery query;
+    query.prepare("SELECT LNK.LNK_FLW_ID as FLW_ID, TOTAL(GRP.GRP_NUMBER_OF_SUBGROUPS) as SUBGROUPS_NUMBER "
+                  "FROM DRT_GROUPS GRP, DRT_LINKS LNK "
+                  "WHERE GRP.GRP_ID = LNK.LNK_GRP_ID AND LNK.LNK_FLW_ID = :flowId ");
+    query.bindValue(":flowId", flowId);
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    return query.record().value("SUBGROUPS_NUMBER").toInt();
 }
 
 Group DbService::toGroupObject(const QSqlRecord& record) const
@@ -961,8 +1003,8 @@ void DbService::createFactorsTable() const
                ");");
 
     QString fields("FCT_CONSULTATION,FCT_EXAMINATIONS,FCT_TESTS,FCT_CURRENT_CONSULTATION,FCT_INTRODUCTORY_PRACTICE,"
-                  "FCT_PRE_DIPLOMA_PRACTICE,FCT_COURSEWORK,FCT_GUIDED_INDEPENDENT_WORK,FCT_CONTROL_WORK,"
-                  "FCT_GRADUATION_DESIGN,FCT_GUIDE_GRADUATE,FCT_STATE_EXAM,FCT_HES,FCT_GUIDE_CHAIR,FCT_UIRS");
+                   "FCT_PRE_DIPLOMA_PRACTICE,FCT_COURSEWORK,FCT_GUIDED_INDEPENDENT_WORK,FCT_CONTROL_WORK,"
+                   "FCT_GRADUATION_DESIGN,FCT_GUIDE_GRADUATE,FCT_STATE_EXAM,FCT_HES,FCT_GUIDE_CHAIR,FCT_UIRS");
 
     query.exec("INSERT INTO DRT_FACTORS (" + fields + ") VALUES (1,2,3,4,5,6,7,8,9,1.0,1.1,1.2,1.3,1.4,1.5);");
 }
@@ -1235,8 +1277,6 @@ void DbService::createLoadCalculationView() const
                "AND GRP.GRP_ID = LNK.LNK_GRP_ID "
                "AND FCT.FCT_ID = 1 "
                "GROUP BY LCL.LCL_ID");
-
-     qDebug() << query.lastError().text();
 }
 
 void DbService::createLoadDistributionHelper() const

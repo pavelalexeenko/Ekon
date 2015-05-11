@@ -33,6 +33,7 @@ AddLoadDistributionDialog::AddLoadDistributionDialog(QWidget *parent) :
 
     setHours();
     setConnections();
+    checkTeacher(true);
 }
 
 AddLoadDistributionDialog::AddLoadDistributionDialog(const int loadDistributionId, QWidget *parent):
@@ -77,6 +78,7 @@ AddLoadDistributionDialog::AddLoadDistributionDialog(const int loadDistributionI
 
     setHours();
     setConnections();
+    checkTeacher(true);
 }
 
 
@@ -210,7 +212,7 @@ void AddLoadDistributionDialog::setHours()
     }
 }
 
-void AddLoadDistributionDialog::checkTeacher()
+void AddLoadDistributionDialog::checkTeacher(bool firstShow)
 {
     int selectedLclId = loadcalculationComboBox->itemData(loadcalculationComboBox->currentIndex()).toInt();
     teachersThatAlreadyStudyWithLcl = DbService::getInstance()->getTeachersIdsForLoadCalculation(selectedLclId);
@@ -221,7 +223,8 @@ void AddLoadDistributionDialog::checkTeacher()
     {
         addButton->setEnabled(false);
         addButton->setToolTip("Выбранный преподаватель уже читает данную дисциплину!");
-        QMessageBox::information(this, tr("Внимание"), tr("Выбранный преподаватель уже читает данную дисциплину!"), QMessageBox::Ok);
+        if (!firstShow)
+            QMessageBox::information(this, tr("Внимание"), tr("Выбранный преподаватель уже читает данную дисциплину!"), QMessageBox::Ok);
     }
     else
     {

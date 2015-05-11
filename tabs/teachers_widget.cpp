@@ -48,6 +48,6 @@ void TeachersWidget::deleteRow()
 {
     qDebug() << __FUNCTION__;
 
-    if (DbService::getInstance()->deleteTeacher(teachersTableModel->data(teachersTableModel->index(teachersTableView->currentIndex().row(), 0)).toInt()))
+    if (DbService::getInstance()->deleteTeacher(filterProxyModel->data(filterProxyModel->index(teachersTableView->currentIndex().row(), 0)).toInt()))
         this->refresh();
 }

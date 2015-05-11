@@ -71,6 +71,6 @@ void DisciplinesWidget::deleteRow()
 {
     qDebug() << __FUNCTION__;
 
-    if (DbService::getInstance()->deleteDiscipline(disciplinesTableModel->data(disciplinesTableModel->index(disciplinesTableView->currentIndex().row(), 0)).toInt()))
+    if (DbService::getInstance()->deleteDiscipline(filterProxyModel->data(filterProxyModel->index(disciplinesTableView->currentIndex().row(), 0)).toInt()))
         this->refresh();
 }

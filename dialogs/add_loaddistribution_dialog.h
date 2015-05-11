@@ -23,7 +23,7 @@ public:
 private slots:
     void saveRow();
     void setHours();
-    void checkTeacher();
+    void checkTeacher(bool firstShow = false);
 
 private:
     void createLayout();
