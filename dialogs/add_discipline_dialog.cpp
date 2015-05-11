@@ -66,7 +66,7 @@ void AddDisciplineDialog::addRow()
     discipline.setIntroductoryPractice(introductoryPracticeCheckBox->isChecked());
     discipline.setPreDiplomaPractice(preDiplomaPracticeCheckBox->isChecked());
     discipline.setCourseWork(courseWorkCheckBox->isChecked());
-    discipline.setGuideIndependentWork(guidedIndependentWorkCheckBox->isChecked());
+    discipline.setGuidedIndependentWork(guidedIndependentWorkCheckBox->isChecked());
     discipline.setControlWork(controlWorkCheckBox->isChecked());
     discipline.setGraduationDesign(graduationDesignCheckBox->isChecked());
     discipline.setGuideGraduate(guideGraduateCheckBox->isChecked());

@@ -24,12 +24,12 @@ private slots:
     void saveRow();
     void setHours();
     void checkTeacher(bool firstShow = false);
+    void fillComboBoxes();
 
 private:
-    void createLayout();
-    void fillComboBoxes();
+    void createLayout();   
     void setConnections();
-    void setEmptyHours(LoadCalculation notDistributedLcl, LoadCalculation totalLcl);
+    void setEmptyHours(LoadCalculation notDistributedLcl, LoadCalculation totalLcl, LoadDistribution currentLoadDistribution);
 
 private:
     QComboBox *loadcalculationComboBox;

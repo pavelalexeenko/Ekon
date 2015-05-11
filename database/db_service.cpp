@@ -116,7 +116,7 @@ bool DbService::addDiscipline(const Discipline &discipline)
     query.bindValue(":intrPrac", discipline.hasIntroductoryPractice());
     query.bindValue(":preDiplPrac", discipline.hasPreDiplomaPractice());
     query.bindValue(":course", discipline.hasCourseWork());
-    query.bindValue(":guIndWork", discipline.hasGuideIndependentWork());
+    query.bindValue(":guIndWork", discipline.hasGuidedIndependentWork());
     query.bindValue(":contrl", discipline.hasControlWork());
     query.bindValue(":gradDesign", discipline.hasGraduationDesign());
     query.bindValue(":guGrad", discipline.hasGuideGraduate());
@@ -549,6 +549,41 @@ Factors DbService::getFactors() const
     return toFactorsObject(query.record());
 }
 
+bool DbService::saveFactors(const Factors &factors)
+{
+    qDebug() << __FUNCTION__;
+
+    _db->transaction();
+    QSqlQuery query;
+    query.prepare("UPDATE DRT_FACTORS SET "
+                  "FCT_CONSULTATION = :consult, FCT_EXAMINATIONS = :exam, FCT_TESTS = :tests, FCT_CURRENT_CONSULTATION = :curCons, "
+                  "FCT_INTRODUCTORY_PRACTICE = :intrPrac, FCT_PRE_DIPLOMA_PRACTICE = :preDiplPrac, FCT_COURSEWORK = :course, "
+                  "FCT_GUIDED_INDEPENDENT_WORK = :guIndWork, FCT_CONTROL_WORK = :contrl, FCT_GRADUATION_DESIGN = :gradDesign, "
+                  "FCT_GUIDE_GRADUATE = :guGrad, FCT_STATE_EXAM = :stateExam, FCT_HES = :hes, FCT_GUIDE_CHAIR = :guideChair, FCT_UIRS = :uirs "
+                  "WHERE FCT_ID = 1");
+
+    query.bindValue(":consult", factors.getConsultationFactor());
+    query.bindValue(":exam", factors.getExaminationFactor());
+    query.bindValue(":tests", factors.getTestsFactor());
+    query.bindValue(":curCons", factors.getCurrentConsultationFactor());
+    query.bindValue(":intrPrac", factors.getIntroductoryPracticeFactor());
+    query.bindValue(":preDiplPrac", factors.getPreDiplomaPracticeFactor());
+    query.bindValue(":course", factors.getCourseWorkFactor());
+    query.bindValue(":guIndWork", factors.getGuidedIndependentWorkFactor());
+    query.bindValue(":contrl", factors.getControlWorkFactor());
+    query.bindValue(":gradDesign", factors.getGraduationDesignFactor());
+    query.bindValue(":guGrad", factors.getGuideGraduateFactor());
+    query.bindValue(":stateExam", factors.getStateExamFactor());
+    query.bindValue(":hes", factors.getHesFactor());
+    query.bindValue(":guideChair", factors.getGuideChairFactor());
+    query.bindValue(":uirs", factors.getUirsFactor());
+
+    if (!query.exec())
+        return !_db->rollback();
+
+    return _db->commit();
+}
+
 QList<Group> DbService::getAllGroups() const
 {
     QSqlQuery query;
@@ -782,7 +817,7 @@ Discipline DbService::toDisciplineObject(const QSqlRecord &record) const
     discipline.setIntroductoryPractice(record.value("DSC_INTRODUCTORY_PRACTICE").toBool());
     discipline.setPreDiplomaPractice(record.value("DSC_PRE_DIPLOMA_PRACTICE").toBool());
     discipline.setCourseWork(record.value("DSC_COURSEWORK").toBool());
-    discipline.setGuideIndependentWork(record.value("DSC_GUIDED_INDEPENDENT_WORK").toBool());
+    discipline.setGuidedIndependentWork(record.value("DSC_GUIDED_INDEPENDENT_WORK").toBool());
     discipline.setControlWork(record.value("DSC_CONTROL_WORK").toBool());
     discipline.setGraduationDesign(record.value("DSC_GRADUATION_DESIGN").toBool());
     discipline.setGuideGraduate(record.value("DSC_GUIDE_GRADUATE").toBool());

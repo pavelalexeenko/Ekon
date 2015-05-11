@@ -57,6 +57,7 @@ public:
     LoadDistribution getLoadDistributionById(const int& loadDistributionId);
 
     Factors getFactors() const;
+    bool saveFactors(const Factors& factors);
 
     bool connectToAnotherDatabase(QString filename);
     bool loginAs(QString username, QString password);

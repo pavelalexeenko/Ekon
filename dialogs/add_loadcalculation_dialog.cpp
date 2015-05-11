@@ -100,7 +100,7 @@ void AddLoadcalculationDialog::setHours()
     introductoryPracticeLabel->setText(QString("Ознакомительная практика: %1").arg(factors.getIntroductoryPracticeFactor() * numberOfSudents * discipline.hasIntroductoryPractice()));
     preDiplomaPracticeLabel->setText(QString("Преддипломная практика: %1").arg(factors.getPreDiplomaPracticeFactor() * numberOfSudents * discipline.hasPreDiplomaPractice()));
     courseworkLabel->setText(QString("Курсовая работа: %1").arg(factors.getCourseWorkFactor() * numberOfSudents * discipline.hasCourseWork()));
-    guidedIndependentWorkLabel->setText(QString("Управляемая самост. работа: %1").arg(factors.getGuidedIndependentWorkFactor() * numberOfSudents * discipline.hasGuideIndependentWork()));
+    guidedIndependentWorkLabel->setText(QString("Управляемая самост. работа: %1").arg(factors.getGuidedIndependentWorkFactor() * numberOfSudents * discipline.hasGuidedIndependentWork()));
     controlWorkLabel->setText(QString("Контрольная работа: %1").arg(factors.getControlWorkFactor() * numberOfSudents * discipline.hasControlWork()));
     graduationDesignLabel->setText(QString("Дипломное проектирование: %1").arg(factors.getGraduationDesignFactor() * numberOfSudents * discipline.hasGraduationDesign()));
     guideGraduateLabel->setText(QString("Рук-во аспирантами: %1").arg(factors.getGuideGraduateFactor() * numberOfSudents * discipline.hasGuideGraduate()));

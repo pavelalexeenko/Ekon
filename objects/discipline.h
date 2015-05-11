@@ -20,7 +20,7 @@ public:
     bool hasIntroductoryPractice() const;
     bool hasPreDiplomaPractice() const;
     bool hasCourseWork() const;
-    bool hasGuideIndependentWork() const;
+    bool hasGuidedIndependentWork() const;
     bool hasControlWork() const;
     bool hasGraduationDesign() const;
     bool hasGuideGraduate() const;
@@ -41,7 +41,7 @@ public:
     void setIntroductoryPractice(const bool& introductoryPractice);
     void setPreDiplomaPractice(const bool& preDiplomaPractice);
     void setCourseWork(const bool& courseWork);
-    void setGuideIndependentWork(const bool& guideIndependentWork);
+    void setGuidedIndependentWork(const bool& guidedIndependentWork);
     void setControlWork(const bool& controlWork);
     void setGraduationDesign(const bool& graduationDesign);
     void setGuideGraduate(const bool& guideGraduate);
@@ -63,7 +63,7 @@ private:
     bool _introductoryPractice;
     bool _preDiplomaPractice;
     bool _courseWork;
-    bool _guideIndependentWork;
+    bool _guidedIndependentWork;
     bool _controlWork;
     bool _graduationDesign;
     bool _guideGraduate;

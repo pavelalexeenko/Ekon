@@ -12,7 +12,7 @@ Discipline::Discipline() :
   , _introductoryPractice(false)
   , _preDiplomaPractice(false)
   , _courseWork(false)
-  , _guideIndependentWork(false)
+  , _guidedIndependentWork(false)
   , _controlWork(false)
   , _graduationDesign(false)
   , _guideGraduate(false)
@@ -84,9 +84,9 @@ bool Discipline::hasCourseWork() const
     return _courseWork;
 }
 
-bool Discipline::hasGuideIndependentWork() const
+bool Discipline::hasGuidedIndependentWork() const
 {
-    return _guideIndependentWork;
+    return _guidedIndependentWork;
 }
 
 bool Discipline::hasControlWork() const
@@ -184,9 +184,9 @@ void Discipline::setCourseWork(const bool &courseWork)
     _courseWork = courseWork;
 }
 
-void Discipline::setGuideIndependentWork(const bool &guideIndependentWork)
+void Discipline::setGuidedIndependentWork(const bool &guidedIndependentWork)
 {
-    _guideIndependentWork = guideIndependentWork;
+    _guidedIndependentWork = guidedIndependentWork;
 }
 
 void Discipline::setControlWork(const bool &controlWork)
