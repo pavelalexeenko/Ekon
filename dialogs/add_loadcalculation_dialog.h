@@ -19,10 +19,10 @@ public:
     
 private slots:
     void addRow();
+    void setHours();
 
 private:
     void createLayout();
-    void setHours();
 
 private:
     QComboBox *flowComboBox;

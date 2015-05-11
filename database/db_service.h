@@ -8,6 +8,7 @@
 #include "objects/flow.h"
 #include "objects/loadcalculation.h"
 #include "objects/loaddistribution.h"
+#include "objects/factors.h"
 
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -54,6 +55,8 @@ public:
     LoadCalculation getLoadCalculationById(const int& id);
     LoadCalculation getNotDistributedLoadById(const int& loadcalculationId);
     LoadDistribution getLoadDistributionById(const int& loadDistributionId);
+
+    Factors getFactors() const;
 
     bool connectToAnotherDatabase(QString filename);
     bool loginAs(QString username, QString password);
@@ -114,6 +117,8 @@ private:
     void createFactorsTable() const;
 
 private:
+    Factors toFactorsObject(const QSqlRecord& record) const;
+
     Group toGroupObject(const QSqlRecord& record) const;
     Flow toFlowObject(const QSqlRecord& record) const;
     Discipline toDisciplineObject(const QSqlRecord& record) const;

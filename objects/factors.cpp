@@ -9,7 +9,7 @@ Factors::Factors() :
   , _introductoryPracticeFactor(0)
   , _preDiplomaPracticeFactor(0)
   , _courseWorkFactor(0)
-  , _guideIndependentWorkFactor(0)
+  , _guidedIndependentWorkFactor(0)
   , _controlWorkFactor(0)
   , _graduationDesignFactor(0)
   , _guideGraduateFactor(0)
@@ -61,9 +61,9 @@ double Factors::getCourseWorkFactor() const
     return _courseWorkFactor;
 }
 
-double Factors::getGuideIndependentWorkFactor() const
+double Factors::getGuidedIndependentWorkFactor() const
 {
-    return _guideIndependentWorkFactor;
+    return _guidedIndependentWorkFactor;
 }
 
 double Factors::getControlWorkFactor() const
@@ -141,9 +141,9 @@ void Factors::setCourseWorkFactor(const double &courseWorkFactor)
     _courseWorkFactor = courseWorkFactor;
 }
 
-void Factors::setGuideIndependentWorkFactor(const double &guideIndependentWorkFactor)
+void Factors::setGuidedIndependentWorkFactor(const double &guidedIndependentWorkFactor)
 {
-    _guideIndependentWorkFactor = guideIndependentWorkFactor;
+    _guidedIndependentWorkFactor = guidedIndependentWorkFactor;
 }
 
 void Factors::setControlWorkFactor(const double &controlWorkFactor)

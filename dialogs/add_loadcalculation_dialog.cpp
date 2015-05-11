@@ -38,7 +38,11 @@ AddLoadcalculationDialog::AddLoadcalculationDialog(QWidget *parent) :
 
     createLayout();
 
+    setHours();
+
     connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));
+    connect(flowComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setHours()));
+    connect(disciplineComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setHours()));
 }
 
 void AddLoadcalculationDialog::addRow()
@@ -61,16 +65,70 @@ void AddLoadcalculationDialog::createLayout()
     formLayout->addRow(examinationsLabel, testsLabel);
     formLayout->addRow(currentConsultationLabel, introductoryPracticeLabel);
     formLayout->addRow(preDiplomaPracticeLabel, courseworkLabel);
-    formLayout->addRow(courseworkLabel, guidedIndependentWorkLabel);
-    formLayout->addRow(controlWorkLabel, graduationDesignLabel);
-    formLayout->addRow(guideGraduateLabel, stateExamLabel);
-    formLayout->addRow(hesLabel, guideChairLabel);
-    formLayout->addRow(uirsLabel, new QLabel());
+    formLayout->addRow(guidedIndependentWorkLabel, controlWorkLabel);
+    formLayout->addRow(graduationDesignLabel, guideGraduateLabel);
+    formLayout->addRow(stateExamLabel, hesLabel);
+    formLayout->addRow(guideChairLabel, uirsLabel);
     formLayout->addRow(addButton);
     setLayout(formLayout);
 }
 
 void AddLoadcalculationDialog::setHours()
 {
-    Flow;
+    Flow flow;
+    Discipline discipline;
+
+    for (Flow &flw : flows)
+        if (flw.getId() == flowComboBox->itemData(flowComboBox->currentIndex()).toInt())
+            flow = flw;
+
+    for (Discipline &dsc : disciplines)
+        if (dsc.getId() == disciplineComboBox->itemData(disciplineComboBox->currentIndex()).toInt())
+            discipline = dsc;
+
+    Factors factors = DbService::getInstance()->getFactors();
+    int numberOfSudents = DbService::getInstance()->getStudentsNumberByFlowId(flow.getId());
+    int numberOfSubGroups = DbService::getInstance()->getSubGroupsNumberByFlowId(flow.getId());
+
+    lecturesLabel->setText(QString("Лекции: %1").arg(discipline.getLectures()));
+    laboratoryLabel->setText(QString("Лабораторные: %1").arg(discipline.getLaboratory() * numberOfSubGroups));
+    practicalLabel->setText(QString("Практические: %1").arg(discipline.getPractical()));
+    consultationLabel->setText(QString("Консультации: %1").arg(factors.getConsultationFactor() * numberOfSudents * discipline.hasConsultation()));
+    examinationsLabel->setText(QString("Экзамен: %1").arg(factors.getExaminationFactor() * numberOfSudents * discipline.hasExamination()));
+    testsLabel->setText(QString("Зачет: %1").arg(factors.getTestsFactor() * numberOfSudents * discipline.hasTests()));
+    currentConsultationLabel->setText(QString("Текущая консультация: %1").arg(factors.getCurrentConsultationFactor() * numberOfSudents * discipline.hasCurrentConsultation()));
+    introductoryPracticeLabel->setText(QString("Ознакомительная практика: %1").arg(factors.getIntroductoryPracticeFactor() * numberOfSudents * discipline.hasIntroductoryPractice()));
+    preDiplomaPracticeLabel->setText(QString("Преддипломная практика: %1").arg(factors.getPreDiplomaPracticeFactor() * numberOfSudents * discipline.hasPreDiplomaPractice()));
+    courseworkLabel->setText(QString("Курсовая работа: %1").arg(factors.getCourseWorkFactor() * numberOfSudents * discipline.hasCourseWork()));
+    guidedIndependentWorkLabel->setText(QString("Управляемая самост. работа: %1").arg(factors.getGuidedIndependentWorkFactor() * numberOfSudents * discipline.hasGuideIndependentWork()));
+    controlWorkLabel->setText(QString("Контрольная работа: %1").arg(factors.getControlWorkFactor() * numberOfSudents * discipline.hasControlWork()));
+    graduationDesignLabel->setText(QString("Дипломное проектирование: %1").arg(factors.getGraduationDesignFactor() * numberOfSudents * discipline.hasGraduationDesign()));
+    guideGraduateLabel->setText(QString("Рук-во аспирантами: %1").arg(factors.getGuideGraduateFactor() * numberOfSudents * discipline.hasGuideGraduate()));
+    stateExamLabel->setText(QString("Гос экзамен: %1").arg(factors.getStateExamFactor() * numberOfSudents * discipline.hasStateExam()));
+    hesLabel->setText(QString("ГЭК: %1").arg(factors.getHesFactor() * numberOfSudents * discipline.hasHes()));
+    guideChairLabel->setText(QString("Руководство кафедрой: %1").arg(factors.getGuideChairFactor() * numberOfSudents * discipline.hasGuideChair()));
+    uirsLabel->setText(QString("УИРС: %1").arg(factors.getUirsFactor() * numberOfSudents * discipline.hasUirs()));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

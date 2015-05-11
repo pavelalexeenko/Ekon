@@ -15,7 +15,7 @@ public:
     double getIntroductoryPracticeFactor() const;
     double getPreDiplomaPracticeFactor() const;
     double getCourseWorkFactor() const;
-    double getGuideIndependentWorkFactor() const;
+    double getGuidedIndependentWorkFactor() const;
     double getControlWorkFactor() const;
     double getGraduationDesignFactor() const;
     double getGuideGraduateFactor() const;
@@ -32,7 +32,7 @@ public:
     void setIntroductoryPracticeFactor(const double& introductoryPracticeFactor);
     void setPreDiplomaPracticeFactor(const double& preDiplomaPracticeFactor);
     void setCourseWorkFactor(const double& courseWorkFactor);
-    void setGuideIndependentWorkFactor(const double& guideIndependentWorkFactor);
+    void setGuidedIndependentWorkFactor(const double& guidedIndependentWorkFactor);
     void setControlWorkFactor(const double& controlWorkFactor);
     void setGraduationDesignFactor(const double& graduationDesignFactor);
     void setGuideGraduateFactor(const double& guideGraduateFactor);
@@ -50,7 +50,7 @@ private:
     double _introductoryPracticeFactor;
     double _preDiplomaPracticeFactor;
     double _courseWorkFactor;
-    double _guideIndependentWorkFactor;
+    double _guidedIndependentWorkFactor;
     double _controlWorkFactor;
     double _graduationDesignFactor;
     double _guideGraduateFactor;

@@ -432,10 +432,12 @@ QString DbService::getGroupNameById(const int &id)
     QSqlQuery query;
     query.prepare("SELECT GRP_NAME FROM DRT_GROUPS WHERE GRP_ID = :id");
     query.bindValue(":id", id);
-    query.exec();
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
 
     if (!query.first())
-        throw QString("No group with such id.");
+        throw QString(query.lastError().text());
 
     return query.record().value("GRP_NAME").toString();
 }
@@ -445,10 +447,12 @@ Flow DbService::getFlowById(const int &id)
     QSqlQuery query;
     query.prepare("SELECT * FROM DRT_FLOWS WHERE FLW_ID = :id");
     query.bindValue(":id", id);
-    query.exec();
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
 
     if (!query.first())
-        throw QString("No group with such id.");
+        throw QString(query.lastError().text());
 
     return toFlowObject(query.record());
 }
@@ -458,10 +462,12 @@ Discipline DbService::getDisciplineById(const int &id)
     QSqlQuery query;
     query.prepare("SELECT * FROM DRT_DISCIPLINES WHERE DSC_ID = :id");
     query.bindValue(":id", id);
-    query.exec();
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
 
     if (!query.first())
-        throw QString("No discipline with such id.");
+        throw QString(query.lastError().text());
 
     return toDisciplineObject(query.record());
 }
@@ -471,10 +477,12 @@ LoadCalculation DbService::getLoadCalculationById(const int &id)
     QSqlQuery query;
     query.prepare("SELECT * FROM VIEW_LOAD_CALCULATION WHERE LCLV_ID = :id");
     query.bindValue(":id", id);
-    query.exec();
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
 
     if (!query.first())
-        throw QString("No load calculation with such id.");
+        throw QString(query.lastError().text());
 
     return toLoadCalculationObject(query.record());
 }
@@ -517,12 +525,28 @@ LoadDistribution DbService::getLoadDistributionById(const int &loadDistributionI
     QSqlQuery query;
     query.prepare("SELECT * FROM DRT_LOAD_DISTRIBUTION WHERE LDB_ID = :id");
     query.bindValue(":id", loadDistributionId);
-    query.exec();
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
 
     if (!query.first())
-        throw QString("No load distribution with such id.");
+        throw QString(query.lastError().text());
 
     return toLoadDistributionObject(query.record());
+}
+
+Factors DbService::getFactors() const
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM DRT_FACTORS WHERE FCT_ID = 1");
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    if (!query.first())
+        throw QString(query.lastError().text());
+
+    return toFactorsObject(query.record());
 }
 
 QList<Group> DbService::getAllGroups() const
@@ -670,6 +694,9 @@ int DbService::getStudentsNumberByFlowId(const int flowId) const
     if (!query.exec())
         throw QString(query.lastError().text());
 
+    if (!query.first())
+        throw QString(query.lastError().text());
+
     return query.record().value("STUDENTS_NUMBER").toInt();
 }
 
@@ -684,7 +711,33 @@ int DbService::getSubGroupsNumberByFlowId(const int flowId) const
     if (!query.exec())
         throw QString(query.lastError().text());
 
+    if (!query.first())
+        throw QString(query.lastError().text());
+
     return query.record().value("SUBGROUPS_NUMBER").toInt();
+}
+
+Factors DbService::toFactorsObject(const QSqlRecord &record) const
+{
+    Factors factors;
+    factors.setId(record.value("FCT_ID").toInt());
+    factors.setConsultationFactor(record.value("FCT_CONSULTATION").toDouble());
+    factors.setExaminationsFactor(record.value("FCT_EXAMINATIONS").toDouble());
+    factors.setTestsFactor(record.value("FCT_TESTS").toDouble());
+    factors.setCurrentConsultationFactor(record.value("FCT_CURRENT_CONSULTATION").toDouble());
+    factors.setIntroductoryPracticeFactor(record.value("FCT_INTRODUCTORY_PRACTICE").toDouble());
+    factors.setPreDiplomaPracticeFactor(record.value("FCT_PRE_DIPLOMA_PRACTICE").toDouble());
+    factors.setCourseWorkFactor(record.value("FCT_COURSEWORK").toDouble());
+    factors.setGuidedIndependentWorkFactor(record.value("FCT_ID").toDouble());
+    factors.setControlWorkFactor(record.value("FCT_CONTROL_WORK").toDouble());
+    factors.setGraduationDesignFactor(record.value("FCT_GRADUATION_DESIGN").toDouble());
+    factors.setGuideGraduateFactor(record.value("FCT_GUIDE_GRADUATE").toDouble());
+    factors.setStateExamFactor(record.value("FCT_STATE_EXAM").toDouble());
+    factors.setHesFactor(record.value("FCT_HES").toDouble());
+    factors.setGuideChairFactor(record.value("FCT_GUIDE_CHAIR").toDouble());
+    factors.setUirsFactor(record.value("FCT_UIRS").toDouble());
+
+    return factors;
 }
 
 Group DbService::toGroupObject(const QSqlRecord& record) const
@@ -844,7 +897,7 @@ bool DbService::connectToAnotherDatabase(QString filename)
     {
         _db->setDatabaseName(oldDatabaseName);
         _db->open();
-        throw QString("Can't open database");
+        throw QString("Can't open database: %1").arg(_db->lastError().text());
     }
 
     if (!isCorrectVersion())
@@ -1108,15 +1161,15 @@ void DbService::createGroupsTable() const
 
     QString fields("GRP_NAME,GRP_NUMBER_OF_STUDENTS,GRP_COURSE,GRP_NUMBER_OF_SUBGROUPS,GRP_SEMESTR,GRP_FACULTET,GRP_SPECIALITY,GRP_NOTE");
 
-    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-32', 19, 5, 2, 9,'ЭИС','АСОИ','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-32', 19, 5, 1, 9,'ЭИС','АСОИ','Примечание');");
     query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-33', 20, 5, 2, 9,'ЭИС','АСОИ','Примечание');");
-    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-34', 25, 4, 2, 7,'ЭИС','АСОИ','Примечание');");
-    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-35', 22, 4, 2, 7,'ЭИС','АСОИ','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-34', 25, 4, 3, 7,'ЭИС','АСОИ','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('АС-35', 22, 4, 4, 7,'ЭИС','АСОИ','Примечание');");
 
-    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-44', 15, 5, 2, 9,'ЭИС','ЭВМСиС','Примечание');");
-    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-45', 16, 5, 2, 9,'ЭИС','ЭВМСиС','Примечание');");
-    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-46', 22, 4, 2, 7,'ЭИС','ЭВМСиС','Примечание');");
-    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-47', 25, 4, 2, 7,'ЭИС','ЭВМСиС','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-44', 15, 5, 5, 9,'ЭИС','ЭВМСиС','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-45', 16, 5, 6, 9,'ЭИС','ЭВМСиС','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-46', 22, 4, 7, 7,'ЭИС','ЭВМСиС','Примечание');");
+    query.exec("INSERT INTO DRT_GROUPS (" + fields + ") VALUES('Э-47', 25, 4, 8, 7,'ЭИС','ЭВМСиС','Примечание');");
 }
 
 void DbService::createFlowsTable() const
