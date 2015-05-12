@@ -1,5 +1,6 @@
 #include "load_distribution_widget.h"
 #include "dialogs/add_loaddistribution_dialog.h"
+#include "dialogs/edit_loaddistribution_dialog.h"
 
 LoadDistributionWidget::LoadDistributionWidget(QWidget *parent) : QWidget(parent)
 {
@@ -85,7 +86,7 @@ void LoadDistributionWidget::refresh()
 void LoadDistributionWidget::editRow(const QModelIndex &index)
 {
     qDebug() << __FUNCTION__;
-    AddLoadDistributionDialog *afd = new AddLoadDistributionDialog(filterProxyModel->data(filterProxyModel->index(index.row(), 0)).toInt(), this);
-    connect(afd, SIGNAL(accepted()), this, SLOT(refresh()));
-    afd->exec();
+    EditLoadDistributionDialog *eldd = new EditLoadDistributionDialog(filterProxyModel->data(filterProxyModel->index(index.row(), 0)).toInt(), this);
+    connect(eldd, SIGNAL(accepted()), this, SLOT(refresh()));
+    eldd->exec();
 }
