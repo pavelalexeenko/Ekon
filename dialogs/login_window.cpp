@@ -17,6 +17,7 @@ LoginWindow::LoginWindow(QWidget *parent) :
     qDebug() << __FUNCTION__;
     setWindowTitle(QString("Please login"));
     setWindowModality(Qt::ApplicationModal);
+    setWindowState(Qt::WindowActive);
 
     _passwordLineEdit->setEchoMode(QLineEdit::Password);
 
