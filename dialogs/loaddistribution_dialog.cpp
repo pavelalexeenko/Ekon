@@ -27,6 +27,7 @@ LoadDistributionDialog::LoadDistributionDialog(QWidget *parent) :
     qDebug() << __FUNCTION__;
 
     createLayout();
+    fillLclCombo();
     setConnections();
 }
 
@@ -106,4 +107,42 @@ void LoadDistributionDialog::createLayout()
     formLayout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
 
     setLayout(formLayout);
+}
+
+void LoadDistributionDialog::fillLclCombo()
+{
+    QList<QPair<int, QString> > lclIdsAndNames = DbService::getInstance()->getLoadCalculationIdsAndNames();
+
+    for (QPair<int, QString> &item : lclIdsAndNames)
+        loadcalculationComboBox->addItem(item.second, QVariant(item.first));
+
+}
+
+LoadDistribution LoadDistributionDialog::getLoadDistribution()
+{
+    qDebug() << __FUNCTION__;
+
+    LoadDistribution ld;
+    ld.setTeacherId(teacherComboBox->itemData(teacherComboBox->currentIndex()).toInt());
+    ld.setLoadCalculaionId(loadcalculationComboBox->itemData(loadcalculationComboBox->currentIndex()).toInt());
+    ld.setLectures(lecturesHoursWidget->getHours());
+    ld.setLaboratory(laboratoryHoursWidget->getHours());
+    ld.setPractical(practicalHoursWidget->getHours());
+    ld.setConsultation(consultationHoursWidget->getHours());
+    ld.setExaminations(examinationsHoursWidget->getHours());
+    ld.setTests(testsHoursWidget->getHours());
+    ld.setCurrentConsultation(currentConsultationHoursWidget->getHours());
+    ld.setIntroductoryPractice(introductoryPracticeHoursWidget->getHours());
+    ld.setPreDiplomaPractice(preDiplomaPracticeHoursWidget->getHours());
+    ld.setCourseWork(courseworkHoursWidget->getHours());
+    ld.setGuideIndependentWork(guidedIndependentWorkHoursWidget->getHours());
+    ld.setControlWork(controlWorkHoursWidget->getHours());
+    ld.setGraduationDesign(graduationDesignHoursWidget->getHours());
+    ld.setGuideGraduate(guideGraduateHoursWidget->getHours());
+    ld.setStateExam(stateExamHoursWidget->getHours());
+    ld.setHes(hesHoursWidget->getHours());
+    ld.setGuideChair(guideChairHoursWidget->getHours());
+    ld.setUirs(uirsHoursWidget->getHours());
+
+    return ld;
 }

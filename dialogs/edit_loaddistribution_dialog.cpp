@@ -9,47 +9,22 @@ EditLoadDistributionDialog::EditLoadDistributionDialog(QWidget *parent) :
 
 EditLoadDistributionDialog::EditLoadDistributionDialog(const int loadDistributionId, QWidget *parent) :
     LoadDistributionDialog(parent)
-  , currentLoadDistributionId(loadDistributionId)
+  , currentLoadDistribution(DbService::getInstance()->getLoadDistributionById(loadDistributionId))
 {
     qDebug() << __FUNCTION__;
-
     setWindowTitle("Изменение распределения учебной нагрузки");
     addButton->setText("&Изменить");
 
-    QList<QPair<int, QString> > lclIdsAndNames = DbService::getInstance()->getLoadCalculationIdsAndNames();
-
-    for (QPair<int, QString> &item : lclIdsAndNames)
-        loadcalculationComboBox->addItem(item.second, QVariant(item.first));
+    selectCurrentLcl();
 }
 
 void EditLoadDistributionDialog::saveRow()
 {
     qDebug() << __FUNCTION__;
 
-    LoadDistribution ld;
+    LoadDistribution ld = getLoadDistribution();
 
-    ld.setId(currentLoadDistributionId);
-    ld.setTeacherId(teacherComboBox->itemData(teacherComboBox->currentIndex()).toInt());
-    ld.setLoadCalculaionId(loadcalculationComboBox->itemData(loadcalculationComboBox->currentIndex()).toInt());
-    ld.setLectures(lecturesHoursWidget->getHours());
-    ld.setLaboratory(laboratoryHoursWidget->getHours());
-    ld.setPractical(practicalHoursWidget->getHours());
-    ld.setConsultation(consultationHoursWidget->getHours());
-    ld.setExaminations(examinationsHoursWidget->getHours());
-    ld.setTests(testsHoursWidget->getHours());
-    ld.setCurrentConsultation(currentConsultationHoursWidget->getHours());
-    ld.setIntroductoryPractice(introductoryPracticeHoursWidget->getHours());
-    ld.setPreDiplomaPractice(preDiplomaPracticeHoursWidget->getHours());
-    ld.setCourseWork(courseworkHoursWidget->getHours());
-    ld.setGuideIndependentWork(guidedIndependentWorkHoursWidget->getHours());
-    ld.setControlWork(controlWorkHoursWidget->getHours());
-    ld.setGraduationDesign(graduationDesignHoursWidget->getHours());
-    ld.setGuideGraduate(guideGraduateHoursWidget->getHours());
-    ld.setStateExam(stateExamHoursWidget->getHours());
-    ld.setHes(hesHoursWidget->getHours());
-    ld.setGuideChair(guideChairHoursWidget->getHours());
-    ld.setUirs(uirsHoursWidget->getHours());
-
+    ld.setId(currentLoadDistribution.getId());
     if (DbService::getInstance()->updateLoadDistribution(ld))
         this->accept();
     else
@@ -62,7 +37,7 @@ void EditLoadDistributionDialog::updateView()
 
     try
     {
-        LoadDistribution currentLd = DbService::getInstance()->getLoadDistributionById(currentLoadDistributionId);
+        int selectedLclId = loadcalculationComboBox->itemData(loadcalculationComboBox->currentIndex()).toInt();
 
         if (QObject::sender() == teacherComboBox)
         {
@@ -72,30 +47,32 @@ void EditLoadDistributionDialog::updateView()
         if (QObject::sender() == loadcalculationComboBox)
         {
             QList<Teacher> teachers = DbService::getInstance()->getAllTeachers();
-            int selectedLclId = loadcalculationComboBox->itemData(loadcalculationComboBox->currentIndex()).toInt();
+
             QList<int> teachersThatAlreadyStudyWithLcl = DbService::getInstance()->getTeachersIdsForLoadCalculation(selectedLclId);
 
             QMutableListIterator<Teacher> i(teachers);
             while (i.hasNext())
             {
                 Teacher teacher = i.next();
-                if (teachersThatAlreadyStudyWithLcl.contains(teacher.getId()) && teacher.getId() != currentLd.getTeacherId())
-                {
+                if (teachersThatAlreadyStudyWithLcl.contains(teacher.getId()) && teacher.getId() != currentLoadDistribution.getTeacherId())
                     i.remove();
-                }
             }
 
             teacherComboBox->clear();
             for (Teacher &teacher : teachers)
-                teacherComboBox->addItem(teacher.getName(), QVariant(teacher.getId()));
+            {
+                if (currentLoadDistribution.getTeacherId() == teacher.getId() && currentLoadDistribution.getLoadCalculaionId() == selectedLclId)
+                    teacherComboBox->addItem(QString("%1 (текущий)").arg(teacher.getName()), QVariant(teacher.getId()));
+                else
+                    teacherComboBox->addItem(teacher.getName(), QVariant(teacher.getId()));
+            }
         }
 
-        int selectedLclId = loadcalculationComboBox->itemData(loadcalculationComboBox->currentIndex()).toInt();
         LoadCalculation totalLcl = DbService::getInstance()->getLoadCalculationById(selectedLclId);
         LoadCalculation notDistributedLcl = DbService::getInstance()->getNotDistributedLoadById(selectedLclId);
 
-        if (currentLd.getLoadCalculaionId() == selectedLclId)
-            setHours(notDistributedLcl, totalLcl, currentLd);
+        if (currentLoadDistribution.getLoadCalculaionId() == selectedLclId)
+            setHours(notDistributedLcl, totalLcl, currentLoadDistribution);
         else
             setHours(notDistributedLcl, totalLcl, LoadDistribution());
 
@@ -105,4 +82,17 @@ void EditLoadDistributionDialog::updateView()
     {
         QMessageBox::critical(this, tr("Error"), str, QMessageBox::Ok);
     }
+}
+
+void EditLoadDistributionDialog::selectCurrentLcl()
+{
+    qDebug() << __FUNCTION__;
+
+    for (int i = 0; i < loadcalculationComboBox->count(); i++)
+        if (loadcalculationComboBox->itemData(i).toInt() == currentLoadDistribution.getLoadCalculaionId())
+        {
+            loadcalculationComboBox->setCurrentIndex(i);
+            qDebug() << i;
+            break;
+        }
 }

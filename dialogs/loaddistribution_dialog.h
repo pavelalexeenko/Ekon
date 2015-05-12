@@ -23,6 +23,9 @@ protected slots:
 protected:
     void setConnections();
     void createLayout();
+    void fillLclCombo();
+
+    LoadDistribution getLoadDistribution();
 
 protected:
     QComboBox *loadcalculationComboBox;

@@ -17,9 +17,11 @@ protected slots:
     virtual void saveRow();
     virtual void updateView();
 
+private:
+    void selectCurrentLcl();
 
 private:
-    int currentLoadDistributionId;
+    LoadDistribution currentLoadDistribution;
 };
 
 #endif // EDITLOADDISTRIBUTIONDIALOG_H
