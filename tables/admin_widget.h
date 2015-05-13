@@ -2,7 +2,8 @@
 #define ADMIN_WIDGET_H
 
 #include <QTabWidget>
-#include <tabs/users_widget.h>
+#include "tabs/users_widget.h"
+#include "tabs/settings_widget.h"
 
 class AdminWidget : public QTabWidget
 {
@@ -15,6 +16,7 @@ public slots:
 
 private:
     UsersWidget *usersWidget;
+    SettingsWidget *settingsWidget;
 };
 
 #endif // ADMIN_WIDGET_H

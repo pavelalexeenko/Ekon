@@ -64,9 +64,9 @@ void HoursWidget::initControlDefaults()
 {
     hoursSpinBox->setMinimum(0);
     hoursSpinBox->setMaximum(_leftHours);
-    hoursSpinBox->setMinimumWidth(80);
-    leftHoursLabel->setMinimumWidth(80);
-    totalHoursLabel->setMinimumWidth(80);
+    hoursSpinBox->setMinimumWidth(100);
+    leftHoursLabel->setMinimumWidth(100);
+    totalHoursLabel->setMinimumWidth(100);
 }
 
 void HoursWidget::createLayout()

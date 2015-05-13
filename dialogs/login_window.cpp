@@ -12,14 +12,11 @@ LoginWindow::LoginWindow(QWidget *parent) :
   , _connectToAnotherDatabaseButton(new QPushButton(QString("Connect to another database"), this))
   , _credentialsLayout(new QFormLayout(_credentialsGroupBox))
   , _mainLayout(new QGridLayout(this))
-
 {
     qDebug() << __FUNCTION__;
     setWindowTitle(QString("Please login"));
     setWindowModality(Qt::ApplicationModal);
     setWindowState(Qt::WindowActive);
-
-    _passwordLineEdit->setEchoMode(QLineEdit::Password);
 
     updateUsers();
     createLayout();
@@ -32,7 +29,8 @@ LoginWindow::LoginWindow(QWidget *parent) :
 
 void LoginWindow::login()
 {
-    qDebug() << "Trying to login...";
+    qDebug() << __FUNCTION__;
+
     if (DbService::getInstance()->loginAs(_usernameComboBox->currentText(), _passwordLineEdit->text()))
     {
         qDebug() << "Login succesfully.";
@@ -47,6 +45,8 @@ void LoginWindow::login()
 
 void LoginWindow::connectToAnotherDatabase()
 {    
+    qDebug() << __FUNCTION__;
+
     try
     {
         QString filename = QFileDialog::getOpenFileName(0, tr("Select database file"), "", tr("SQLite files (*.sqlite)"));
@@ -55,13 +55,15 @@ void LoginWindow::connectToAnotherDatabase()
     }
     catch (QString str)
     {
+        qDebug() << "throw: " << str;
         QMessageBox::critical(this, tr("Error"), str, QMessageBox::Ok);
     }
 }
 
 void LoginWindow::createLayout()
 {
-    qDebug() << "Creating LoginWindow layout...";
+    qDebug() << __FUNCTION__;
+
     _credentialsLayout->addRow(tr("Login:"), _usernameComboBox);
     _credentialsLayout->addRow(tr("Password:"), _passwordLineEdit);
 
@@ -70,17 +72,22 @@ void LoginWindow::createLayout()
     _mainLayout->addWidget(_exitButton, 1, 1);
     _mainLayout->addWidget(_databaseStatusLabel, 2, 0, 1, 2);
     _mainLayout->addWidget(_connectToAnotherDatabaseButton, 3, 0, 1, 2);
+
+    _passwordLineEdit->setEchoMode(QLineEdit::Password);
 }
 
 void LoginWindow::updateUsers()
 {
-    qDebug() << "Updating users list...";
+    qDebug() << __FUNCTION__;
+
     if (!DbService::getInstance()->testDatabaseConnection())
     {
+        qDebug() << "Failed to open the database.";
         _databaseStatusLabel->setText(QString("Failed to open the database."));
     }
     else
     {
+        qDebug() << "Setting users list.";
         _databaseStatusLabel->setText(QString("Connected to: \"") + DbService::getInstance()->getCurrentDataBasePath() + QString("\""));
         _usernameComboBox->clear();
         _usernameComboBox->addItems(DbService::getInstance()->getAllUsers());

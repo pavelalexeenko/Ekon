@@ -2,16 +2,15 @@
 
 SecretaryWidget::SecretaryWidget(QWidget *parent) :
     QTabWidget(parent)
+  , loadCalculationWidget(new LoadCalculationWidget(this))
+  , loadDistributionWidget(new LoadDistributionWidget(this))
 {
     qDebug() << __FUNCTION__;
 
-    loadCalculationWidget = new LoadCalculationWidget(this);
-    this->addTab(loadCalculationWidget, QString("Распределение &дисциплин"));
+    addTab(loadCalculationWidget, QString("Распределение &дисциплин"));
+    addTab(loadDistributionWidget, QString("Распределение &нагрузки"));
 
-    loadDistributionWidget = new LoadDistributionWidget(this);
-    this->addTab(loadDistributionWidget, QString("Распределение &нагрузки"));
-
-    this->setStyleSheet("QTabWidget::pane { border: 0; }");
+    setStyleSheet("QTabWidget::pane { border: 0; }");
 }
 
 void SecretaryWidget::refresh()

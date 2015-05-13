@@ -25,6 +25,7 @@ private slots:
 
 private:
     void createMenu();
+    void setUp();
 
 private:
     QMenu *fileMenu;

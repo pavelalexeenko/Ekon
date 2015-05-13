@@ -4,14 +4,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     qDebug() << __FUNCTION__;
-    tablesWidget = new TablesWidget(this);
-    setCentralWidget(tablesWidget);
-    createMenu();
-    this->resize(1300,500);
-    updateTitle();
-    tablesWidget->updateLayout();
-    this->show();
 
+    setUp();
+    createMenu();
+    updateTitle();
+
+    //this->show();
     if (!DbService::getInstance()->isLogged())
         goToLoginWindow();
 }
@@ -51,4 +49,12 @@ void MainWindow::createMenu()
     refreshAct = new QAction(tr("&Refresh"), this);
     menuBar()->addAction(refreshAct);
     connect(refreshAct, SIGNAL(triggered()), tablesWidget, SLOT(refresh()));
+}
+
+void MainWindow::setUp()
+{
+    tablesWidget = new TablesWidget(this);
+    setCentralWidget(tablesWidget);
+    tablesWidget->updateLayout();
+    this->resize(1300,500);
 }

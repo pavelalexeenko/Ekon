@@ -2,25 +2,21 @@
 
 WorkerWidget::WorkerWidget(QWidget *parent) :
     QTabWidget(parent)
+  , disciplinesWidget(new DisciplinesWidget(this))
+  , groupsWidget(new GroupsWidget(this))
+  , teachersWidget(new TeachersWidget(this))
+  , flowsWidget(new FlowsWidget(this))
 {
     qDebug() << __FUNCTION__;
 
-    disciplinesWidget = new DisciplinesWidget(this);
-    this->addTab(disciplinesWidget, QString("&Дисциплины"));
+    addTab(disciplinesWidget, QString("&Дисциплины"));
+    addTab(teachersWidget, QString("&Преподаватели"));
+    addTab(groupsWidget, QString("&Группы"));
+    addTab(flowsWidget, QString("П&отоки"));
 
-    teachersWidget = new TeachersWidget(this);
-    this->addTab(teachersWidget, QString("&Преподаватели"));
-
-    groupsWidget = new GroupsWidget(this);
-    this->addTab(groupsWidget, QString("&Группы"));
-
-    flowsWidget = new FlowsWidget(this);
-    this->addTab(flowsWidget, QString("П&отоки"));
-
-    this->setStyleSheet("QTabWidget::pane { border: 0; }");
-    this->tabBar()->setStyleSheet("");
+    setStyleSheet("QTabWidget::pane { border: 0; }");
+    tabBar()->setStyleSheet("");
 }
-
 
 void WorkerWidget::refresh()
 {

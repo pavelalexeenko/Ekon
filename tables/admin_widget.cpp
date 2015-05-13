@@ -2,12 +2,15 @@
 
 AdminWidget::AdminWidget(QWidget *parent) :
     QTabWidget(parent)
+  , usersWidget(new UsersWidget(this))
+  , settingsWidget(new SettingsWidget(this))
 {
     qDebug() << __FUNCTION__;
 
-    usersWidget = new UsersWidget(this);
-    this->addTab(usersWidget, QString("&Пользователи"));
-    this->setStyleSheet("QTabWidget::pane { border: 0; }");
+    addTab(usersWidget, QString("&Пользователи"));
+    addTab(settingsWidget, QString("&Настройки"));
+
+    setStyleSheet("QTabWidget::pane { border: 0; }");
 }
 
 void AdminWidget::refresh()

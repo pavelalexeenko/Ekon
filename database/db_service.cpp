@@ -1381,14 +1381,3 @@ void DbService::createLoadDistributionHelper() const
                "AND LCL.LCL_DSC_ID = DSC.DSC_ID "
                "GROUP BY LCL.LCL_ID");
 }
-
-
-
-
-
-
-
-
-
-
-
