@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenu();
     updateTitle();
 
-    //this->show();
+    this->show();
     if (!DbService::getInstance()->isLogged())
         goToLoginWindow();
 }
@@ -69,12 +69,10 @@ void MainWindow::exportLcl()
                 << "УИРС";
 
     QTextStream out(&file);
-    out.setCodec("Windows-1251");
 
     for (QString str : columnNames)
     {
         out << str.toUtf8() << "\t";
-        qDebug() << str.toUtf8();
     }
     out << "\n";
 
@@ -83,9 +81,7 @@ void MainWindow::exportLcl()
         out << item << "\n";
     }
 
-    out << "The magic number is: " << 49 << "\n";
-
-    QMessageBox::warning(this, tr("Succes!"), tr("Done."), QMessageBox::Ok);
+    QMessageBox::information(this, tr("Операция завершена."), tr("Данные о итоговом расчете\nуспешно экспортированы."), QMessageBox::Ok);
 }
 
 void MainWindow::createMenu()
