@@ -26,7 +26,8 @@ void SettingsWidget::createLayout()
 {
     qDebug() << __FUNCTION__;
 
-    QFormLayout *formLayout = new QFormLayout(this);
+    QGroupBox *groupBox = new QGroupBox(tr("Коэффициенты"));
+    QFormLayout *formLayout = new QFormLayout();
 
     QFormLayout *firstFormLayout = new QFormLayout();
     firstFormLayout->addRow(tr("&Консультации:"), consultationDoubleSpinBox);
@@ -57,6 +58,11 @@ void SettingsWidget::createLayout()
     formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     formLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
     formLayout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
+
+    groupBox->setLayout(formLayout);
+
+    QGridLayout *mainLayout = new QGridLayout(this);
+    mainLayout->addWidget(groupBox, 0, 0, Qt::AlignLeft | Qt::AlignTop);
 }
 
 void SettingsWidget::createMapper()
@@ -71,7 +77,17 @@ void SettingsWidget::createMapper()
     mapper->addMapping(consultationDoubleSpinBox, 1);
     mapper->addMapping(examinationDoubleSpinBox, 2);
     mapper->addMapping(testsDoubleSpinBox, 3);
-
+    mapper->addMapping(currentConsultationDoubleSpinBox, 4);
+    mapper->addMapping(introductoryPracticeDoubleSpinBox, 5);
+    mapper->addMapping(preDiplomaPracticeDoubleSpinBox, 6);
+    mapper->addMapping(courseWorkDoubleSpinBox, 7);
+    mapper->addMapping(guidedIndependentWorkDoubleSpinBox, 8);
+    mapper->addMapping(controlWorkDoubleSpinBox, 9);
+    mapper->addMapping(graduationDesignDoubleSpinBox, 10);
+    mapper->addMapping(guideGraduateDoubleSpinBox, 11);
+    mapper->addMapping(stateExamDoubleSpinBox, 12);
+    mapper->addMapping(hesDoubleSpinBox, 13);
+    mapper->addMapping(guideChairDoubleSpinBox, 14);
     mapper->addMapping(uirsDoubleSpinBox, 15);
     mapper->toFirst();
 }

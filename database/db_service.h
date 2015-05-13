@@ -97,6 +97,8 @@ public:
     int getStudentsNumberByFlowId(const int flowId) const;
     int getSubGroupsNumberByFlowId(const int flowId) const;
 
+    QStringList exportLcl();
+
 private:
     bool isCorrectVersion() const;
 
@@ -126,6 +128,8 @@ private:
     Teacher toTeacherObject(const QSqlRecord& record) const;
     LoadCalculation toLoadCalculationObject(const QSqlRecord& record) const;
     LoadDistribution toLoadDistributionObject(const QSqlRecord& record) const;
+
+    QString toExportLclString(const QSqlRecord& record) const;
 
     QSet<int> getGroupsIdsByFlowId(const int& flowId) const;
 

@@ -21,6 +21,9 @@ LoginWindow::LoginWindow(QWidget *parent) :
     updateUsers();
     createLayout();
 
+    _connectToAnotherDatabaseButton->hide();
+    _databaseStatusLabel->hide();
+
     connect(this, SIGNAL(accepted()), parent, SLOT(show()));
     connect(_loginButton, SIGNAL(clicked()), this, SLOT(login()));
     connect(_exitButton, SIGNAL(clicked()), this, SLOT(close()));

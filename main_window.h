@@ -12,6 +12,7 @@
 #include <QStackedLayout>
 #include <QAction>
 #include <QMenuBar>
+#include <QTextCodec>
 
 class MainWindow : public QMainWindow
 {
@@ -22,6 +23,7 @@ public:
 private slots:
     void updateTitle();
     void goToLoginWindow();
+    void exportLcl();
 
 private:
     void createMenu();
@@ -34,6 +36,7 @@ private:
     QAction *saveAct;
     QAction *refreshAct;
     QAction *exitAct;
+    QAction *exportLclAct;
 
     TablesWidget *tablesWidget;
 };

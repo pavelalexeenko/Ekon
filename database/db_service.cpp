@@ -1381,3 +1381,79 @@ void DbService::createLoadDistributionHelper() const
                "AND LCL.LCL_DSC_ID = DSC.DSC_ID "
                "GROUP BY LCL.LCL_ID");
 }
+
+QStringList DbService::exportLcl()
+{
+    qDebug() << __FUNCTION__;
+
+    QSqlQuery query;
+    query.prepare("SELECT "
+                  "DSC.DSC_NAME as LVLV_DSC_NAME, "
+                  "VFLW.FLW_NAME as LCLV_FLW_NAME, "
+                  "DSC.DSC_LECTURES as LCLV_LECTURES, "
+                  "DSC.DSC_LABORATORY              * SUBGROUPS.SUBGROUPS_NUMBER as LCLV_LABORATORY, "
+                  "DSC.DSC_PRACTICAL as LCLV_PRACTICAL, "
+                  "DSC.DSC_CONSULTATION            * STUD.STUDENTS_NUMBER * FCT.FCT_CONSULTATION               as LCLV_CONSULTATION, "
+                  "DSC.DSC_EXAMINATIONS            * STUD.STUDENTS_NUMBER * FCT.FCT_EXAMINATIONS               as LCLV_EXAMINATIONS, "
+                  "DSC.DSC_TESTS                   * STUD.STUDENTS_NUMBER * FCT.FCT_TESTS                      as LCLV_TESTS, "
+                  "DSC.DSC_CURRENT_CONSULTATION    * STUD.STUDENTS_NUMBER * FCT.FCT_CURRENT_CONSULTATION       as LCLV_CURRENT_CONSULTATION, "
+                  "DSC.DSC_INTRODUCTORY_PRACTICE   * STUD.STUDENTS_NUMBER * FCT.FCT_INTRODUCTORY_PRACTICE      as LCLV_INTRODUCTORY_PRACTICE, "
+                  "DSC.DSC_PRE_DIPLOMA_PRACTICE    * STUD.STUDENTS_NUMBER * FCT.FCT_PRE_DIPLOMA_PRACTICE       as LCLV_PRE_DIPLOMA_PRACTICE, "
+                  "DSC.DSC_COURSEWORK              * STUD.STUDENTS_NUMBER * FCT.FCT_COURSEWORK                 as LCLV_COURSEWORK, "
+                  "DSC.DSC_GUIDED_INDEPENDENT_WORK * STUD.STUDENTS_NUMBER * FCT.FCT_GUIDED_INDEPENDENT_WORK    as LCLV_GUIDED_INDEPENDENT_WORK, "
+                  "DSC.DSC_CONTROL_WORK            * STUD.STUDENTS_NUMBER * FCT.FCT_CONTROL_WORK               as LCLV_CONTROL_WORK, "
+                  "DSC.DSC_GRADUATION_DESIGN       * STUD.STUDENTS_NUMBER * FCT.FCT_GRADUATION_DESIGN          as LCLV_GRADUATION_DESIGN, "
+                  "DSC.DSC_GUIDE_GRADUATE          * STUD.STUDENTS_NUMBER * FCT.FCT_GUIDE_GRADUATE             as LCLV_GUIDE_GRADUATE, "
+                  "DSC.DSC_STATE_EXAM              * STUD.STUDENTS_NUMBER * FCT.FCT_STATE_EXAM                 as LCLV_STATE_EXAM, "
+                  "DSC.DSC_HES                     * STUD.STUDENTS_NUMBER * FCT.FCT_HES                        as LCLV_HES, "
+                  "DSC.DSC_GUIDE_CHAIR             * STUD.STUDENTS_NUMBER * FCT.FCT_GUIDE_CHAIR                as LCLV_GUIDE_CHAIR, "
+                  "DSC.DSC_UIRS                    * STUD.STUDENTS_NUMBER * FCT.FCT_UIRS                       as LCLV_UIRS "
+                  "FROM DRT_FLOWS FLW, DRT_LOAD_CALCULATION LCL, DRT_DISCIPLINES DSC, VIEW_FLOWS VFLW, DRT_FACTORS FCT, DRT_GROUPS GRP, DRT_LINKS LNK "
+                  "JOIN (SELECT LNK.LNK_FLW_ID as FLW_ID, TOTAL(GRP.GRP_NUMBER_OF_STUDENTS) as STUDENTS_NUMBER FROM DRT_GROUPS GRP, DRT_LINKS LNK WHERE GRP.GRP_ID = LNK.LNK_GRP_ID GROUP BY LNK.LNK_FLW_ID) STUD ON STUD.FLW_ID = LCL.LCL_FLW_ID "
+                  "JOIN (SELECT LNK.LNK_FLW_ID as FLW_ID, TOTAL(GRP.GRP_NUMBER_OF_SUBGROUPS) as SUBGROUPS_NUMBER FROM DRT_GROUPS GRP, DRT_LINKS LNK WHERE GRP.GRP_ID = LNK.LNK_GRP_ID GROUP BY LNK.LNK_FLW_ID) SUBGROUPS ON SUBGROUPS.FLW_ID = LCL.LCL_FLW_ID "
+                  "WHERE LCL.LCL_FLW_ID = VFLW.FLW_ID "
+                  "AND LCL.LCL_DSC_ID = DSC.DSC_ID "
+                  "AND LCL.LCL_FLW_ID = FLW.FLW_ID "
+                  "AND FLW.FLW_ID = LNK.LNK_FLW_ID "
+                  "AND GRP.GRP_ID = LNK.LNK_GRP_ID "
+                  "AND FCT.FCT_ID = 1 "
+                  "GROUP BY LCL.LCL_ID "
+                  "ORDER BY LVLV_DSC_NAME, LCLV_FLW_NAME");
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    QStringList result;
+
+    while(query.next())
+        result.append(toExportLclString(query.record()));
+
+    return result;
+}
+
+QString DbService::toExportLclString(const QSqlRecord& record) const
+{
+    QString result;
+    result += record.value("LVLV_DSC_NAME").toString() + " \t";
+    result += record.value("LCLV_FLW_NAME").toString() + " \t";
+    result += record.value("LCLV_LECTURES").toString() + " \t";
+    result += record.value("LCLV_LABORATORY").toString() + " \t";
+    result += record.value("LCLV_PRACTICAL").toString() + " \t";
+    result += record.value("LCLV_CONSULTATION").toString() + " \t";
+    result += record.value("LCLV_EXAMINATIONS").toString() + " \t";
+    result += record.value("LCLV_TESTS").toString() + " \t";
+    result += record.value("LCLV_CURRENT_CONSULTATION").toString() + " \t";
+    result += record.value("LCLV_INTRODUCTORY_PRACTICE").toString() + " \t";
+    result += record.value("LCLV_PRE_DIPLOMA_PRACTICE").toString() + " \t";
+    result += record.value("LCLV_COURSEWORK").toString() + " \t";
+    result += record.value("LCLV_GUIDED_INDEPENDENT_WORK").toString() + " \t";
+    result += record.value("LCLV_CONTROL_WORK").toString() + " \t";
+    result += record.value("LCLV_GRADUATION_DESIGN").toString() + " \t";
+    result += record.value("LCLV_GUIDE_GRADUATE").toString() + " \t";
+    result += record.value("LCLV_STATE_EXAM").toString() + " \t";
+    result += record.value("LCLV_HES").toString() + " \t";
+    result += record.value("LCLV_GUIDE_CHAIR").toString() + " \t";
+    result += record.value("LCLV_UIRS").toString();
+
+    return result;
+}

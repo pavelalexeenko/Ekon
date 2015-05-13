@@ -7,6 +7,8 @@
 #include <QDoubleSpinBox>
 #include <QFormLayout>
 #include <QDataWidgetMapper>
+#include <QGroupBox>
+#include <QSizePolicy>
 
 #include <QDebug>
 
