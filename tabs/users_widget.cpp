@@ -17,6 +17,7 @@ UsersWidget::UsersWidget(QWidget *parent) :
 
     usersTableModel = EkonTables::createRelationalTableModel(this, "DRT_USERS", columnNames, relations);
     usersTableView = EkonTables::createRelationTableView(this, usersTableModel);
+    usersTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     controlWidget = new ControlWidget(this);
 

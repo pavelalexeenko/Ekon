@@ -21,6 +21,7 @@ GroupsWidget::GroupsWidget(QWidget *parent) : QWidget(parent)
     filterProxyModel = new CheckableSortFilterProxyModel(this);
     filterProxyModel->setSourceModel(groupsTableModel);
     groupsTableView = EkonTables::createTableView(this, filterProxyModel);
+    groupsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     controlWidget = new ControlWidget(this);
 

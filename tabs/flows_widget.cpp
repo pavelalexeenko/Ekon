@@ -16,6 +16,7 @@ FlowsWidget::FlowsWidget(QWidget *parent) : QWidget(parent)
     filterProxyModel->setSourceModel(flowsTableModel);
     flowsTableView = EkonTables::createTableView(this, filterProxyModel);
     flowsTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    flowsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     controlWidget = new ControlWidget(this);
 

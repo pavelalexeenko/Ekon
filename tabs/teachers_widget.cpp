@@ -15,6 +15,7 @@ TeachersWidget::TeachersWidget(QWidget *parent) : QWidget(parent)
     filterProxyModel = new CheckableSortFilterProxyModel(this);
     filterProxyModel->setSourceModel(teachersTableModel);
     teachersTableView = EkonTables::createTableView(this, filterProxyModel);
+    teachersTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     controlWidget = new ControlWidget(this);
 

@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenu();
     updateTitle();
 
-    this->show();
+    //this->show();
     if (!DbService::getInstance()->isLogged())
         goToLoginWindow();
 }
