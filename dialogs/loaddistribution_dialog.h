@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QFormLayout>
+#include <QSizePolicy>
 
 class LoadDistributionDialog : public QDialog
 {

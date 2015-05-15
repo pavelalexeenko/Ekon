@@ -1,7 +1,8 @@
 #include "hours_widget.h"
 
-HoursWidget::HoursWidget(QWidget *parent) :
+HoursWidget::HoursWidget(const QString& labelText, QWidget *parent) :
     QWidget(parent)
+  , nameLabel(new QLabel(labelText, this))
   , hoursSpinBox(new QDoubleSpinBox(this))
   , leftHoursLabel(new QLabel(QString("Осталось: 0 "),this))
   , totalHoursLabel(new QLabel(QString("Всего: 0 "),this))
@@ -13,30 +14,18 @@ HoursWidget::HoursWidget(QWidget *parent) :
     createLayout();
 }
 
-//HoursWidget::HoursWidget(const double leftHours, const double totalHours, QWidget *parent) :
-//    QWidget(parent)
-//  , hoursSpinBox(new QDoubleSpinBox(this))
-//  , leftHoursLabel(new QLabel(QString("Осталось: %1 ").arg(leftHours),this))
-//  , totalHoursLabel(new QLabel(QString("Всего: %1 ").arg(totalHours),this))
-//  , _activeHours(0)
-//  , _leftHours(leftHours)
-//  , _totalHours(totalHours)
-//{
-//    initControlDefaults();
-//    createLayout();
-//}
-
 void HoursWidget::setHours(const double left, const double total, const double active)
 {
     setLeftHours(left + active);
     setActiveHours(active); 
     setTotalHours(total);
 
-    hoursSpinBox->setEnabled(_leftHours > 0);
+    hoursSpinBox->setEnabled(_totalHours > 0);
+    leftHoursLabel->setEnabled(_totalHours > 0);
+    totalHoursLabel->setEnabled(_totalHours > 0);
+    nameLabel->setEnabled(_totalHours > 0);
 
-    hoursSpinBox->setVisible(_totalHours > 0);
-    leftHoursLabel->setVisible(_totalHours > 0);
-    totalHoursLabel->setVisible(_totalHours > 0);
+    hoursSpinBox->setEnabled(_leftHours > 0);
 }
 
 void HoursWidget::setLeftHours(const double left)
@@ -77,9 +66,12 @@ void HoursWidget::initControlDefaults()
 
 void HoursWidget::createLayout()
 {
+    nameLabel->setFixedWidth(150);
+    nameLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     leftHoursLabel->setSizePolicy(QSizePolicy::MinimumExpanding , QSizePolicy::Minimum);
     totalHoursLabel->setSizePolicy(QSizePolicy::MinimumExpanding , QSizePolicy::Minimum);
     QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->addWidget(nameLabel, 1);
     layout->addWidget(hoursSpinBox, 2);
     layout->addWidget(leftHoursLabel, 1);
     layout->addWidget(totalHoursLabel, 1);

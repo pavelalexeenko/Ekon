@@ -12,8 +12,7 @@ class HoursWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit HoursWidget(QWidget *parent = 0);
-   // explicit HoursWidget(const double leftHours, const double totalHours, QWidget *parent = 0);
+    explicit HoursWidget(const QString& labelText, QWidget *parent = 0);
 
     void setHours(const double left, const double total, const double active = 0);
     void setLeftHours(const double left);
@@ -27,6 +26,7 @@ private:
     void createLayout();
 
 private:
+    QLabel *nameLabel;
     QDoubleSpinBox *hoursSpinBox;
     QLabel *leftHoursLabel;
     QLabel *totalHoursLabel;

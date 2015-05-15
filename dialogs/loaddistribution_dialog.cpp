@@ -4,24 +4,24 @@ LoadDistributionDialog::LoadDistributionDialog(QWidget *parent) :
     QDialog(parent)
   , loadcalculationComboBox(new QComboBox(this))
   , teacherComboBox(new QComboBox(this))
-  , lecturesHoursWidget(new HoursWidget(this))
-  , laboratoryHoursWidget(new HoursWidget(this))
-  , practicalHoursWidget(new HoursWidget(this))
-  , consultationHoursWidget(new HoursWidget(this))
-  , examinationsHoursWidget(new HoursWidget(this))
-  , testsHoursWidget(new HoursWidget(this))
-  , currentConsultationHoursWidget(new HoursWidget(this))
-  , introductoryPracticeHoursWidget(new HoursWidget(this))
-  , preDiplomaPracticeHoursWidget(new HoursWidget(this))
-  , courseworkHoursWidget(new HoursWidget(this))
-  , guidedIndependentWorkHoursWidget(new HoursWidget(this))
-  , controlWorkHoursWidget(new HoursWidget(this))
-  , graduationDesignHoursWidget(new HoursWidget(this))
-  , guideGraduateHoursWidget(new HoursWidget(this))
-  , stateExamHoursWidget(new HoursWidget(this))
-  , hesHoursWidget(new HoursWidget(this))
-  , guideChairHoursWidget(new HoursWidget(this))
-  , uirsHoursWidget(new HoursWidget(this))
+  , lecturesHoursWidget(new HoursWidget("Лекции:", this))
+  , laboratoryHoursWidget(new HoursWidget("Лабораторные:", this))
+  , practicalHoursWidget(new HoursWidget("Практические:", this))
+  , consultationHoursWidget(new HoursWidget("Консультации:", this))
+  , examinationsHoursWidget(new HoursWidget("Экзамен:", this))
+  , testsHoursWidget(new HoursWidget("Зачет:", this))
+  , currentConsultationHoursWidget(new HoursWidget("Текущая консультация:", this))
+  , introductoryPracticeHoursWidget(new HoursWidget("Ознакомительная практика:", this))
+  , preDiplomaPracticeHoursWidget(new HoursWidget("Преддипломная практика:", this))
+  , courseworkHoursWidget(new HoursWidget("Курсовая работа:", this))
+  , guidedIndependentWorkHoursWidget(new HoursWidget("Управляемая самост. работа:", this))
+  , controlWorkHoursWidget(new HoursWidget("Контрольная работа:", this))
+  , graduationDesignHoursWidget(new HoursWidget("Дипломное проектирование:", this))
+  , guideGraduateHoursWidget(new HoursWidget("Рук-во аспирантами:", this))
+  , stateExamHoursWidget(new HoursWidget("Гос экзамен:", this))
+  , hesHoursWidget(new HoursWidget("ГЭК:", this))
+  , guideChairHoursWidget(new HoursWidget("Руководство кафедрой:", this))
+  , uirsHoursWidget(new HoursWidget("УИРС:", this))
   , addButton(new QPushButton(this))
 {
     qDebug() << __FUNCTION__;
@@ -72,40 +72,28 @@ void LoadDistributionDialog::createLayout()
     formLayout->addRow(tr("&Название потоковой дисциплины:"), loadcalculationComboBox);
     formLayout->addRow(tr("&Имя преподавателя:"), teacherComboBox);
 
-    QFormLayout *firstFormLayout = new QFormLayout();
-    firstFormLayout->addRow(tr("&Лекции:"), lecturesHoursWidget);
-    firstFormLayout->addRow(tr("&Лабораторные:"), laboratoryHoursWidget);
-    firstFormLayout->addRow(tr("&Практические:"), practicalHoursWidget);
-    firstFormLayout->addRow(tr("&Консультации:"), consultationHoursWidget);
-    firstFormLayout->addRow(tr("&Экзамен:"), examinationsHoursWidget);
-    firstFormLayout->addRow(tr("&Зачет:"), testsHoursWidget);
-    firstFormLayout->addRow(tr("&Текущая консультация:"), currentConsultationHoursWidget);
-    firstFormLayout->addRow(tr("&Ознакомительная практика:"), introductoryPracticeHoursWidget);
-    firstFormLayout->addRow(tr("&Преддипломная практика:"), preDiplomaPracticeHoursWidget);
-    firstFormLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    QGridLayout *hoursLayout = new QGridLayout();
+    hoursLayout->addWidget(lecturesHoursWidget, 0, 0);
+    hoursLayout->addWidget(laboratoryHoursWidget, 1, 0);
+    hoursLayout->addWidget(practicalHoursWidget, 2, 0);
+    hoursLayout->addWidget(consultationHoursWidget, 3, 0);
+    hoursLayout->addWidget(examinationsHoursWidget, 4, 0);
+    hoursLayout->addWidget(testsHoursWidget, 5, 0);
+    hoursLayout->addWidget(currentConsultationHoursWidget, 6, 0);
+    hoursLayout->addWidget(introductoryPracticeHoursWidget, 7, 0);
+    hoursLayout->addWidget(preDiplomaPracticeHoursWidget, 8, 0);
+    hoursLayout->addWidget(courseworkHoursWidget, 0, 1);
+    hoursLayout->addWidget(guidedIndependentWorkHoursWidget, 1, 1);
+    hoursLayout->addWidget(controlWorkHoursWidget, 2, 1);
+    hoursLayout->addWidget(graduationDesignHoursWidget, 3, 1);
+    hoursLayout->addWidget(guideGraduateHoursWidget, 4, 1);
+    hoursLayout->addWidget(stateExamHoursWidget, 5, 1);
+    hoursLayout->addWidget(hesHoursWidget, 6, 1);
+    hoursLayout->addWidget(guideChairHoursWidget, 7, 1);
+    hoursLayout->addWidget(uirsHoursWidget, 8, 1);
 
-    QFormLayout *secondFormLayout = new QFormLayout();
-    secondFormLayout->addRow(tr("&Курсовая работа:"), courseworkHoursWidget);
-    secondFormLayout->addRow(tr("&Управляемая самост. работа:"), guidedIndependentWorkHoursWidget);
-    secondFormLayout->addRow(tr("&Контрольная работа:"), controlWorkHoursWidget);
-    secondFormLayout->addRow(tr("&Дипломное проектирование:"), graduationDesignHoursWidget);
-    secondFormLayout->addRow(tr("&Рук-во аспирантами:"), guideGraduateHoursWidget);
-    secondFormLayout->addRow(tr("&Гос экзамен:"), stateExamHoursWidget);
-    secondFormLayout->addRow(tr("&ГЭК:"), hesHoursWidget);
-    secondFormLayout->addRow(tr("&Руководство кафедрой:"), guideChairHoursWidget);
-    secondFormLayout->addRow(tr("&УИРС:"), uirsHoursWidget);
-    secondFormLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
-
-    QHBoxLayout *lay = new QHBoxLayout();
-    lay->addLayout(firstFormLayout);
-    lay->addLayout(secondFormLayout);
-
-    formLayout->addRow(lay);
+    formLayout->addRow(hoursLayout);
     formLayout->addRow(addButton);
-    formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    formLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    formLayout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
-
     setLayout(formLayout);
 }
 
@@ -115,7 +103,6 @@ void LoadDistributionDialog::fillLclCombo()
 
     for (QPair<int, QString> &item : lclIdsAndNames)
         loadcalculationComboBox->addItem(item.second, QVariant(item.first));
-
 }
 
 LoadDistribution LoadDistributionDialog::getLoadDistribution()
