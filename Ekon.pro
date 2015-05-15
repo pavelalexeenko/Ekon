@@ -96,3 +96,11 @@ HEADERS  += \
     tabs/settings_widget.h
 
 CONFIG += c++11
+
+QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
+QMAKE_LFLAGS += /SUBSYSTEM:CONSOLE,5.01
+QMAKE_CXX += /D_USING_V110_SDK71_
+LIBS *= -L"%ProgramFiles(x86)%/Microsoft SDKs/Windows/7.1A/Lib"
+INCLUDEPATH += "%ProgramFiles(x86)%/Microsoft SDKs/Windows/7.1A/Include"
+
+

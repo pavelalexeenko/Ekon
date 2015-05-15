@@ -13,24 +13,30 @@ HoursWidget::HoursWidget(QWidget *parent) :
     createLayout();
 }
 
-HoursWidget::HoursWidget(const double leftHours, const double totalHours, QWidget *parent) :
-    QWidget(parent)
-  , hoursSpinBox(new QDoubleSpinBox(this))
-  , leftHoursLabel(new QLabel(QString("Осталось: %1 ").arg(leftHours),this))
-  , totalHoursLabel(new QLabel(QString("Всего: %1 ").arg(totalHours),this))
-  , _activeHours(0)
-  , _leftHours(leftHours)
-  , _totalHours(totalHours)
-{
-    initControlDefaults();
-    createLayout();
-}
+//HoursWidget::HoursWidget(const double leftHours, const double totalHours, QWidget *parent) :
+//    QWidget(parent)
+//  , hoursSpinBox(new QDoubleSpinBox(this))
+//  , leftHoursLabel(new QLabel(QString("Осталось: %1 ").arg(leftHours),this))
+//  , totalHoursLabel(new QLabel(QString("Всего: %1 ").arg(totalHours),this))
+//  , _activeHours(0)
+//  , _leftHours(leftHours)
+//  , _totalHours(totalHours)
+//{
+//    initControlDefaults();
+//    createLayout();
+//}
 
 void HoursWidget::setHours(const double left, const double total, const double active)
 {
     setLeftHours(left + active);
     setActiveHours(active); 
     setTotalHours(total);
+
+    hoursSpinBox->setEnabled(_leftHours > 0);
+
+    hoursSpinBox->setVisible(_totalHours > 0);
+    leftHoursLabel->setVisible(_totalHours > 0);
+    totalHoursLabel->setVisible(_totalHours > 0);
 }
 
 void HoursWidget::setLeftHours(const double left)
