@@ -44,68 +44,142 @@ void MainWindow::exportLcl()
         return;
     }
 
-    QStringList list = DbService::getInstance()->exportLcl();
-
-    QStringList columnNames;
-    columnNames << "Название дисциплины"
-                << "Название потока"
-                << "Лекции"
-                << "Лабоработные"
-                << "Практики"
-                << "Консультации"
-                << "Экзамен"
-                << "Зачет"
-                << "Текущая консультация"
-                << "Ознакомительная практика"
-                << "Преддипломная практика"
-                << "Курсовая работа"
-                << "Управляемая самост. работа"
-                << "Контрольная работа"
-                << "Дипломное проектирование"
-                << "Рук-во аспирантами"
-                << "Гос экзамен"
-                << "ГЭК"
-                << "Руководство кафедрой"
-                << "УИРС";
-
-    QTextStream out(&file);
-
-    for (QString str : columnNames)
+    try
     {
-        out << str.toUtf8() << "\t";
-    }
-    out << "\n";
+        QStringList list = DbService::getInstance()->exportLcl();
 
-    for (QString item : list)
+        QStringList columnNames;
+        columnNames << "Название дисциплины"
+                    << "Название потока"
+                    << "Лекции"
+                    << "Лабоработные"
+                    << "Практики"
+                    << "Консультации"
+                    << "Экзамен"
+                    << "Зачет"
+                    << "Текущая консультация"
+                    << "Ознакомительная практика"
+                    << "Преддипломная практика"
+                    << "Курсовая работа"
+                    << "Управляемая самост. работа"
+                    << "Контрольная работа"
+                    << "Дипломное проектирование"
+                    << "Рук-во аспирантами"
+                    << "Гос экзамен"
+                    << "ГЭК"
+                    << "Руководство кафедрой"
+                    << "УИРС";
+
+        QTextStream out(&file);
+
+        for (QString str : columnNames)
+        {
+            out << str.toUtf8() << "\t";
+        }
+        out << "\n";
+
+        for (QString item : list)
+        {
+            out << item << "\n";
+        }
+
+        QMessageBox::information(this, tr("Операция завершена."), tr("Данные о итоговом расчете\nуспешно экспортированы."), QMessageBox::Ok);
+    }
+    catch(QString str)
     {
-        out << item << "\n";
+        QMessageBox::critical(this, tr("Error."), str, QMessageBox::Ok);
+    }
+}
+
+void MainWindow::exportLd()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                                    "/Нагрузка на преподавателей.xls",
+                                                    tr("Excel (*.xls)"));
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, tr("Error"), tr("Can't create file"), QMessageBox::Ok);
+        return;
     }
 
-    QMessageBox::information(this, tr("Операция завершена."), tr("Данные о итоговом расчете\nуспешно экспортированы."), QMessageBox::Ok);
+    try
+    {
+        QStringList list = DbService::getInstance()->exportLd();
+
+        QStringList columnNames;
+        columnNames << "Имя преподавателя"
+                    << "Название дисциплины"
+                    << "Лекции"
+                    << "Лабоработные"
+                    << "Практики"
+                    << "Консультации"
+                    << "Экзамен"
+                    << "Зачет"
+                    << "Текущая консультация"
+                    << "Ознакомительная практика"
+                    << "Преддипломная практика"
+                    << "Курсовая работа"
+                    << "Управляемая самост. работа"
+                    << "Контрольная работа"
+                    << "Дипломное проектирование"
+                    << "Рук-во аспирантами"
+                    << "Гос экзамен"
+                    << "ГЭК"
+                    << "Руководство кафедрой"
+                    << "УИРС";
+
+        QTextStream out(&file);
+
+        for (QString str : columnNames)
+        {
+            out << str.toUtf8() << "\t";
+        }
+        out << "\n";
+
+        for (QString item : list)
+        {
+            out << item << "\n";
+           // qDebug() << item;
+        }
+
+        QMessageBox::information(this, tr("Операция завершена."), tr("Данные о учебной нагрузке\nуспешно экспортированы."), QMessageBox::Ok);
+    }
+    catch(QString str)
+    {
+        QMessageBox::critical(this, tr("Error."), str, QMessageBox::Ok);
+    }
 }
 
 void MainWindow::createMenu()
 {
     qDebug() << __FUNCTION__;
-    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu = menuBar()->addMenu(tr("&Файл"));
 
-    openAct = new QAction(tr("&Login"), this);
+    openAct = new QAction(tr("&Вход в систему под другим пользователем"), this);
     fileMenu->addAction(openAct);
     connect(openAct, SIGNAL(triggered()), this, SLOT(goToLoginWindow()));
 
     fileMenu->addSeparator();
 
-    exitAct = new QAction(tr("&Exit"), this);
+    exitAct = new QAction(tr("&Выход"), this);
     fileMenu->addAction(exitAct);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    refreshAct = new QAction(tr("&Refresh"), this);
+    exportMenu = menuBar()->addMenu(tr("&Экспорт"));
+
+    refreshAct = new QAction(tr("&Обновить данные"), this);
     menuBar()->addAction(refreshAct);
     connect(refreshAct, SIGNAL(triggered()), tablesWidget, SLOT(refresh()));
 
-    exportLclAct = new QAction(tr("&Export Load Calculation"), this);
-    menuBar()->addAction(exportLclAct);
+    exportLclAct = new QAction(tr("&Экспорт итогового расчета нагрузки"), this);
+    exportMenu->addAction(exportLclAct);
     connect(exportLclAct, SIGNAL(triggered()), this, SLOT(exportLcl()));
+
+    exportLdAct = new QAction(tr("&Экспорт нагрузки на преподавателей"), this);
+    exportMenu->addAction(exportLdAct);
+    connect(exportLdAct, SIGNAL(triggered()), this, SLOT(exportLd()));
 }
 
 void MainWindow::setUp()

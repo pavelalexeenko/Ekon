@@ -11,6 +11,7 @@ EditLoadDistributionDialog::EditLoadDistributionDialog(const int loadDistributio
     LoadDistributionDialog(parent)
   , currentLoadDistribution(DbService::getInstance()->getLoadDistributionById(loadDistributionId))
 {
+    qDebug() << "loadDistributionId = " << loadDistributionId;
     qDebug() << __FUNCTION__;
     setWindowTitle("Изменение распределения учебной нагрузки");
     addButton->setText("&Изменить");
@@ -92,6 +93,7 @@ void EditLoadDistributionDialog::selectCurrentLcl()
         if (loadcalculationComboBox->itemData(i).toInt() == currentLoadDistribution.getLoadCalculaionId())
         {
             loadcalculationComboBox->setCurrentIndex(i);
+            loadcalculationComboBox->currentIndexChanged(i);
             qDebug() << i;
             break;
         }

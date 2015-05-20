@@ -98,6 +98,7 @@ public:
     int getSubGroupsNumberByFlowId(const int flowId) const;
 
     QStringList exportLcl();
+    QStringList exportLd();
 
 private:
     bool isCorrectVersion() const;
@@ -112,8 +113,8 @@ private:
     void createGroupsTable() const;
     void createFlowsTable() const;
     void createLinksTable() const;
-    void createLoadCalculation() const;
-    void createLoadDistribution() const;
+    void createLoadCalculationTable() const;
+    void createLoadDistributionTable() const;
     void createFlowsView() const;
     void createLoadCalculationView() const;
     void createLoadDistributionHelper() const;
@@ -130,6 +131,7 @@ private:
     LoadDistribution toLoadDistributionObject(const QSqlRecord& record) const;
 
     QString toExportLclString(const QSqlRecord& record) const;
+    QString toExportLdString(const QSqlRecord& record) const;
 
     QSet<int> getGroupsIdsByFlowId(const int& flowId) const;
 

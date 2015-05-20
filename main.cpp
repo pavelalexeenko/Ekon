@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     //DbService::getInstance();
-    //DbService::getInstance()->loginAs("admin", "123");
+    //DbService::getInstance()->loginAs("secretary", "123");
     MainWindow *mw = new MainWindow();
 
     return a.exec();

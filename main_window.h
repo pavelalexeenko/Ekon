@@ -24,6 +24,7 @@ private slots:
     void updateTitle();
     void goToLoginWindow();
     void exportLcl();
+    void exportLd();
 
 private:
     void createMenu();
@@ -31,12 +32,13 @@ private:
 
 private:
     QMenu *fileMenu;
-    QMenu *saveMenu;
+    QMenu *exportMenu;
     QAction *openAct;
     QAction *saveAct;
     QAction *refreshAct;
     QAction *exitAct;
     QAction *exportLclAct;
+    QAction *exportLdAct;
 
     TablesWidget *tablesWidget;
 };
