@@ -14,7 +14,7 @@ LoginWindow::LoginWindow(QWidget *parent) :
   , _mainLayout(new QGridLayout(this))
 {
     qDebug() << __FUNCTION__;
-    setWindowTitle(QString("Please login"));
+    setWindowTitle(QString("Вход в систему"));
     setWindowModality(Qt::ApplicationModal);
     setWindowState(Qt::WindowActive);
 

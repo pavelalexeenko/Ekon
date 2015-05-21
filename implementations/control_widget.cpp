@@ -21,13 +21,6 @@ ControlWidget::ControlWidget(QWidget *parent) :
     searchButton->hide();
     filterButton->hide();
 
-
-    wordList << "abc" << "test" << "123";
-
-    QCompleter *completer = new QCompleter(wordList, this);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    searchLineEdit->setCompleter(completer);
-
     connect(addRowButton, SIGNAL(clicked()), this, SIGNAL(addRow()));
     connect(deleteRowButton, SIGNAL(clicked()), this, SIGNAL(removeRow()));
 
@@ -71,13 +64,4 @@ void ControlWidget::setSearchType()
     default:
         break;
     }
-}
-
-void ControlWidget::addWord(QString str)
-{
-    for (QString item : wordList)
-        qDebug() << item;
-
-    qDebug() << "---||---";
-    wordList.append(str);
 }

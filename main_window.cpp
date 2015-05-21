@@ -18,7 +18,9 @@ void MainWindow::updateTitle()
 {
     qDebug() << __FUNCTION__;
     QSharedPointer<User> user = DbService::getInstance()->getCurrentUser();
-    this->setWindowTitle(QString("Logged as: ") + user->getUsername() + " - " + user->getUserroleAsString());
+    this->setWindowTitle(QString("Сейчас в системе: ") + user->getUsername() + " - " + user->getUserroleAsString());
+
+    createMenu();
 }
 
 void MainWindow::goToLoginWindow()
@@ -141,7 +143,7 @@ void MainWindow::exportLd()
         for (QString item : list)
         {
             out << item << "\n";
-           // qDebug() << item;
+            // qDebug() << item;
         }
 
         QMessageBox::information(this, tr("Операция завершена."), tr("Данные о учебной нагрузке\nуспешно экспортированы."), QMessageBox::Ok);
@@ -155,9 +157,11 @@ void MainWindow::exportLd()
 void MainWindow::createMenu()
 {
     qDebug() << __FUNCTION__;
+    menuBar()->clear();
+
     fileMenu = menuBar()->addMenu(tr("&Файл"));
 
-    openAct = new QAction(tr("&Вход в систему под другим пользователем"), this);
+    openAct = new QAction(tr("&Вход в систему"), this);
     fileMenu->addAction(openAct);
     connect(openAct, SIGNAL(triggered()), this, SLOT(goToLoginWindow()));
 
@@ -167,19 +171,22 @@ void MainWindow::createMenu()
     fileMenu->addAction(exitAct);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    exportMenu = menuBar()->addMenu(tr("&Экспорт"));
-
     refreshAct = new QAction(tr("&Обновить данные"), this);
     menuBar()->addAction(refreshAct);
     connect(refreshAct, SIGNAL(triggered()), tablesWidget, SLOT(refresh()));
 
-    exportLclAct = new QAction(tr("&Экспорт итогового расчета нагрузки"), this);
-    exportMenu->addAction(exportLclAct);
-    connect(exportLclAct, SIGNAL(triggered()), this, SLOT(exportLcl()));
+    if (DbService::getInstance()->getCurrentUser()->getUserrole() == User::Userrole::SECRETARY)
+    {
+        exportMenu = menuBar()->addMenu(tr("&Экспорт"));
 
-    exportLdAct = new QAction(tr("&Экспорт нагрузки на преподавателей"), this);
-    exportMenu->addAction(exportLdAct);
-    connect(exportLdAct, SIGNAL(triggered()), this, SLOT(exportLd()));
+        exportLclAct = new QAction(tr("&Экспорт итогового расчета нагрузки"), this);
+        exportMenu->addAction(exportLclAct);
+        connect(exportLclAct, SIGNAL(triggered()), this, SLOT(exportLcl()));
+
+        exportLdAct = new QAction(tr("&Экспорт нагрузки на преподавателей"), this);
+        exportMenu->addAction(exportLdAct);
+        connect(exportLdAct, SIGNAL(triggered()), this, SLOT(exportLd()));
+    }
 }
 
 void MainWindow::setUp()

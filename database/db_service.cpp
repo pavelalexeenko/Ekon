@@ -1121,9 +1121,9 @@ void DbService::createUsersTable() const
                "USER_PASSWORD VARCHAR(20) NOT NULL, "
                "USER_TYPE_ID INTEGER, "
                "FOREIGN KEY(USER_TYPE_ID) REFERENCES DRT_USER_TYPES(UST_ID));");
-    query.exec("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) VALUES('admin', '123', 0);");
-    query.exec("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) VALUES('secretary', '123', 1);");
-    query.exec("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) VALUES('worker', '123', 2);");
+    query.exec("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) VALUES('Администратор', '123', 0);");
+    query.exec("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) VALUES('Секретарь кафедры', '123', 1);");
+    query.exec("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) VALUES('Работник кафедры', '123', 2);");
 }
 
 void DbService::createDisciplinesTable() const

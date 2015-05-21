@@ -7,9 +7,6 @@
 #include <QGridLayout>
 #include <QDebug>
 
-#include <QCompleter>
-#include <QDirModel>
-
 class ControlWidget : public QWidget
 {
     Q_OBJECT
@@ -26,7 +23,6 @@ private slots:
     void search();
     void filter();
     void setSearchType();
-    void addWord(QString str);
 
 private:
     enum SearchType
@@ -42,8 +38,6 @@ private:
     QLineEdit *searchLineEdit;
     QPushButton *searchButton;
     QPushButton *filterButton;
-
-    QStringList wordList;
 };
 
 #endif // CONTROL_WIDGET_H
