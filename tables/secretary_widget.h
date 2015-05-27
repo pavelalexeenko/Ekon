@@ -1,9 +1,11 @@
-#ifndef SECRETARY_WIDGET_H
-#define SECRETARY_WIDGET_H
+#ifndef WORKERWIDGET_H
+#define WORKERWIDGET_H
 
 #include <QTabWidget>
+#include "tabs/disciplines_widget.h"
+#include "tabs/groups_widget.h"
+#include "tabs/flows_widget.h"
 #include "tabs/load_calculation_widget.h"
-#include "tabs/load_distribution_widget.h"
 
 class SecretaryWidget : public QTabWidget
 {
@@ -15,8 +17,10 @@ public slots:
     void refresh();
 
 private:
+    DisciplinesWidget *disciplinesWidget;
+    GroupsWidget *groupsWidget;
+    FlowsWidget *flowsWidget;
     LoadCalculationWidget *loadCalculationWidget;
-    LoadDistributionWidget *loadDistributionWidget;
 };
 
-#endif // SECRETARY_WIDGET_H
+#endif // WORKERWIDGET_H

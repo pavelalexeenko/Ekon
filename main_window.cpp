@@ -175,14 +175,14 @@ void MainWindow::createMenu()
     menuBar()->addAction(refreshAct);
     connect(refreshAct, SIGNAL(triggered()), tablesWidget, SLOT(refresh()));
 
+
+    exportMenu = menuBar()->addMenu(tr("&Экспорт"));
+
+    exportLclAct = new QAction(tr("&Экспорт итогового расчета нагрузки"), this);
+    exportMenu->addAction(exportLclAct);
+    connect(exportLclAct, SIGNAL(triggered()), this, SLOT(exportLcl()));
     if (DbService::getInstance()->getCurrentUser()->getUserrole() == User::Userrole::SECRETARY)
     {
-        exportMenu = menuBar()->addMenu(tr("&Экспорт"));
-
-        exportLclAct = new QAction(tr("&Экспорт итогового расчета нагрузки"), this);
-        exportMenu->addAction(exportLclAct);
-        connect(exportLclAct, SIGNAL(triggered()), this, SLOT(exportLcl()));
-
         exportLdAct = new QAction(tr("&Экспорт нагрузки на преподавателей"), this);
         exportMenu->addAction(exportLdAct);
         connect(exportLdAct, SIGNAL(triggered()), this, SLOT(exportLd()));

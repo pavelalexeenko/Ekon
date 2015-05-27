@@ -1,6 +1,6 @@
 #include "groups_widget.h"
 #include "dialogs/add_group_dialog.h"
-#include "tables/worker_widget.h"
+#include "tables/secretary_widget.h"
 
 GroupsWidget::GroupsWidget(QWidget *parent) : QWidget(parent)
 {

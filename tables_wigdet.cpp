@@ -5,14 +5,14 @@ TablesWidget::TablesWidget(QWidget *parent) :
 {
     qDebug() << __FUNCTION__;
     adminWidget = new AdminWidget(this);
+    managerWidget = new ManagerWidget(this);
     secretaryWidget = new SecretaryWidget(this);
-    workerWidget = new WorkerWidget(this);
 
     stackedLayout = new QStackedLayout(this);
     stackedLayout->addWidget(new QWidget(this));
     stackedLayout->addWidget(adminWidget);
+    stackedLayout->addWidget(managerWidget);
     stackedLayout->addWidget(secretaryWidget);
-    stackedLayout->addWidget(workerWidget);
 
     this->setLayout(stackedLayout);
 }
@@ -25,10 +25,10 @@ void TablesWidget::refresh()
         adminWidget->refresh();
         break;
     case User::SECRETARY:
-        secretaryWidget->refresh();
+        managerWidget->refresh();
         break;
     case User::WORKER:
-        workerWidget->refresh();
+        secretaryWidget->refresh();
         break;
     default:
         break;

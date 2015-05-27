@@ -2,21 +2,28 @@
 
 SecretaryWidget::SecretaryWidget(QWidget *parent) :
     QTabWidget(parent)
+  , disciplinesWidget(new DisciplinesWidget(this))
+  , groupsWidget(new GroupsWidget(this))
+  , flowsWidget(new FlowsWidget(this))
   , loadCalculationWidget(new LoadCalculationWidget(this))
-  , loadDistributionWidget(new LoadDistributionWidget(this))
 {
     qDebug() << __FUNCTION__;
 
+    addTab(disciplinesWidget, QString("&Дисциплины"));
+    addTab(groupsWidget, QString("&Группы"));
+    addTab(flowsWidget, QString("П&отоки"));
     addTab(loadCalculationWidget, QString("Распределение &дисциплин"));
-    addTab(loadDistributionWidget, QString("Распределение &нагрузки"));
 
     setStyleSheet("QTabWidget::pane { border: 0; }");
+    tabBar()->setStyleSheet("");
 }
 
 void SecretaryWidget::refresh()
 {
     qDebug() << __FUNCTION__;
 
+    disciplinesWidget->refresh();
+    groupsWidget->refresh();
+    flowsWidget->refresh();
     loadCalculationWidget->refresh();
-    loadDistributionWidget->refresh();
 }

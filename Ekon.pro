@@ -19,8 +19,6 @@ SOURCES += main.cpp\
     objects/user.cpp \
     tables/admin_widget.cpp \
     tables_wigdet.cpp \
-    tables/secretary_widget.cpp \
-    tables/worker_widget.cpp \
     implementations/control_widget.cpp \
     implementations/ekon_tables.cpp \
     dialogs/login_window.cpp \
@@ -52,7 +50,9 @@ SOURCES += main.cpp\
     objects/factors.cpp \
     dialogs/loaddistribution_dialog.cpp \
     dialogs/edit_loaddistribution_dialog.cpp \
-    tabs/settings_widget.cpp
+    tabs/settings_widget.cpp \
+    tables/manager_widget.cpp \
+    tables/secretary_widget.cpp
 
 HEADERS  += \
     main_window.h \
@@ -60,8 +60,6 @@ HEADERS  += \
     objects/user.h \
     tables/admin_widget.h \
     tables_wigdet.h \
-    tables/secretary_widget.h \
-    tables/worker_widget.h \
     implementations/control_widget.h \
     implementations/ekon_tables.h \
     dialogs/login_window.h \
@@ -93,7 +91,9 @@ HEADERS  += \
     objects/factors.h \
     dialogs/loaddistribution_dialog.h \
     dialogs/edit_loaddistribution_dialog.h \
-    tabs/settings_widget.h
+    tabs/settings_widget.h \
+    tables/manager_widget.h \
+    tables/secretary_widget.h
 
 CONFIG += c++11
 

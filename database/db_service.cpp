@@ -1106,8 +1106,8 @@ void DbService::createUsersTypesTable() const
                "UST_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
                "UST_NAME VARCHAR(50) NOT NULL UNIQUE);");
     query.exec("INSERT INTO DRT_USER_TYPES (UST_ID, UST_NAME) VALUES (0, 'Администратор');");
-    query.exec("INSERT INTO DRT_USER_TYPES (UST_ID, UST_NAME) VALUES (1, 'Секретарь');");
-    query.exec("INSERT INTO DRT_USER_TYPES (UST_ID, UST_NAME) VALUES (2, 'Работник кафедры');");
+    query.exec("INSERT INTO DRT_USER_TYPES (UST_ID, UST_NAME) VALUES (1, 'Заведующий кафедрой');");
+    query.exec("INSERT INTO DRT_USER_TYPES (UST_ID, UST_NAME) VALUES (2, 'Секретарь кафедры');");
 }
 
 void DbService::createUsersTable() const
@@ -1122,8 +1122,8 @@ void DbService::createUsersTable() const
                "USER_TYPE_ID INTEGER, "
                "FOREIGN KEY(USER_TYPE_ID) REFERENCES DRT_USER_TYPES(UST_ID));");
     query.exec("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) VALUES('Администратор', '123', 0);");
-    query.exec("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) VALUES('Секретарь кафедры', '123', 1);");
-    query.exec("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) VALUES('Работник кафедры', '123', 2);");
+    query.exec("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) VALUES('Заведующий кафедрой', '123', 1);");
+    query.exec("INSERT INTO DRT_USERS (USER_USERNAME, USER_PASSWORD, USER_TYPE_ID) VALUES('Секретарь кафедры', '123', 2);");
 }
 
 void DbService::createDisciplinesTable() const
