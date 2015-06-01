@@ -26,7 +26,7 @@ void SettingsWidget::createLayout()
 {
     qDebug() << __FUNCTION__;
 
-    QGroupBox *groupBox = new QGroupBox(tr("Нормы времени (на 1 человека\условную группу)"));
+    QGroupBox *groupBox = new QGroupBox(tr("Коэффициенты"));
     QFormLayout *formLayout = new QFormLayout();
 
     QFormLayout *firstFormLayout = new QFormLayout();
