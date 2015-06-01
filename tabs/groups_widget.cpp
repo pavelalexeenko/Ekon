@@ -9,9 +9,9 @@ GroupsWidget::GroupsWidget(QWidget *parent) : QWidget(parent)
     QStringList columnNames;
     columnNames << "ID"
                 << "Название"
-                << "Количество студентов"
+                << "Количество\n студентов"
                 << "Курс"
-                << "Количество подгрупп"
+                << "Количество\n подгрупп"
                 << "Семестр"
                 << "Факультет"
                 << "Специальность"
