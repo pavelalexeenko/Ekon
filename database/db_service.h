@@ -42,6 +42,9 @@ public:
     }
 
 public:
+    bool backupDatabase(QString destinationDir) const;
+    bool restoreDatabase(QString filename) const;
+
     QSqlDatabase getCurrentDatabase() const;
     QStringList getAllUsers() const;
     QStringList getAllUserroles() const;

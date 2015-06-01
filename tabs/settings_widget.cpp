@@ -17,16 +17,25 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
   , hesDoubleSpinBox(new QDoubleSpinBox(this))
   , guideChairDoubleSpinBox(new QDoubleSpinBox(this))
   , uirsDoubleSpinBox(new QDoubleSpinBox(this))
+  , backupLabel(new QLabel("Выберите каталог для архивирования:"))
+  , backupLineEdit(new QLineEdit(this))
+  , backupChangePathPushButton(new QPushButton("Изменить путь",this))
+  , backupPushButton(new QPushButton("Архивировать",this))
+  , restoreLabel(new QLabel("Выберите файл для восстановления:"))
+  , restoreLineEdit(new QLineEdit(this))
+  , restoreChangePathPushButton(new QPushButton("Изменить путь",this))
+  , restorePushButton(new QPushButton("Восстановить",this))
 {
     createLayout();
     createMapper();
+    createConnections();
 }
 
 void SettingsWidget::createLayout()
 {
     qDebug() << __FUNCTION__;
 
-    QGroupBox *groupBox = new QGroupBox(tr("Коэффициенты"));
+    QGroupBox *factorsGroupBox = new QGroupBox(tr("Коэффициенты"));
     QFormLayout *formLayout = new QFormLayout();
 
     QFormLayout *firstFormLayout = new QFormLayout();
@@ -59,10 +68,25 @@ void SettingsWidget::createLayout()
     formLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
     formLayout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
 
-    groupBox->setLayout(formLayout);
+    factorsGroupBox->setLayout(formLayout);
+
+    QGroupBox *databaseGroupBox = new QGroupBox(tr("Работа с базой данных"));
+    QGridLayout *databaseLayout = new QGridLayout();
+    databaseLayout->addWidget(backupLabel, 0, 0);
+    databaseLayout->addWidget(backupLineEdit, 1, 0);
+    databaseLayout->addWidget(backupChangePathPushButton, 1, 1);
+    databaseLayout->addWidget(backupPushButton, 3, 1);
+
+    databaseLayout->addWidget(restoreLabel, 4, 0);
+    databaseLayout->addWidget(restoreLineEdit, 5, 0);
+    databaseLayout->addWidget(restoreChangePathPushButton, 5, 1);
+    databaseLayout->addWidget(restorePushButton, 6, 1);
+
+    databaseGroupBox->setLayout(databaseLayout);
 
     QGridLayout *mainLayout = new QGridLayout(this);
-    mainLayout->addWidget(groupBox, 0, 0, Qt::AlignLeft | Qt::AlignTop);
+    mainLayout->addWidget(factorsGroupBox, 0, 0);
+    mainLayout->addWidget(databaseGroupBox, 1, 0);
 }
 
 void SettingsWidget::createMapper()
@@ -90,4 +114,45 @@ void SettingsWidget::createMapper()
     mapper->addMapping(guideChairDoubleSpinBox, 14);
     mapper->addMapping(uirsDoubleSpinBox, 15);
     mapper->toFirst();
+}
+
+void SettingsWidget::createConnections()
+{
+    connect(backupChangePathPushButton, SIGNAL(clicked()), this, SLOT(setBackupPath()));
+    connect(restoreChangePathPushButton, SIGNAL(clicked()), this, SLOT(setRestorePath()));
+    connect(backupPushButton, SIGNAL(clicked()), this, SLOT(makeBackup()));
+    connect(restorePushButton, SIGNAL(clicked()), this, SLOT(makeRestore()));
+}
+
+void SettingsWidget::setBackupPath()
+{
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+                                                "",
+                                                QFileDialog::ShowDirsOnly
+                                                | QFileDialog::DontResolveSymlinks);
+
+    backupLineEdit->setText(dir);
+}
+
+void SettingsWidget::setRestorePath()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Restore File"),
+                                                    "",
+                                                    tr("Images (*.sqlite)"));
+
+    restoreLineEdit->setText(fileName);
+}
+
+void SettingsWidget::makeBackup()
+{
+    if (!DbService::getInstance()->backupDatabase(backupLineEdit->text()))
+        QMessageBox::warning(this, tr("Error"), tr("Неправильный путь!"), QMessageBox::Ok);
+}
+
+void SettingsWidget::makeRestore()
+{
+    if (QFile::exists(restoreLineEdit->text()))
+        DbService::getInstance()->restoreDatabase(restoreLineEdit->text());
+    else
+        QMessageBox::warning(this, tr("Error"), tr("Неправильный путь к файлу!"), QMessageBox::Ok);
 }

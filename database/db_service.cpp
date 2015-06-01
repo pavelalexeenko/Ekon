@@ -32,6 +32,43 @@ DbService::DbService() :
     }
 }
 
+bool DbService::backupDatabase(QString destinationDir) const
+{
+    QSqlQuery query;
+    query.prepare("BEGIN IMMEDIATE;");
+    query.exec();
+
+    if (!QFile::copy(_defaultDatabaseFilename, destinationDir))
+    {
+        qDebug() << _defaultDatabaseFilename << " - " << destinationDir;
+        return false;
+    }
+
+    query.prepare("ROLLBACK;");
+    query.exec();
+
+    return true;
+}
+
+bool DbService::restoreDatabase(QString filename) const
+{
+    _db->close();
+
+    QFile::remove(_defaultDatabaseFilename);
+    QFile::copy(filename, _defaultDatabaseFilename);
+
+    if (QFile::exists(_defaultDatabaseFilename))
+    {
+        if (_db->open())
+            if (!isCorrectVersion())
+                return false;
+            else
+                return true;
+    }
+    else
+        return false;
+}
+
 QSharedPointer<User> DbService::getCurrentUser() const
 {
     return _currentUser;
