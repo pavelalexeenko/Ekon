@@ -32,6 +32,43 @@ DbService::DbService() :
     }
 }
 
+bool DbService::backupDatabase(QString destinationFilename) const
+{
+    QSqlQuery query;
+    query.prepare("BEGIN IMMEDIATE;");
+    query.exec();
+
+    if (QFile::exists(destinationFilename))
+        throw QString("Файл уже существует");
+
+    if (!QFile::copy(_defaultDatabaseFilename, destinationFilename))
+        throw QString("Невозможно выполнить копирование, возможно файл занят");
+
+    query.prepare("ROLLBACK;");
+    query.exec();
+
+    return true;
+}
+
+bool DbService::restoreDatabase(QString filename) const
+{
+    _db->close();
+
+    if (QFile::exists(filename))
+        throw QString("Неправильный путь к файлу!");
+
+    QFile::remove(_defaultDatabaseFilename);
+
+    if (!QFile::copy(filename, _defaultDatabaseFilename))
+        throw QString("Невозможно выполнить копирование, возможно файл занят");
+
+    if (QFile::exists(_defaultDatabaseFilename))
+        if (_db->open())
+            return isCorrectVersion();
+
+    return false;
+}
+
 QSharedPointer<User> DbService::getCurrentUser() const
 {
     return _currentUser;

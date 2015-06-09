@@ -16,6 +16,7 @@
 #include <QSqlRecord>
 #include <QFile>
 #include <QDir>
+#include <QTime>
 #include <QSettings>
 
 #include <QStringList>
@@ -42,6 +43,9 @@ public:
     }
 
 public:
+    bool backupDatabase(QString destinationFilename) const;
+    bool restoreDatabase(QString filename) const;
+
     QSqlDatabase getCurrentDatabase() const;
     QStringList getAllUsers() const;
     QStringList getAllUserroles() const;

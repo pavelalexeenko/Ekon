@@ -10,8 +10,8 @@ public:
     {
         USER_ROLE_UNDEFINED = -1,
         ADMINISTRATOR = 0,
-        SECRETARY = 1,
-        WORKER = 2
+        MANAGER = 1,
+        SECRETARY = 2
     };
     User();
     User(QString userName, QString password, int userrole);

@@ -9,6 +9,7 @@
 #include <QListWidget>
 #include <QPushButton>
 #include <QFormLayout>
+#include <QHBoxLayout>
 #include <QMessageBox>
 #include <QDebug>
 

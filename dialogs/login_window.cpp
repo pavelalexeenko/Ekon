@@ -7,8 +7,8 @@ LoginWindow::LoginWindow(QWidget *parent) :
   , _usernameComboBox(new QComboBox(this))
   , _passwordLineEdit(new QLineEdit(this))
   , _databaseStatusLabel(new QLabel(this))
-  , _loginButton(new QPushButton(QString("Login"), this))
-  , _exitButton(new QPushButton(QString("Exit"), this))
+  , _loginButton(new QPushButton(QString("Вход"), this))
+  , _exitButton(new QPushButton(QString("Выход"), this))
   , _connectToAnotherDatabaseButton(new QPushButton(QString("Connect to another database"), this))
   , _credentialsLayout(new QFormLayout(_credentialsGroupBox))
   , _mainLayout(new QGridLayout(this))
@@ -67,8 +67,8 @@ void LoginWindow::createLayout()
 {
     qDebug() << __FUNCTION__;
 
-    _credentialsLayout->addRow(tr("Login:"), _usernameComboBox);
-    _credentialsLayout->addRow(tr("Password:"), _passwordLineEdit);
+    _credentialsLayout->addRow(tr("Имя пользователя:"), _usernameComboBox);
+    _credentialsLayout->addRow(tr("Пароль:"), _passwordLineEdit);
 
     _mainLayout->addWidget(_credentialsGroupBox, 0, 0, 1, 2);
     _mainLayout->addWidget(_loginButton, 1, 0);

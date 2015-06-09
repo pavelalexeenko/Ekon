@@ -58,10 +58,10 @@ User::Userrole User::userroleStringToUserroleType(const QString& userrole)
         return USER_ROLE_UNDEFINED;
     else if (userrole == "Администратор")
         return ADMINISTRATOR;
-    else if (userrole == "Работник кафедры")
-        return WORKER;
-    else if (userrole == "Секретарь")
+    else if (userrole == "Серетарь кафедры")
         return SECRETARY;
+    else if (userrole == "Заведующий кафедрой")
+        return MANAGER;
     else
         return USER_ROLE_UNDEFINED;
 }
@@ -75,11 +75,11 @@ QString User::userroleTypeToUserroleString(const User::Userrole userrole)
     case ADMINISTRATOR:
         return QString("Администратор");
         break;
-    case WORKER:
-        return QString("Работник кафедры");
-        break;
     case SECRETARY:
-        return QString("Секретарь");
+        return QString("Серетарь кафедры");
+        break;
+    case MANAGER:
+        return QString("Заведующий кафедрой");
         break;
     default:
         return QString("USER_ROLE_UNDEFINED");

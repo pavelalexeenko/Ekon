@@ -8,7 +8,12 @@
 #include <QFormLayout>
 #include <QDataWidgetMapper>
 #include <QGroupBox>
+#include <QLabel>
+#include <QPushButton>
+#include <QLineEdit>
 #include <QSizePolicy>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -21,6 +26,14 @@ public:
 private:
     void createLayout();
     void createMapper();
+    void createConnections();
+
+private slots:
+    void setBackupPath();
+    void setRestorePath();
+
+    void makeBackup();
+    void makeRestore();
 
 private:
     QDoubleSpinBox *consultationDoubleSpinBox;
@@ -38,6 +51,16 @@ private:
     QDoubleSpinBox *hesDoubleSpinBox;
     QDoubleSpinBox *guideChairDoubleSpinBox;
     QDoubleSpinBox *uirsDoubleSpinBox;
+
+    QLabel *backupLabel;
+    QLineEdit *backupLineEdit;
+    QPushButton *backupChangePathPushButton;
+    QPushButton *backupPushButton;
+
+    QLabel *restoreLabel;
+    QLineEdit *restoreLineEdit;
+    QPushButton *restoreChangePathPushButton;
+    QPushButton *restorePushButton;
 };
 
 #endif // SETTINGSWIDGET_H

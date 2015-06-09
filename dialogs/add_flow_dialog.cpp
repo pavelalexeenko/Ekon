@@ -20,8 +20,9 @@ AddFlowDialog::AddFlowDialog(QWidget *parent):
 
     QFormLayout *formLayout = new QFormLayout(this);
 
-    QFormLayout *buttonsLayout = new QFormLayout();
-    buttonsLayout->addRow(addGroupButton, removeGroupButton);
+    QHBoxLayout *buttonsLayout = new QHBoxLayout();
+    buttonsLayout->addWidget(addGroupButton);
+    buttonsLayout->addWidget(removeGroupButton);
 
     formLayout->addRow(tr("&Название потока:"), nameLineEdit);
     formLayout->addRow(tr("Список групп"), groupsListWidget);
@@ -51,8 +52,9 @@ AddFlowDialog::AddFlowDialog(const int& id, QWidget *parent):
 
     QFormLayout *formLayout = new QFormLayout(this);
 
-    QFormLayout *buttonsLayout = new QFormLayout();
-    buttonsLayout->addRow(addGroupButton, removeGroupButton);
+    QHBoxLayout *buttonsLayout = new QHBoxLayout();
+    buttonsLayout->addWidget(addGroupButton);
+    buttonsLayout->addWidget(removeGroupButton);
 
     formLayout->addRow(tr("&Название потока:"), nameLineEdit);
     formLayout->addRow(tr("Список групп"), groupsListWidget);

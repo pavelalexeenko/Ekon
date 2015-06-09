@@ -15,9 +15,9 @@ AddUserDialog::AddUserDialog(QWidget *parent) :
     connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));
 
     QFormLayout *formLayout = new QFormLayout(this);
-    formLayout->addRow(tr("&Name:"), usernameLineEdit);
-    formLayout->addRow(tr("&Password:"), passwordLineEdit);
-    formLayout->addRow(tr("&User type:"), userrolesComboBox);
+    formLayout->addRow(tr("&Имя:"), usernameLineEdit);
+    formLayout->addRow(tr("&Пароль:"), passwordLineEdit);
+    formLayout->addRow(tr("&Тип учетной записи:"), userrolesComboBox);
     formLayout->addRow(tr(""), addButton);
     setLayout(formLayout);
 }

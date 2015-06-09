@@ -15,8 +15,8 @@ class TablesWidget : public QWidget
     enum Tab
     {
         ADMINISTRATOR_TAB = 1,
-        SECRETARY_TAB = 2,
-        WORKER_TAB = 3
+        MANAGER_TAB = 2,
+        SECRETARY_TAB = 3
     };
 
     Q_OBJECT

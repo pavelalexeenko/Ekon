@@ -24,10 +24,10 @@ void TablesWidget::refresh()
     case User::ADMINISTRATOR:
         adminWidget->refresh();
         break;
-    case User::SECRETARY:
+    case User::MANAGER:
         managerWidget->refresh();
         break;
-    case User::WORKER:
+    case User::SECRETARY:
         secretaryWidget->refresh();
         break;
     default:
@@ -42,11 +42,11 @@ void TablesWidget::updateLayout()
     case User::ADMINISTRATOR:
         stackedLayout->setCurrentIndex(Tab::ADMINISTRATOR_TAB);
         break;
+    case User::MANAGER:
+        stackedLayout->setCurrentIndex(Tab::MANAGER_TAB);
+        break;
     case User::SECRETARY:
         stackedLayout->setCurrentIndex(Tab::SECRETARY_TAB);
-        break;
-    case User::WORKER:
-        stackedLayout->setCurrentIndex(Tab::WORKER_TAB);
         break;
     default:
         stackedLayout->setCurrentIndex(0);
