@@ -2,14 +2,21 @@
 
 User::User():
     _userrole(USER_ROLE_UNDEFINED)
+  , _id(-1)
 {
 }
 
 User::User(QString userName, QString password, int userrole) :
-    _userName(userName)
+    _id(-1)
+  , _userName(userName)
   , _password(password)
 {
     setUserrole(userrole);
+}
+
+int User::getId() const
+{
+    return _id;
 }
 
 QString User::getUsername() const
@@ -30,6 +37,11 @@ QString User::getUserroleAsString() const
 User::Userrole User::getUserrole() const
 {
     return _userrole;
+}
+
+void User::setId(const int &id)
+{
+    _id = id;
 }
 
 void User::setUsername(const QString& username)

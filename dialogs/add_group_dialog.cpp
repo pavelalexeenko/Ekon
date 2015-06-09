@@ -62,5 +62,5 @@ void AddGroupDialog::addRow()
     if (DbService::getInstance()->addGroup(group))
         this->accept();
     else
-        QMessageBox::critical(this, tr("Error"), tr("Database error while adding a group."), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Ошибка"), tr("Такая группа уже существует."), QMessageBox::Ok);
 }

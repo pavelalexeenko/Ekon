@@ -78,7 +78,7 @@ void AddDisciplineDialog::addRow()
     if (DbService::getInstance()->addDiscipline(discipline))
         this->accept();
     else
-        QMessageBox::critical(this, tr("Error"), tr("Database error while adding a discipline."), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Ошибка"), tr("Такая дисциплина уже существует."), QMessageBox::Ok);
 
 }
 

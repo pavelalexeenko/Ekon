@@ -39,14 +39,18 @@ void AddUserDialog::addRow()
     user.setPassword(passwordLineEdit->text());
     user.setUserrole(userrolesComboBox->currentText());
 
-    if (DbService::getInstance()->addUser(user))
+    try
     {
-        qDebug() << "User added succesfully (" << user.getUsername() << " - " << user.getPassword() << " - " << user.getUserroleAsString() << ")";
-        this->accept();
+        if (DbService::getInstance()->addUser(user))
+        {
+            qDebug() << "User added succesfully (" << user.getUsername() << " - " << user.getPassword() << " - " << user.getUserroleAsString() << ")";
+            this->accept();
+        }
     }
-    else
+    catch(QSqlError)
     {
         qDebug() << "There was a database error while adding an user";
-        QMessageBox::critical(this, tr("Error"), "Database error while adding an user.", QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Ошибка!"), "Такой пользователь уже существует", QMessageBox::Ok);
     }
+
 }

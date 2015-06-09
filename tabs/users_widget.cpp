@@ -49,6 +49,14 @@ void UsersWidget::deleteRow()
 {
     qDebug() << __FUNCTION__;
 
-    if (DbService::getInstance()->deleteUser(usersTableModel->data(usersTableModel->index(usersTableView->currentIndex().row(), 0)).toInt()))
-        this->refresh();
+    int userId = usersTableModel->data(usersTableModel->index(usersTableView->currentIndex().row(), 0)).toInt();
+    User user = DbService::getInstance()->getUserById(userId);
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Удаление пользователя",
+                                  QString("Вы действительно хотите удалить пользователя \"%1\"?").arg(user.getUsername()),
+                                  QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes)
+        if (DbService::getInstance()->deleteUser(user.getId()))
+            this->refresh();
 }

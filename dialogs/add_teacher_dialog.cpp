@@ -43,6 +43,6 @@ void AddTeacherDialog::addRow()
     if (DbService::getInstance()->addTeacher(teacher))
         this->accept();
     else
-        QMessageBox::critical(this, tr("Error"), tr("Database error while adding a teacher."), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Ошибка!"), tr("Такой преподаватель уже существует."), QMessageBox::Ok);
 
 }

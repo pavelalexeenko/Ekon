@@ -54,7 +54,7 @@ bool DbService::restoreDatabase(QString filename) const
 {
     _db->close();
 
-    if (QFile::exists(filename))
+    if (!QFile::exists(filename))
         throw QString("Неправильный путь к файлу!");
 
     QFile::remove(_defaultDatabaseFilename);
@@ -105,7 +105,10 @@ bool DbService::addUser(const User& user)
     query.bindValue(":type", user.getUserrole());
 
     if (!query.exec())
-        return !_db->rollback();
+    {
+        qDebug() << "throw";
+        throw query.lastError();
+    }
 
     return _db->commit();
 }
@@ -479,6 +482,21 @@ QString DbService::getGroupNameById(const int &id)
     return query.record().value("GRP_NAME").toString();
 }
 
+User DbService::getUserById(const int &id)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM DRT_USERS WHERE USER_ID = :id");
+    query.bindValue(":id", id);
+
+    if (!query.exec())
+        throw QString(query.lastError().text());
+
+    if (!query.first())
+        throw QString(query.lastError().text());
+
+    return toUserObject(query.record());
+}
+
 Flow DbService::getFlowById(const int &id)
 {
     QSqlQuery query;
@@ -810,6 +828,17 @@ Factors DbService::toFactorsObject(const QSqlRecord &record) const
     factors.setUirsFactor(record.value("FCT_UIRS").toDouble());
 
     return factors;
+}
+
+User DbService::toUserObject(const QSqlRecord &record) const
+{
+    User user;
+    user.setId(record.value("USER_ID").toInt());
+    user.setUsername(record.value("USER_USERNAME").toString());
+    user.setPassword(record.value("USER_PASSWORD").toString());
+    user.setUserrole(record.value("USER_TYPE_ID").toInt());
+
+    return user;
 }
 
 Group DbService::toGroupObject(const QSqlRecord& record) const
@@ -1207,7 +1236,7 @@ void DbService::createTeachersTable() const
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_TEACHERS("
                "TCH_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
-               "TCH_NAME VARCHAR(100) NOT NULL, "
+               "TCH_NAME VARCHAR(100) NOT NULL UNIQUE, "
                "TCH_RATE DOUBLE NOT NULL, "
                "TCH_INFO INTEGER);");
     query.exec("INSERT INTO DRT_TEACHERS (TCH_NAME, TCH_RATE, TCH_INFO) VALUES('Хвещук В.И.', 1, 'Профессор');");
@@ -1222,7 +1251,7 @@ void DbService::createGroupsTable() const
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_GROUPS("
                "GRP_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
-               "GRP_NAME VARCHAR(100) NOT NULL, "
+               "GRP_NAME VARCHAR(100) NOT NULL UNIQUE, "
                "GRP_NUMBER_OF_STUDENTS INTEGER NOT NULL, "
                "GRP_COURSE INTEGER NOT NULL, "
                "GRP_NUMBER_OF_SUBGROUPS INTEGER NOT NULL DEFAULT 1, "
@@ -1251,7 +1280,7 @@ void DbService::createFlowsTable() const
     QSqlQuery query;
     query.exec("CREATE TABLE DRT_FLOWS("
                "FLW_ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
-               "FLW_NAME VARCHAR(100) NOT NULL, "
+               "FLW_NAME VARCHAR(100) NOT NULL UNIQUE, "
                "FLW_NOTE VARCHAR(200));");
 
     QString fields("FLW_NAME,FLW_NOTE");

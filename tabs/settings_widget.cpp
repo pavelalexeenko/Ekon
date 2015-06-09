@@ -17,15 +17,18 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
   , hesDoubleSpinBox(new QDoubleSpinBox(this))
   , guideChairDoubleSpinBox(new QDoubleSpinBox(this))
   , uirsDoubleSpinBox(new QDoubleSpinBox(this))
-  , backupLabel(new QLabel("Выберите каталог для архивирования:"))
+  , backupLabel(new QLabel("Архивирование:"))
   , backupLineEdit(new QLineEdit(this))
   , backupChangePathPushButton(new QPushButton("Изменить путь",this))
   , backupPushButton(new QPushButton("Архивировать",this))
-  , restoreLabel(new QLabel("Выберите файл для восстановления:"))
+  , restoreLabel(new QLabel("Восстановление:"))
   , restoreLineEdit(new QLineEdit(this))
   , restoreChangePathPushButton(new QPushButton("Изменить путь",this))
   , restorePushButton(new QPushButton("Восстановить",this))
 {
+    backupLineEdit->setPlaceholderText("Укажите путь создания архива...");
+    restoreLineEdit->setPlaceholderText("Укажите путь к файлу архива...");
+
     createLayout();
     createMapper();
     createConnections();
@@ -127,9 +130,9 @@ void SettingsWidget::createConnections()
 void SettingsWidget::setBackupPath()
 {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-                                                "",
-                                                QFileDialog::ShowDirsOnly
-                                                | QFileDialog::DontResolveSymlinks);
+                                                    "",
+                                                    QFileDialog::ShowDirsOnly
+                                                    | QFileDialog::DontResolveSymlinks);
 
     backupLineEdit->setText(dir + "/dbBKP.sqlite");
 }
@@ -162,11 +165,11 @@ void SettingsWidget::makeRestore()
     try
     {
         if (DbService::getInstance()->restoreDatabase(restoreLineEdit->text()))
-            QMessageBox::information(this, tr("Выполнено"), tr("Архивирование успешно завершено!"), QMessageBox::Ok);
+            QMessageBox::information(this, tr("Выполнено"), tr("Восстановление успешно завершено!"), QMessageBox::Ok);
     }
     catch(QString str)
     {
-
+        QMessageBox::warning(this, tr("Error"), str, QMessageBox::Ok);
     }
 
 }

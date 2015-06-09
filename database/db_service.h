@@ -54,6 +54,7 @@ public:
     QString getLastError() const;
 
     QString getGroupNameById(const int& id);
+    User getUserById(const int& id);
     Flow getFlowById(const int& id);
     Discipline getDisciplineById(const int& id);
     LoadCalculation getLoadCalculationById(const int& id);
@@ -127,6 +128,7 @@ private:
 private:
     Factors toFactorsObject(const QSqlRecord& record) const;
 
+    User toUserObject(const QSqlRecord& record) const;
     Group toGroupObject(const QSqlRecord& record) const;
     Flow toFlowObject(const QSqlRecord& record) const;
     Discipline toDisciplineObject(const QSqlRecord& record) const;

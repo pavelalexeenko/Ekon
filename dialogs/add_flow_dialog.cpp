@@ -104,7 +104,7 @@ void AddFlowDialog::addRow()
     if (DbService::getInstance()->addFlow(flow))
         this->accept();
     else
-        QMessageBox::critical(this, tr("Error"), tr("Database error while adding a flow."), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Ошибка!"), tr("Поток с таким названием уже существует."), QMessageBox::Ok);
 }
 
 void AddFlowDialog::addGroups()

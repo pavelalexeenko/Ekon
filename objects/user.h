@@ -16,11 +16,13 @@ public:
     User();
     User(QString userName, QString password, int userrole);
 
+    int getId() const;
     QString getUsername() const;
     QString getPassword() const;
     QString getUserroleAsString() const;
     Userrole getUserrole() const;
 
+    void setId(const int& id);
     void setUsername(const QString& username);
     void setPassword(const QString& password);
     void setUserrole(const int& userrole);
@@ -30,6 +32,7 @@ public:
     static QString userroleTypeToUserroleString(const Userrole userrole);
 
 private:
+    int _id;
     QString _userName;
     QString _password;
     Userrole _userrole;
